@@ -46,7 +46,7 @@ class Storybook extends StatefulWidget {
     this.enableLayout = true,
     this.brandingWidget,
     Layout initialLayout = Layout.auto,
-    double autoLayoutThreshold = 1000,
+    double autoLayoutThreshold = 800,
   })  : plugins = UnmodifiableListView([
           LayoutPlugin(
             initialLayout,
