@@ -12,7 +12,6 @@ export 'theme_mode.dart';
 
 /// Use this method to initialize and customize built-in plugins.
 List<Plugin> initializePlugins({
-  bool enableLayout = true,
   bool enableThemeMode = true,
   bool enableCompactLayoutDeviceFrame = true,
   bool enableExpandedLayoutDeviceFrame = true,
