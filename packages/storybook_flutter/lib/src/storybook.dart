@@ -1,11 +1,37 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
-import 'package:storybook_flutter/src/plugins/plugin_panel.dart';
-import 'package:storybook_flutter/src/story.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
+
+/// Use this wrapper to wrap each route aware story inside default
+/// [MaterialApp.router] widget.
+class RouteWrapperBuilder {
+  RouteWrapperBuilder({
+    this.title = '',
+    ThemeData? theme,
+    ThemeData? darkTheme,
+    this.debugShowCheckedModeBanner = false,
+    Widget Function(BuildContext, Widget?)? wrapperBuilder,
+  })  : theme = theme ?? ThemeData.light(),
+        darkTheme = darkTheme ?? ThemeData.dark(),
+        wrapperBuilder = wrapperBuilder ?? defaultWrapperBuilder;
+
+  final String title;
+  final ThemeData theme;
+  final ThemeData darkTheme;
+  final bool debugShowCheckedModeBanner;
+  final Widget Function(BuildContext, Widget?) wrapperBuilder;
+
+  static Widget defaultWrapperBuilder(BuildContext context, Widget? child) =>
+      Scaffold(
+        body: Center(
+          child: child ?? const SizedBox.shrink(),
+        ),
+      );
+}
 
 /// Use this wrapper to wrap each story into a [MaterialApp] widget.
 Widget materialWrapper(BuildContext context, Widget? child) => MaterialApp(
@@ -42,6 +68,7 @@ class Storybook extends StatefulWidget {
     Iterable<Plugin>? plugins,
     this.initialStory,
     this.wrapperBuilder = materialWrapper,
+    this.routeWrapperBuilder,
     this.showPanel = true,
     this.enableLayout = true,
     this.brandingWidget,
@@ -71,6 +98,9 @@ class Storybook extends StatefulWidget {
   /// Each story will be wrapped into a widget returned by this builder.
   final TransitionBuilder wrapperBuilder;
 
+  /// Each routed story will be wrapped into a widget returned by this builder.
+  final RouteWrapperBuilder? routeWrapperBuilder;
+
   /// Whether to show the plugin panel at the bottom.
   final bool showPanel;
 
@@ -99,14 +129,6 @@ class _StorybookState extends State<Storybook> {
   }
 
   @override
-  void didUpdateWidget(covariant Storybook oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.stories != oldWidget.stories) {
-      _storyNotifier.stories = widget.stories;
-    }
-  }
-
-  @override
   void dispose() {
     _storyNotifier.dispose();
     super.dispose();
@@ -116,6 +138,7 @@ class _StorybookState extends State<Storybook> {
   Widget build(BuildContext context) {
     final currentStory = CurrentStory(
       wrapperBuilder: widget.wrapperBuilder,
+      routeWrapperBuilder: widget.routeWrapperBuilder,
     );
 
     return TapRegion(
@@ -164,7 +187,8 @@ class _StorybookState extends State<Storybook> {
                                             layerLink: _layerLink,
                                           ),
                                         ),
-                                        widget.brandingWidget ?? const SizedBox.shrink(),
+                                        widget.brandingWidget ??
+                                            const SizedBox.shrink(),
                                       ],
                                     ),
                                   ),
@@ -189,9 +213,14 @@ class _StorybookState extends State<Storybook> {
 }
 
 class CurrentStory extends StatelessWidget {
-  const CurrentStory({super.key, required this.wrapperBuilder});
+  const CurrentStory({
+    super.key,
+    required this.wrapperBuilder,
+    this.routeWrapperBuilder,
+  });
 
   final TransitionBuilder wrapperBuilder;
+  final RouteWrapperBuilder? routeWrapperBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -210,12 +239,42 @@ class CurrentStory extends StatelessWidget {
         .map((builder) => SingleChildBuilder(builder: builder))
         .toList();
 
-    final effectiveWrapperBuilder = story.wrapperBuilder ?? wrapperBuilder;
+    Widget child;
 
-    final child = effectiveWrapperBuilder(
-      context,
-      Builder(builder: story.builder),
-    );
+    if (story.router != null && story.initialRoutes != null) {
+      final RouteWrapperBuilder effectiveRouteWrapperBuilder =
+          story.routeWrapperBuilder ??
+              routeWrapperBuilder ??
+              RouteWrapperBuilder();
+
+      child = MaterialApp.router(
+        title: effectiveRouteWrapperBuilder.title,
+        theme: effectiveRouteWrapperBuilder.theme,
+        darkTheme: effectiveRouteWrapperBuilder.darkTheme,
+        debugShowCheckedModeBanner:
+            effectiveRouteWrapperBuilder.debugShowCheckedModeBanner,
+        routerConfig: story.router!.config(
+          deepLinkBuilder: (PlatformDeepLink _) =>
+              DeepLink(story.initialRoutes!),
+        ),
+        builder: (BuildContext context, Widget? child) =>
+            effectiveRouteWrapperBuilder.wrapperBuilder(
+          context,
+          Directionality(
+            textDirection: context.watch<TextDirectionNotifier>().value,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        ),
+      );
+    } else {
+      final Widget Function(BuildContext, Widget?) effectiveWrapperBuilder =
+          story.wrapperBuilder ?? wrapperBuilder;
+
+      child = effectiveWrapperBuilder(
+        context,
+        Builder(builder: story.builder!),
+      );
+    }
 
     return KeyedSubtree(
       key: ValueKey(story.name),
