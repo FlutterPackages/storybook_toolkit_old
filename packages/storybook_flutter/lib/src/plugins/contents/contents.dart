@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/contents/search_text_field.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -90,15 +91,33 @@ class _ContentsState extends State<_Contents> {
       );
 
   Widget _buildStoryTile(Story story) {
-    final description = story.description;
+    context.watch<StoryRouteNotifier>().currentStoryRoute;
+
+    final Story? currentStory = context.watch<StoryNotifier>().currentStory;
+    final StoryNotifier storyNotifier = context.read<StoryNotifier>();
+
+    final String? description = story.description;
+    final String? initialStory = storyNotifier.getInitialStoryName;
+
+    final GoRouter? router = story.router;
+    final bool isRouteAwareStory = router != null && story.routePath != null;
+    final String? routeStoryPath = storyNotifier.getRoutePath(story.name);
+    final String? routePath = router?.routeInformationProvider.value.uri.path;
+    final String? routeStoryName = storyNotifier.getRouteName(routePath);
 
     return ListTile(
-      selected: story == context.watch<StoryNotifier>().currentStory,
+      selected: isRouteAwareStory
+          ? (story.name == routeStoryName ||
+                  (routePath == '/' && story.name == initialStory)) &&
+              currentStory?.router != null
+          : story == currentStory,
       title: Text(story.title),
       subtitle: description == null ? null : Text(description),
       onTap: () {
-        context.read<StoryNotifier>().currentStoryName = story.name;
+        storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
+
+        router?.push(routeStoryPath!);
       },
     );
   }

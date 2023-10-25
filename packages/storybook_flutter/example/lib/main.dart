@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:go_router/go_router.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_example/router_aware_stories.dart';
+import 'package:storybook_flutter_example/route_aware_stories.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  usePathUrlStrategy();
+  GoRouter.optionURLReflectsImperativeAPIs = true;
+
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) => Storybook(
-        initialStory: 'Screens/Scaffold',
+        initialStory: 'Routing/First page',
+        routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         stories: [
-          ...routerAwareStories,
+          ...routeAwareStories,
           Story(
             name: 'Screens/Scaffold',
             description: 'Story with scaffold and different knobs.',
@@ -120,10 +128,10 @@ class MyApp extends StatelessWidget {
 
 class CounterPage extends StatefulWidget {
   const CounterPage({
-    Key? key,
+    super.key,
     required this.title,
     this.enabled = true,
-  }) : super(key: key);
+  });
 
   final String title;
   final bool enabled;
