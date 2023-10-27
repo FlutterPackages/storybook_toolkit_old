@@ -12,18 +12,19 @@ GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       redirect: (BuildContext context, GoRouterState state) {
-        Storybook.pathNotifier.currentStoryRoute = firstRoute;
+        Storybook.storyRouterNotifier.currentStoryRoute = firstRoute;
         return firstRoute;
       },
     ),
     GoRoute(
       path: firstRoute,
-      builder: (BuildContext context, GoRouterState state) => const FirstPage(),
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          const NoTransitionPage(child: FirstPage()),
     ),
     GoRoute(
       path: secondRoute,
-      builder: (BuildContext context, GoRouterState state) =>
-          const SecondPage(),
+      pageBuilder: (BuildContext context, GoRouterState state) =>
+          const NoTransitionPage(child: SecondPage()),
     ),
   ],
 );
@@ -32,56 +33,93 @@ class FirstPage extends StatelessWidget {
   const FirstPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('First Page')),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              context.push(secondRoute);
-              Storybook.pathNotifier.currentStoryRoute = secondRoute;
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.access_time,
-                  size: 16,
-                ),
-                SizedBox(width: 4),
-                Text('Go to Second page'),
-              ],
-            ),
+  Widget build(BuildContext context) {
+    final title = context.knobs.text(
+      label: 'First page title',
+      initial: 'First page title',
+      description: 'The title of the app bar.',
+    );
+    final elevation = context.knobs.nullable.slider(
+      label: 'First page app bar elevation',
+      initial: 4,
+      min: 0,
+      max: 10,
+      description: 'Elevation of the app bar.',
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: elevation,
+        title: Text(title),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            context.go(secondRoute);
+            Storybook.storyRouterNotifier.currentStoryRoute = secondRoute;
+          },
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.access_time,
+                size: 16,
+              ),
+              SizedBox(width: 4),
+              Text('Go to Second page'),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 class SecondPage extends StatelessWidget {
   const SecondPage({super.key});
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(title: const Text('Second Page')),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              context.push(firstRoute);
-              Storybook.pathNotifier.currentStoryRoute = firstRoute;
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.access_time,
-                  size: 16,
-                ),
-                SizedBox(width: 4),
-                Text('Go to First page'),
-              ],
-            ),
+  Widget build(BuildContext context) {
+    final title = context.knobs.text(
+      label: 'Second page title',
+      initial: 'Second page title',
+      description: 'The title of the app bar.',
+    );
+
+    final elevation = context.knobs.nullable.slider(
+      label: 'Second page app bar elevation',
+      initial: 4,
+      min: 0,
+      max: 10,
+      description: 'Second Elevation of the app bar.',
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: elevation,
+        title: Text(title),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            context.go(firstRoute);
+            Storybook.storyRouterNotifier.currentStoryRoute = firstRoute;
+          },
+          child: const Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.access_time,
+                size: 16,
+              ),
+              SizedBox(width: 4),
+              Text('Go to First page'),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 List<Story> routeAwareStories = [

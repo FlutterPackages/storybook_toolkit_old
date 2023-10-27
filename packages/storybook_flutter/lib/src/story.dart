@@ -59,19 +59,19 @@ class StoryNotifier extends ChangeNotifier {
   StoryNotifier(
     List<Story> stories, {
     String? initial,
-    Map<String, String>? routeMap,
+    Map<String, String>? routeStoriesMap,
   })  : _stories = stories.toList(),
         _currentStoryName = initial,
-        _routeMap = routeMap ?? {};
+        _routeStoriesMap = routeStoriesMap ?? {};
 
   String? get getInitialStoryName => _currentStoryName;
 
-  final Map<String, String> _routeMap;
+  final Map<String, String> _routeStoriesMap;
 
-  String? getRouteName(String? path) => _routeMap[path];
+  String? getRouteName(String? route) => _routeStoriesMap[route];
 
-  String? getRoutePath(String? name) =>
-      _routeMap.entries.firstWhereOrNull((entry) => entry.value == name)?.key;
+  String? getStoryRoute(String? name) =>
+      _routeStoriesMap.entries.firstWhereOrNull((entry) => entry.value == name)?.key;
 
   List<Story> _stories;
 
@@ -112,19 +112,26 @@ class StoryNotifier extends ChangeNotifier {
     _searchTerm = value;
     notifyListeners();
   }
+
+  void listenToStoryRouteNotifier(StoryRouteNotifier storyRouterNotifier) {
+    storyRouterNotifier.addListener(() {
+      _currentStoryName = getRouteName(storyRouterNotifier.currentStoryRoute);
+      notifyListeners();
+    });
+  }
 }
 
 const _sectionSeparator = '/';
 
-/// Use this notifier to set the current story path when using routing
-/// from inside the story to change the selected story list item.
+/// Use this notifier to set the current story route when using routing
+/// from inside the story.
 class StoryRouteNotifier extends ChangeNotifier {
-  String _currentStoryRoute = '';
+  String _storyRoute = '';
 
-  String get currentStoryRoute => _currentStoryRoute;
+  String get currentStoryRoute => _storyRoute;
 
-  set currentStoryRoute(String path) {
-    _currentStoryRoute = path;
+  set currentStoryRoute(String route) {
+    _storyRoute = route;
     notifyListeners();
   }
 }

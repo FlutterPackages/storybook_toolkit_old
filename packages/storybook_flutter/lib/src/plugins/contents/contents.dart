@@ -101,7 +101,7 @@ class _ContentsState extends State<_Contents> {
 
     final GoRouter? router = story.router;
     final bool isRouteAwareStory = router != null && story.routePath != null;
-    final String? routeStoryPath = storyNotifier.getRoutePath(story.name);
+    final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
     final String? routePath = router?.routeInformationProvider.value.uri.path;
     final String? routeStoryName = storyNotifier.getRouteName(routePath);
 
@@ -117,7 +117,7 @@ class _ContentsState extends State<_Contents> {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
 
-        router?.push(routeStoryPath!);
+        router?.go(routeStoryPath!);
       },
     );
   }

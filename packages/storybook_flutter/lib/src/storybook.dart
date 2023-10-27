@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/directionality.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Use this wrapper to wrap each route aware story inside default
@@ -110,8 +109,8 @@ class Storybook extends StatefulWidget {
   /// Branding widget to use in the plugin panel.
   final Widget? brandingWidget;
 
-  /// Path notifier to use when routing from inside the story.
-  static StoryRouteNotifier pathNotifier = StoryRouteNotifier();
+  /// Route notifier to use when routing from inside the story.
+  static StoryRouteNotifier storyRouterNotifier = StoryRouteNotifier();
 
   @override
   State<Storybook> createState() => _StorybookState();
@@ -134,15 +133,15 @@ class _StorybookState extends State<Storybook> {
 
     _storyNotifier = StoryNotifier(
       widget.stories,
-      routeMap: routeMap,
+      routeStoriesMap: routeMap,
       initial: widget.initialStory,
-    );
+    )..listenToStoryRouteNotifier(Storybook.storyRouterNotifier);
   }
 
   @override
   void dispose() {
     _storyNotifier.dispose();
-    Storybook.pathNotifier.dispose();
+    Storybook.storyRouterNotifier.dispose();
 
     super.dispose();
   }
@@ -162,7 +161,7 @@ class _StorybookState extends State<Storybook> {
           children: [
             Provider.value(value: widget.plugins),
             ChangeNotifierProvider.value(value: _storyNotifier),
-            ChangeNotifierProvider.value(value: Storybook.pathNotifier),
+            ChangeNotifierProvider.value(value: Storybook.storyRouterNotifier),
             ...widget.plugins
                 .map((p) => p.wrapperBuilder)
                 .whereType<TransitionBuilder>()
