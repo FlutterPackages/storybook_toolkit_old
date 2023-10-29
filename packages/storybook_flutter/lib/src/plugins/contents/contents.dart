@@ -73,22 +73,39 @@ class _Contents extends StatefulWidget {
 }
 
 class _ContentsState extends State<_Contents> {
+  bool matchSubpages(String? url, String? title) {
+    final List<String> parts = url?.split('/') ?? [];
+
+    if (parts.isEmpty) return false;
+
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].isNotEmpty) {
+        final String capitalizedSubpage =
+            parts[i][0].toUpperCase() + parts[i].substring(1);
+        if (title == capitalizedSubpage) return true;
+      }
+    }
+
+    return false;
+  }
+
   Widget _buildExpansionTile({
     required String title,
     required Iterable<Story> stories,
     required List<Widget> children,
     EdgeInsetsGeometry? childrenPadding,
-  }) =>
-      ExpansionTile(
-        title: Text(title),
-        initiallyExpanded:
-            context.watch<StoryNotifier>().searchTerm.isNotEmpty ||
-                stories
-                    .map((s) => s.name)
-                    .contains(context.watch<StoryNotifier>().currentStoryName),
-        childrenPadding: childrenPadding,
-        children: children,
-      );
+  }) {
+    final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+
+    return ExpansionTile(
+      title: Text(title),
+      initiallyExpanded: storyNotifier.searchTerm.isNotEmpty ||
+          matchSubpages(storyNotifier.routeStoryPath, title) ||
+          (stories.map((s) => s.name).contains(storyNotifier.routeStoryName)),
+      childrenPadding: childrenPadding,
+      children: children,
+    );
+  }
 
   Widget _buildStoryTile(Story story) {
     context.watch<StoryRouteNotifier>().currentStoryRoute;
@@ -97,18 +114,15 @@ class _ContentsState extends State<_Contents> {
     final StoryNotifier storyNotifier = context.read<StoryNotifier>();
 
     final String? description = story.description;
-    final String? initialStory = storyNotifier.getInitialStoryName;
-
     final GoRouter? router = story.router;
     final bool isRouteAwareStory = router != null && story.routePath != null;
     final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
-    final String? routePath = router?.routeInformationProvider.value.uri.path;
-    final String? routeStoryName = storyNotifier.getRouteName(routePath);
 
     return ListTile(
       selected: isRouteAwareStory
-          ? (story.name == routeStoryName ||
-                  (routePath == '/' && story.name == initialStory)) &&
+          ? (story.name == storyNotifier.routeStoryName ||
+                  (storyNotifier.routeStoryPath == '/' &&
+                      story.name == storyNotifier.getInitialStoryName)) &&
               currentStory?.router != null
           : story == currentStory,
       title: Text(story.title),

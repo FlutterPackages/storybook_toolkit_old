@@ -28,10 +28,8 @@ Widget _buildPanel(BuildContext context) {
   final currentStory = context.select<StoryNotifier, Story?>(
     (it) => it.currentStory,
   );
-  final currentStoryPath =
-      currentStory?.router?.routerDelegate.currentConfiguration.uri.path;
-  final currentStoryName =
-      context.read<StoryNotifier>().getRouteName(currentStoryPath);
+
+  final String? currentStoryName = context.read<StoryNotifier>().routeStoryName;
 
   return items.isEmpty
       ? const Center(child: Text('No knobs'))
@@ -111,9 +109,8 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
     final story = _storyNotifier.currentStory;
     if (story == null) return;
 
-    final currentStoryPath =
-        story.router?.routerDelegate.currentConfiguration.uri.path;
-    final currentStoryName = _storyNotifier.getRouteName(currentStoryPath);
+    final String? currentStoryName = _storyNotifier.routeStoryName;
+
     _knobs[currentStoryName ?? story.name]![label]!.value = value;
 
     notifyListeners();
@@ -122,32 +119,26 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
   T get<T>(String label) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final currentStoryPath =
-        story.router?.routerDelegate.currentConfiguration.uri.path;
-    final currentStoryName = _storyNotifier.getRouteName(currentStoryPath);
+    final String? routeStoryName = _storyNotifier.routeStoryName;
 
-    return _knobs[currentStoryName ?? story.name]![label]!.value as T;
+    return _knobs[routeStoryName ?? story.name]![label]!.value as T;
   }
 
   List<Knob<dynamic>> all() {
     final story = _storyNotifier.currentStory;
     if (story == null) return [];
 
-    final currentStoryPath =
-        story.router?.routerDelegate.currentConfiguration.uri.path;
-    final currentStoryName = _storyNotifier.getRouteName(currentStoryPath);
+    final String? routeStoryName = _storyNotifier.routeStoryName;
 
-    return _knobs[currentStoryName ?? story.name]?.values.toList() ?? [];
+    return _knobs[routeStoryName ?? story.name]?.values.toList() ?? [];
   }
 
   T _addKnob<T>(Knob<T> value) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final currentStoryPath =
-        story.router?.routerDelegate.currentConfiguration.uri.path;
-    final currentStoryName = _storyNotifier.getRouteName(currentStoryPath);
+    final String? routeStoryName = _storyNotifier.routeStoryName;
 
-    final knobs = _knobs.putIfAbsent(currentStoryName ?? story.name, () => {});
+    final knobs = _knobs.putIfAbsent(routeStoryName ?? story.name, () => {});
 
     return (knobs.putIfAbsent(value.label, () {
       Future.microtask(notifyListeners);

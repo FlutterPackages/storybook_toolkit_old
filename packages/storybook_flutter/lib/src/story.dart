@@ -68,10 +68,11 @@ class StoryNotifier extends ChangeNotifier {
 
   final Map<String, String> _routeStoriesMap;
 
-  String? getRouteName(String? route) => _routeStoriesMap[route];
+  String? _getRouteName(String? route) => _routeStoriesMap[route];
 
-  String? getStoryRoute(String? name) =>
-      _routeStoriesMap.entries.firstWhereOrNull((entry) => entry.value == name)?.key;
+  String? getStoryRoute(String? name) => _routeStoriesMap.entries
+      .firstWhereOrNull((entry) => entry.value == name)
+      ?.key;
 
   List<Story> _stories;
 
@@ -89,12 +90,25 @@ class StoryNotifier extends ChangeNotifier {
               ),
       );
 
+  String? _routeStoryPath;
+
+  String? get routeStoryPath => _routeStoryPath;
+
+  String? _routeStoryName;
+
+  String? get routeStoryName => _routeStoryName;
+
   String? _currentStoryName;
 
   Story? get currentStory {
     final index = _stories.indexWhere((s) => s.name == _currentStoryName);
 
-    return index != -1 ? _stories[index] : null;
+    final Story? story = index != -1 ? _stories[index] : null;
+
+    _routeStoryPath = story?.router?.routeInformationProvider.value.uri.path;
+    _routeStoryName = _getRouteName(_routeStoryPath);
+
+    return story;
   }
 
   String? get currentStoryName => _currentStoryName;
@@ -115,7 +129,7 @@ class StoryNotifier extends ChangeNotifier {
 
   void listenToStoryRouteNotifier(StoryRouteNotifier storyRouterNotifier) {
     storyRouterNotifier.addListener(() {
-      _currentStoryName = getRouteName(storyRouterNotifier.currentStoryRoute);
+      _currentStoryName = _getRouteName(storyRouterNotifier.currentStoryRoute);
       notifyListeners();
     });
   }
