@@ -108,11 +108,9 @@ class _ContentsState extends State<_Contents> {
   }
 
   Widget _buildStoryTile(Story story) {
-    context.watch<StoryRouteNotifier>().currentStoryRoute;
+    final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    final Story? currentStory = context.watch<StoryNotifier>().currentStory;
-    final StoryNotifier storyNotifier = context.read<StoryNotifier>();
-
+    final Story? currentStory = storyNotifier.currentStory;
     final String? description = story.description;
     final GoRouter? router = story.router;
     final bool isRouteAwareStory = router != null && story.routePath != null;
