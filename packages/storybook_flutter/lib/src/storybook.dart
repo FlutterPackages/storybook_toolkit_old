@@ -282,10 +282,12 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: TapRegion(
-              onTapInside: (_) =>
-                  FocusManager.instance.primaryFocus?.requestFocus(),
-              child: child ?? const SizedBox.shrink(),
+            child: Builder(
+              builder: (BuildContext context) => TapRegion(
+                onTapInside: (PointerDownEvent _) =>
+                    Focus.of(context).requestFocus(),
+                child: child ?? const SizedBox.shrink(),
+              ),
             ),
           ),
         ),
@@ -296,10 +298,12 @@ class CurrentStory extends StatelessWidget {
 
       child = effectiveWrapperBuilder(
         context,
-        TapRegion(
-          onTapInside: (_) =>
-              FocusManager.instance.primaryFocus?.requestFocus(),
-          child: Builder(builder: story.builder!),
+        Builder(
+          builder: (BuildContext context) => TapRegion(
+            onTapInside: (PointerDownEvent _) =>
+                Focus.of(context).requestFocus(),
+            child: Builder(builder: story.builder!),
+          ),
         ),
       );
     }
