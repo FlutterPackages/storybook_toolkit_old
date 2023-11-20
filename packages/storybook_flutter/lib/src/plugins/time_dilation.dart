@@ -27,11 +27,9 @@ void _onPressed(
     case true:
       context.read<TimeDilationNotifier>().value = false;
       onTimeDilationChanged?.call(false);
-      break;
     case false:
       context.read<TimeDilationNotifier>().value = true;
       onTimeDilationChanged?.call(true);
-      break;
   }
 }
 
@@ -51,5 +49,5 @@ Widget _buildWrapper(BuildContext _, Widget? child) =>
 ///
 /// `TimeDilationPlugin` should be added to plugins for this to work.
 class TimeDilationNotifier extends ValueNotifier<bool> {
-  TimeDilationNotifier(super.value);
+  TimeDilationNotifier(super._value);
 }

@@ -44,26 +44,32 @@ class _PluginPanelState extends State<PluginPanel> {
               targetAnchor: Alignment.topLeft,
               followerAnchor: Alignment.bottomLeft,
               showWhenUnlinked: false,
-              child: Localizations(
-                delegates: const [
-                  DefaultMaterialLocalizations.delegate,
-                  DefaultWidgetsLocalizations.delegate,
-                ],
-                locale: const Locale('en', 'US'),
-                child: Dialog(
-                  clipBehavior: Clip.antiAlias,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      topRight: Radius.circular(8),
+              child: TapRegion(
+                onTapOutside: (PointerDownEvent _) {
+                  _overlay?.remove();
+                  _overlay = null;
+                },
+                child: Localizations(
+                  delegates: const [
+                    DefaultMaterialLocalizations.delegate,
+                    DefaultWidgetsLocalizations.delegate,
+                  ],
+                  locale: const Locale('en', 'US'),
+                  child: Dialog(
+                    clipBehavior: Clip.antiAlias,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                      ),
                     ),
-                  ),
-                  insetPadding: EdgeInsets.zero,
-                  child: Navigator(
-                    onGenerateRoute: (_) => MaterialPageRoute<void>(
-                      builder: (context) => PointerInterceptor(
-                        child: Material(
-                          child: childBuilder(context),
+                    insetPadding: EdgeInsets.zero,
+                    child: Navigator(
+                      onGenerateRoute: (_) => MaterialPageRoute<void>(
+                        builder: (context) => PointerInterceptor(
+                          child: Material(
+                            child: childBuilder(context),
+                          ),
                         ),
                       ),
                     ),
