@@ -282,9 +282,9 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: GestureDetector(
-              behavior: HitTestBehavior.deferToChild,
-              onTap: () => Focus.of(context).requestFocus(),
+            child: TapRegion(
+              onTapInside: (_) =>
+                  FocusManager.instance.primaryFocus?.requestFocus(),
               child: child ?? const SizedBox.shrink(),
             ),
           ),
@@ -296,9 +296,9 @@ class CurrentStory extends StatelessWidget {
 
       child = effectiveWrapperBuilder(
         context,
-        GestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          onTap: () => Focus.of(context).requestFocus(),
+        TapRegion(
+          onTapInside: (_) =>
+              FocusManager.instance.primaryFocus?.requestFocus(),
           child: Builder(builder: story.builder!),
         ),
       );
