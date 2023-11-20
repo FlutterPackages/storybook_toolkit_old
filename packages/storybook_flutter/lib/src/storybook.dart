@@ -117,7 +117,6 @@ class Storybook extends StatefulWidget {
 }
 
 class _StorybookState extends State<Storybook> {
-  static final _storyPanelFocusNode = FocusNode();
   final _overlayKey = GlobalKey<OverlayState>();
   final _layerLink = LayerLink();
   late final StoryNotifier _storyNotifier;
@@ -159,82 +158,76 @@ class _StorybookState extends State<Storybook> {
     );
 
     return TapRegionSurface(
-      child: Focus(
-        focusNode: _storyPanelFocusNode,
-        descendantsAreFocusable: true,
-        child: GestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          onTap: () {
-            _storyPanelFocusNode.requestFocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: MediaQuery.fromView(
-            view: View.of(context),
-            child: Nested(
-              children: [
-                Provider.value(value: widget.plugins),
-                ChangeNotifierProvider.value(value: _storyNotifier),
-                ChangeNotifierProvider.value(
-                    value: Storybook.storyRouterNotifier),
-                ...widget.plugins
-                    .map((p) => p.wrapperBuilder)
-                    .whereType<TransitionBuilder>()
-                    .map((builder) => SingleChildBuilder(builder: builder)),
-              ],
-              child: widget.showPanel
-                  ? Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Column(
-                          children: [
-                            Expanded(child: currentStory),
-                            RepaintBoundary(
-                              child: Material(
-                                child: SafeArea(
-                                  top: false,
-                                  child: CompositedTransformTarget(
-                                    link: _layerLink,
-                                    child: Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                                color: Colors.black12),
-                                          ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.deferToChild,
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: MediaQuery.fromView(
+          view: View.of(context),
+          child: Nested(
+            children: [
+              Provider.value(value: widget.plugins),
+              ChangeNotifierProvider.value(value: _storyNotifier),
+              ChangeNotifierProvider.value(
+                value: Storybook.storyRouterNotifier,
+              ),
+              ...widget.plugins
+                  .map((p) => p.wrapperBuilder)
+                  .whereType<TransitionBuilder>()
+                  .map((builder) => SingleChildBuilder(builder: builder)),
+            ],
+            child: widget.showPanel
+                ? Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Column(
+                        children: [
+                          Expanded(child: currentStory),
+                          RepaintBoundary(
+                            child: Material(
+                              child: SafeArea(
+                                top: false,
+                                child: CompositedTransformTarget(
+                                  link: _layerLink,
+                                  child: Directionality(
+                                    textDirection: TextDirection.ltr,
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          top:
+                                              BorderSide(color: Colors.black12),
                                         ),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: PluginPanel(
-                                                plugins: widget.plugins,
-                                                overlayKey: _overlayKey,
-                                                layerLink: _layerLink,
-                                              ),
+                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: PluginPanel(
+                                              plugins: widget.plugins,
+                                              overlayKey: _overlayKey,
+                                              layerLink: _layerLink,
                                             ),
-                                            widget.brandingWidget ??
-                                                const SizedBox.shrink(),
-                                          ],
-                                        ),
+                                          ),
+                                          widget.brandingWidget ??
+                                              const SizedBox.shrink(),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Overlay(key: _overlayKey),
-                        ),
-                      ],
-                    )
-                  : currentStory,
-            ),
+                          ),
+                        ],
+                      ),
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Overlay(key: _overlayKey),
+                      ),
+                    ],
+                  )
+                : currentStory,
           ),
         ),
       ),
@@ -289,7 +282,11 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: child ?? const SizedBox.shrink(),
+            child: GestureDetector(
+              behavior: HitTestBehavior.deferToChild,
+              onTap: () => Focus.of(context).requestFocus(),
+              child: child ?? const SizedBox.shrink(),
+            ),
           ),
         ),
       );
@@ -299,7 +296,11 @@ class CurrentStory extends StatelessWidget {
 
       child = effectiveWrapperBuilder(
         context,
-        Builder(builder: story.builder!),
+        GestureDetector(
+          behavior: HitTestBehavior.deferToChild,
+          onTap: () => Focus.of(context).requestFocus(),
+          child: Builder(builder: story.builder!),
+        ),
       );
     }
 
