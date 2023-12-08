@@ -85,7 +85,7 @@ const DeviceFrameData defaultDeviceFrameData = (
 );
 
 class DeviceFrameDataNotifier extends ValueNotifier<DeviceFrameData> {
-  DeviceFrameDataNotifier(super.value);
+  DeviceFrameDataNotifier(super._value);
 }
 
 Widget _buildWrapper(

@@ -22,13 +22,10 @@ Widget _buildIcon(BuildContext context) {
   switch (context.watch<ThemeModeNotifier>().value) {
     case ThemeMode.system:
       icon = Icons.brightness_auto_outlined;
-      break;
     case ThemeMode.light:
       icon = Icons.brightness_5_outlined;
-      break;
     case ThemeMode.dark:
       icon = Icons.brightness_3_outlined;
-      break;
   }
 
   return Icon(icon);
@@ -39,16 +36,13 @@ void _onPressed(BuildContext context, ValueSetter<ThemeMode>? onThemeChanged) {
     case ThemeMode.system:
       context.read<ThemeModeNotifier>().value = ThemeMode.light;
       onThemeChanged?.call(ThemeMode.light);
-      break;
     case ThemeMode.light:
       context.read<ThemeModeNotifier>().value = ThemeMode.dark;
       onThemeChanged?.call(ThemeMode.dark);
 
-      break;
     case ThemeMode.dark:
       context.read<ThemeModeNotifier>().value = ThemeMode.system;
       onThemeChanged?.call(ThemeMode.system);
-      break;
   }
 }
 
@@ -78,5 +72,5 @@ Widget _buildWrapper(BuildContext _, Widget? child, ThemeMode? initialTheme) =>
 ///
 /// `ThemeModePlugin` should be added to plugins for this to work.
 class ThemeModeNotifier extends ValueNotifier<ThemeMode> {
-  ThemeModeNotifier(super.value);
+  ThemeModeNotifier(super._value);
 }

@@ -26,11 +26,9 @@ void _onPressed(
     case TextDirection.ltr:
       context.read<TextDirectionNotifier>().value = TextDirection.rtl;
       onTextDirectionChanged?.call(TextDirection.rtl);
-      break;
     case TextDirection.rtl:
       context.read<TextDirectionNotifier>().value = TextDirection.ltr;
       onTextDirectionChanged?.call(TextDirection.ltr);
-      break;
   }
 }
 
@@ -49,5 +47,5 @@ Widget _buildWrapper(BuildContext _, Widget? child) =>
 ///
 /// `DirectionalityPlugin` should be added to plugins for this to work.
 class TextDirectionNotifier extends ValueNotifier<TextDirection> {
-  TextDirectionNotifier(super.value);
+  TextDirectionNotifier(super._value);
 }
