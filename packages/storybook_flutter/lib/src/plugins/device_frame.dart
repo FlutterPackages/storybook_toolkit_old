@@ -1,7 +1,7 @@
 import 'package:device_frame/device_frame.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
 
 /// Plugin that allows wrapping each story into a device frame.
@@ -54,15 +54,17 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
           child: Material(
             child: SafeArea(
               bottom: false,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: DeviceFrame(
-                  device: device,
-                  isFrameVisible: d.isFrameVisible,
-                  orientation: d.orientation,
-                  screen: child ?? const SizedBox.shrink(),
-                ),
-              ),
+              child: context.watch<CodeViewNotifier>().value
+                  ? child ?? const SizedBox.shrink()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: DeviceFrame(
+                        device: device,
+                        isFrameVisible: d.isFrameVisible,
+                        orientation: d.orientation,
+                        screen: child ?? const SizedBox.shrink(),
+                      ),
+                    ),
             ),
           ),
         );
@@ -133,7 +135,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
           ),
           subtitle: Text(
             '${device.screenSize.width.toInt()}×'
-            '${device.screenSize.height.toInt()} (${describeEnum(device.identifier.platform)})',
+            '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
           ),
           trailing: d.device == device ? const Icon(Icons.check) : null,
           onTap: () => update(
@@ -171,7 +173,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
       if (i == 1) {
         return ListTile(
           title: const Text('Orientation'),
-          subtitle: Text(describeEnum(d.orientation)),
+          subtitle: Text(d.orientation.name),
           onTap: () {
             final orientation = d.orientation == Orientation.portrait
                 ? Orientation.landscape

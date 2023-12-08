@@ -10,6 +10,7 @@ class Story {
     required this.builder,
     this.description,
     this.wrapperBuilder,
+    this.codeString,
   })  : router = null,
         routePath = null,
         routeWrapperBuilder = null;
@@ -20,6 +21,7 @@ class Story {
     required this.routePath,
     this.description,
     this.routeWrapperBuilder,
+    this.codeString,
   })  : wrapperBuilder = null,
         builder = null;
 
@@ -39,6 +41,9 @@ class Story {
   ///
   /// It will be used in the contents as a secondary text.
   final String? description;
+
+  /// Code string to show for the story.
+  final Future<String>? codeString;
 
   /// Wrapper builder for story.
   final TransitionBuilder? wrapperBuilder;
@@ -107,6 +112,18 @@ class StoryNotifier extends ChangeNotifier {
 
     _routeStoryPath = story?.router?.routeInformationProvider.value.uri.path;
     _routeStoryName = _getRouteName(_routeStoryPath);
+
+    return story;
+  }
+
+  // After web page refresh, the story is reset, so we need to get the correct
+  // last story via router.
+  Story? get currentRouteStory {
+    final index = _stories.indexWhere(
+      (s) => s.name == (_routeStoryName ?? _currentStoryName),
+    );
+
+    final Story? story = index != -1 ? _stories[index] : null;
 
     return story;
   }

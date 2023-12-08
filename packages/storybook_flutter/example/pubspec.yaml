@@ -23,3 +23,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - first_page_code.md
+    - second_page_code.md
+    - third_page_code.md

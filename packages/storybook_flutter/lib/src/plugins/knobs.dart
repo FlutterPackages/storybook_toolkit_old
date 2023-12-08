@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
+import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
 import 'package:storybook_flutter/src/story.dart';
 
@@ -24,7 +25,10 @@ Widget? _buildIcon(BuildContext context) =>
 
 Widget _buildPanel(BuildContext context) {
   final knobs = context.watch<KnobsNotifier>();
-  final items = knobs.all();
+
+  final List<Knob<dynamic>> items =
+      context.watch<CodeViewNotifier>().value ? [] : knobs.all();
+
   final currentStory = context.select<StoryNotifier, Story?>(
     (it) => it.currentStory,
   );

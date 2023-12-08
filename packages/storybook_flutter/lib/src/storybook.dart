@@ -1,8 +1,11 @@
+import 'package:any_syntax_highlighter/any_syntax_highlighter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/code_theme/syntax_theme.dart';
+import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Use this wrapper to wrap each route aware story inside default
@@ -80,8 +83,8 @@ class Storybook extends StatefulWidget {
             enableLayout: enableLayout,
           ),
           const ContentsPlugin(),
-          const KnobsPlugin(),
           ...plugins ?? _defaultPlugins,
+          const KnobsPlugin(),
         ]),
         stories = UnmodifiableListView(stories);
 
@@ -272,7 +275,17 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: child ?? const SizedBox.shrink(),
+            child: context.watch<CodeViewNotifier>().value
+                ? Stack(
+                    children: [
+                      child ?? const SizedBox.shrink(),
+                      _CurrentStoryCode(
+                        panelBackgroundColor: effectiveRouteWrapperBuilder
+                            .darkTheme.scaffoldBackgroundColor,
+                      ),
+                    ],
+                  )
+                : child ?? const SizedBox.shrink(),
           ),
         ),
       );
@@ -282,7 +295,9 @@ class CurrentStory extends StatelessWidget {
 
       child = effectiveWrapperBuilder(
         context,
-        Builder(builder: story.builder!),
+        context.watch<CodeViewNotifier>().value
+            ? const _CurrentStoryCode()
+            : Builder(builder: story.builder!),
       );
     }
 
@@ -293,4 +308,64 @@ class CurrentStory extends StatelessWidget {
           : Nested(children: pluginBuilders, child: child),
     );
   }
+}
+
+class _CurrentStoryCode extends StatelessWidget {
+  const _CurrentStoryCode({this.panelBackgroundColor});
+
+  final Color? panelBackgroundColor;
+
+  @override
+  Widget build(BuildContext context) => ColoredBox(
+        color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
+        child: Overlay(
+          initialEntries: [
+            OverlayEntry(
+              builder: (context) => FutureBuilder<String?>(
+                future:
+                    context.read<StoryNotifier>().currentRouteStory?.codeString,
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text(
+                        'Houston, we have a problem with showing the code :(',
+                      ),
+                    );
+                  } else if (snapshot.hasData) {
+                    return ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        scrollbars: false,
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: SingleChildScrollView(
+                          child: AnySyntaxHighlighter(
+                            snapshot.data ?? '',
+                            fontSize: 14,
+                            padding: 16,
+                            hasCopyButton: true,
+                            isSelectableText: true,
+                            reservedWordSets: const {'dart'},
+                            theme: CustomSyntaxHighlighterTheme.customTheme(),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                  return const Center(
+                    child: Text(
+                      'No code provided',
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
 }

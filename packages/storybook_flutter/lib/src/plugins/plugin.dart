@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/src/plugins/device_frame.dart';
 import 'package:storybook_flutter/src/plugins/directionality.dart';
 import 'package:storybook_flutter/src/plugins/theme_mode.dart';
@@ -17,6 +18,7 @@ List<Plugin> initializePlugins({
   bool enableExpandedLayoutDeviceFrame = true,
   bool enableTimeDilation = true,
   bool enableDirectionality = true,
+  bool enableCodeView = false,
   DeviceFrameData initialDeviceFrameData = defaultDeviceFrameData,
 }) =>
     [
@@ -29,6 +31,7 @@ List<Plugin> initializePlugins({
         ),
       if (enableTimeDilation) TimeDilationPlugin(),
       if (enableDirectionality) DirectionalityPlugin(),
+      if (enableCodeView) CodeViewPlugin(),
     ];
 
 typedef OnPluginButtonPressed = void Function(BuildContext context);

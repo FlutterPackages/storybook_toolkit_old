@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -10,6 +11,7 @@ const route = '/route';
 
 GoRouter router = GoRouter(
   debugLogDiagnostics: true,
+  initialLocation: firstRoute,
   redirect: (context, state) {
     if (state.uri.path == routing) {
       return firstRoute;
@@ -158,7 +160,7 @@ class ThirdPage extends StatelessWidget {
     final backgroundColor = context.knobs.nullable.options(
       label: 'AppBar color',
       initial: Colors.blue,
-      description: 'Background color of the app bar.',
+      description: 'Color of the app bar.',
       options: const [
         Option(
           label: 'Blue',
@@ -207,15 +209,21 @@ List<Story> routeAwareStories = [
     name: 'Routing/First page',
     routePath: firstRoute,
     router: router,
+    codeString: fetchAsset('first_page_code.md'),
   ),
   Story.asRoute(
     name: 'Routing/Second page',
     routePath: secondRoute,
     router: router,
+    codeString: fetchAsset('second_page_code.md'),
   ),
   Story.asRoute(
     name: 'Route/Third page',
     routePath: thirdRoute,
     router: router,
+    codeString: fetchAsset('third_page_code.md'),
   ),
 ];
+
+Future<String> fetchAsset(String assetName) async =>
+    rootBundle.loadString(assetName);

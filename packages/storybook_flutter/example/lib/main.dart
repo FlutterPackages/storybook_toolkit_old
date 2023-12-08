@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Storybook(
         initialStory: 'Routing/First page',
+        plugins: initializePlugins(enableCodeView: true),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         stories: [
           ...routeAwareStories,
