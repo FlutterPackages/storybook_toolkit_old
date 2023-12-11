@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/code_theme/syntax_theme.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
+import 'package:storybook_flutter/src/plugins/theme/code_view_syntax_theme.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Use this wrapper to wrap each route aware story inside default

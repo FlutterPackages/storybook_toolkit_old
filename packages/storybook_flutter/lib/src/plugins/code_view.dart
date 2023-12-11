@@ -4,9 +4,10 @@ import 'package:storybook_flutter/src/plugins/plugin.dart';
 
 class CodeViewPlugin extends Plugin {
   CodeViewPlugin({
+    required bool enableCodeView,
     ValueSetter<bool>? onShowCodeView,
   }) : super(
-          icon: _buildIcon,
+          icon: enableCodeView ? _buildIcon : null,
           wrapperBuilder: _buildWrapper,
           onPressed: (context) => _onPressed(context, onShowCodeView),
         );

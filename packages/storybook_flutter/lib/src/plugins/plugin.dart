@@ -31,7 +31,7 @@ List<Plugin> initializePlugins({
         ),
       if (enableTimeDilation) TimeDilationPlugin(),
       if (enableDirectionality) DirectionalityPlugin(),
-      if (enableCodeView) CodeViewPlugin(),
+      CodeViewPlugin(enableCodeView: enableCodeView),
     ];
 
 typedef OnPluginButtonPressed = void Function(BuildContext context);
