@@ -41,5 +41,5 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
 ///
 /// `CodeViewPlugin` should be added to plugins for this to work.
 class CodeViewNotifier extends ValueNotifier<bool> {
-  CodeViewNotifier(super.value);
+  CodeViewNotifier(super._value);
 }

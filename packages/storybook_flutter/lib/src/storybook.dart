@@ -83,8 +83,8 @@ class Storybook extends StatefulWidget {
             enableLayout: enableLayout,
           ),
           const ContentsPlugin(),
-          const KnobsPlugin(),
           ...plugins ?? _defaultPlugins,
+          const KnobsPlugin(),
         ]),
         stories = UnmodifiableListView(stories);
 
