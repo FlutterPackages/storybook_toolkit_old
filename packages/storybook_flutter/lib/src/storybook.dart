@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:any_syntax_highlighter/any_syntax_highlighter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
@@ -197,8 +200,9 @@ class _StorybookState extends State<Storybook> {
                                       width: double.infinity,
                                       decoration: const BoxDecoration(
                                         border: Border(
-                                          top:
-                                              BorderSide(color: Colors.black12),
+                                          top: BorderSide(
+                                            color: Colors.black12,
+                                          ),
                                         ),
                                       ),
                                       child: Stack(
@@ -336,8 +340,20 @@ class _CurrentStoryCode extends StatelessWidget {
   final Color? panelBackgroundColor;
 
   @override
-  Widget build(BuildContext context) => ColoredBox(
-        color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
+  Widget build(BuildContext context) {
+    final ScrollBehavior scrollBehaviour =
+        ScrollConfiguration.of(context).copyWith(
+      scrollbars: false,
+      dragDevices: {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+      },
+    );
+
+    return ColoredBox(
+      color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
+      child: SafeArea(
+        bottom: false,
         child: Overlay(
           initialEntries: [
             OverlayEntry(
@@ -345,30 +361,32 @@ class _CurrentStoryCode extends StatelessWidget {
                 future:
                     context.read<StoryNotifier>().currentRouteStory?.codeString,
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
                     return const Center(
                       child: Text(
                         'Houston, we have a problem with showing the code :(',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
                       ),
                     );
                   } else if (snapshot.hasData) {
                     return ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        scrollbars: false,
-                      ),
+                      behavior: scrollBehaviour,
                       child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: SingleChildScrollView(
-                          child: AnySyntaxHighlighter(
-                            snapshot.data ?? '',
-                            fontSize: 14,
-                            padding: 16,
-                            hasCopyButton: true,
-                            isSelectableText: true,
-                            reservedWordSets: const {'dart'},
-                            theme: CustomSyntaxHighlighterTheme.customTheme(),
-                          ),
+                        child: AnySyntaxHighlighter(
+                          snapshot.data ?? '',
+                          fontSize: 14,
+                          padding: 16,
+                          hasCopyButton: true,
+                          isSelectableText: kIsWeb,
+                          reservedWordSets: const {'dart'},
+                          theme: CustomSyntaxHighlighterTheme.customTheme(),
                         ),
                       ),
                     );
@@ -377,8 +395,8 @@ class _CurrentStoryCode extends StatelessWidget {
                     child: Text(
                       'No code provided',
                       style: TextStyle(
-                        color: Colors.white70,
                         fontSize: 14,
+                        color: Colors.white70,
                       ),
                     ),
                   );
@@ -387,5 +405,7 @@ class _CurrentStoryCode extends StatelessWidget {
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
 }

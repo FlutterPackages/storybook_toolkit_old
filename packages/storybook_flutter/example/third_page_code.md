@@ -1,45 +1,17 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
+
 class ThirdPage extends StatelessWidget {
     const ThirdPage({super.key});
     
     @override
     Widget build(BuildContext context) {
-        final title = context.knobs.text(
-            label: 'Third page title',
-            initial: 'Third page title',
-            description: 'The title of the app bar.',
-        );
-
-        final elevation = context.knobs.nullable.slider(
-            label: 'Third page app bar elevation',
-            initial: 4,
-            min: 0,
-            max: 10,
-            description: 'Elevation of the app bar.',
-        );
-    
-        final backgroundColor = context.knobs.nullable.options(
-            label: 'AppBar color',
-            initial: Colors.blue,
-            description: 'Color of the app bar.',
-            options: const [
-                Option(
-                    label: 'Blue',
-                    value: Colors.blue,
-                    description: 'Blue color',
-                ),
-                Option(
-                    label: 'Green',
-                    value: Colors.green,
-                    description: 'Green color',
-                ),
-            ],
-        );
-            
         return Scaffold(
             appBar: AppBar(
-                elevation: elevation,
-                backgroundColor: backgroundColor,
-                title: Text(title),
+                elevation: 4,
+                backgroundColor: Colors.blue,
+                title: Text('Third page title'),
             ),
             body: Center(
                 child: ElevatedButton(

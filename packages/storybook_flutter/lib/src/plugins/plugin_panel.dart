@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
+
+const String pluginPanelGroupId = 'plugin_panel';
 
 class PluginPanel extends StatefulWidget {
   const PluginPanel({
@@ -45,6 +48,7 @@ class _PluginPanelState extends State<PluginPanel> {
               followerAnchor: Alignment.bottomLeft,
               showWhenUnlinked: false,
               child: TapRegion(
+                groupId: pluginPanelGroupId,
                 onTapOutside: (PointerDownEvent _) {
                   _overlay?.remove();
                   _overlay = null;
@@ -52,11 +56,14 @@ class _PluginPanelState extends State<PluginPanel> {
                 child: Localizations(
                   delegates: const [
                     DefaultMaterialLocalizations.delegate,
+                    DefaultCupertinoLocalizations.delegate,
                     DefaultWidgetsLocalizations.delegate,
                   ],
                   locale: const Locale('en', 'US'),
                   child: Dialog(
+                    elevation: 4,
                     clipBehavior: Clip.antiAlias,
+                    shadowColor: Colors.black87,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(8),
@@ -113,9 +120,12 @@ class _PluginPanelState extends State<PluginPanel> {
             .map((p) => (p, p.icon?.call(context)))
             .whereType<(Plugin, Widget)>()
             .map(
-              (p) => IconButton(
-                icon: p.$2,
-                onPressed: () => _onPluginButtonPressed(p.$1),
+              (p) => TapRegion(
+                groupId: pluginPanelGroupId,
+                child: IconButton(
+                  icon: p.$2,
+                  onPressed: () => _onPluginButtonPressed(p.$1),
+                ),
               ),
             )
             .toList(),
