@@ -350,6 +350,11 @@ class _CurrentStoryCode extends StatelessWidget {
       },
     );
 
+    final bool isDesktopWeb = kIsWeb &&
+        !(kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.iOS ||
+                defaultTargetPlatform == TargetPlatform.android));
+
     return ColoredBox(
       color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
       child: SafeArea(
@@ -384,7 +389,7 @@ class _CurrentStoryCode extends StatelessWidget {
                           fontSize: 14,
                           padding: 16,
                           hasCopyButton: true,
-                          isSelectableText: kIsWeb,
+                          isSelectableText: isDesktopWeb,
                           reservedWordSets: const {'dart'},
                           theme: CustomSyntaxHighlighterTheme.customTheme(),
                         ),
