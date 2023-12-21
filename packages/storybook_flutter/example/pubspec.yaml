@@ -24,3 +24,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/code_snippets/
+  fonts:
+    - family: RobotoMono
+      fonts:
+        - asset: assets/RobotoMono-Regular.ttf

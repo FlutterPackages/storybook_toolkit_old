@@ -50,6 +50,8 @@ class CustomSyntaxHighlighterTheme {
           color: Color(0xffffffff),
         ),
         fontFeatures: [FontFeature.slashedZero()],
+        fontFamily: 'RobotoMono',
+        letterSpacing: 0.1,
         decoration: BoxDecoration(color: Colors.transparent),
       );
 }
