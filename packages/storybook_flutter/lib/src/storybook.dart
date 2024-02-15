@@ -123,9 +123,11 @@ class Storybook extends StatefulWidget {
 }
 
 class _StorybookState extends State<Storybook> {
-  final _overlayKey = GlobalKey<OverlayState>();
-  final _layerLink = LayerLink();
   late final StoryNotifier _storyNotifier;
+
+  final FocusScopeNode _storyFocusNode = FocusScopeNode();
+  final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
+  final LayerLink _layerLink = LayerLink();
 
   @override
   void initState() {
@@ -159,6 +161,7 @@ class _StorybookState extends State<Storybook> {
   @override
   Widget build(BuildContext context) {
     final currentStory = CurrentStory(
+      storyFocusNode: _storyFocusNode,
       wrapperBuilder: widget.wrapperBuilder,
       routeWrapperBuilder: widget.routeWrapperBuilder,
     );
@@ -245,10 +248,12 @@ class _StorybookState extends State<Storybook> {
 class CurrentStory extends StatelessWidget {
   const CurrentStory({
     super.key,
+    required this.storyFocusNode,
     required this.wrapperBuilder,
     this.routeWrapperBuilder,
   });
 
+  final FocusScopeNode storyFocusNode;
   final TransitionBuilder wrapperBuilder;
   final RouteWrapperBuilder? routeWrapperBuilder;
 
@@ -289,22 +294,17 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: TapRegion(
-              behavior: HitTestBehavior.opaque,
-              onTapInside: (_) =>
-                  FocusManager.instance.primaryFocus?.requestFocus(),
-              child: context.watch<CodeViewNotifier>().value
-                  ? Stack(
-                      children: [
-                        child ?? const SizedBox.shrink(),
-                        _CurrentStoryCode(
-                          panelBackgroundColor: effectiveRouteWrapperBuilder
-                              .darkTheme.scaffoldBackgroundColor,
-                        ),
-                      ],
-                    )
-                  : child ?? const SizedBox.shrink(),
-            ),
+            child: context.watch<CodeViewNotifier>().value
+                ? Stack(
+                    children: [
+                      child ?? const SizedBox.shrink(),
+                      _CurrentStoryCode(
+                        panelBackgroundColor: effectiveRouteWrapperBuilder
+                            .darkTheme.scaffoldBackgroundColor,
+                      ),
+                    ],
+                  )
+                : child ?? const SizedBox.shrink(),
           ),
         ),
       );
@@ -314,16 +314,19 @@ class CurrentStory extends StatelessWidget {
 
       child = effectiveWrapperBuilder(
         context,
-        TapRegion(
-          behavior: HitTestBehavior.opaque,
-          onTapInside: (_) =>
-              FocusManager.instance.primaryFocus?.requestFocus(),
-          child: context.watch<CodeViewNotifier>().value
-              ? const _CurrentStoryCode()
-              : Builder(builder: story.builder!),
-        ),
+        context.watch<CodeViewNotifier>().value
+            ? const _CurrentStoryCode()
+            : Builder(builder: story.builder!),
       );
     }
+
+    child = GestureDetector(
+      onTap: storyFocusNode.requestFocus,
+      child: FocusScope(
+        node: storyFocusNode,
+        child: child,
+      ),
+    );
 
     return KeyedSubtree(
       key: ValueKey(story.name),
