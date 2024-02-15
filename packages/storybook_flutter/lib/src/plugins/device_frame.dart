@@ -43,26 +43,36 @@ Widget? _buildIcon(
       : null;
 }
 
+final FocusScopeNode storyFocusNode = FocusScopeNode();
+
 Widget _buildStoryWrapper(BuildContext context, Widget? child) {
   final d = context.watch<DeviceFrameDataNotifier>().value;
   final device = d.device;
 
+  final focusableChild = GestureDetector(
+    onTap: storyFocusNode.requestFocus,
+    child: FocusScope(
+      node: storyFocusNode,
+      child: child ?? const SizedBox.shrink(),
+    ),
+  );
+
   final result = device == null
-      ? child ?? const SizedBox.shrink()
+      ? focusableChild
       : SizedBox(
           width: double.infinity,
           child: Material(
             child: SafeArea(
               bottom: false,
               child: context.watch<CodeViewNotifier>().value
-                  ? child ?? const SizedBox.shrink()
+                  ? focusableChild
                   : Padding(
                       padding: const EdgeInsets.all(16),
                       child: DeviceFrame(
                         device: device,
                         isFrameVisible: d.isFrameVisible,
                         orientation: d.orientation,
-                        screen: child ?? const SizedBox.shrink(),
+                        screen: focusableChild,
                       ),
                     ),
             ),

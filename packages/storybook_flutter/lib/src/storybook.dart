@@ -125,7 +125,6 @@ class Storybook extends StatefulWidget {
 class _StorybookState extends State<Storybook> {
   late final StoryNotifier _storyNotifier;
 
-  final FocusScopeNode _storyFocusNode = FocusScopeNode();
   final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
   final LayerLink _layerLink = LayerLink();
 
@@ -161,7 +160,6 @@ class _StorybookState extends State<Storybook> {
   @override
   Widget build(BuildContext context) {
     final currentStory = CurrentStory(
-      storyFocusNode: _storyFocusNode,
       wrapperBuilder: widget.wrapperBuilder,
       routeWrapperBuilder: widget.routeWrapperBuilder,
     );
@@ -248,12 +246,10 @@ class _StorybookState extends State<Storybook> {
 class CurrentStory extends StatelessWidget {
   const CurrentStory({
     super.key,
-    required this.storyFocusNode,
     required this.wrapperBuilder,
     this.routeWrapperBuilder,
   });
 
-  final FocusScopeNode storyFocusNode;
   final TransitionBuilder wrapperBuilder;
   final RouteWrapperBuilder? routeWrapperBuilder;
 
@@ -319,14 +315,6 @@ class CurrentStory extends StatelessWidget {
             : Builder(builder: story.builder!),
       );
     }
-
-    child = GestureDetector(
-      onTap: storyFocusNode.requestFocus,
-      child: FocusScope(
-        node: storyFocusNode,
-        child: child,
-      ),
-    );
 
     return KeyedSubtree(
       key: ValueKey(story.name),
