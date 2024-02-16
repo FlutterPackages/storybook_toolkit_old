@@ -1,8 +1,8 @@
-import 'package:device_frame/device_frame.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
+
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Plugin that allows wrapping each story into a device frame.
 class DeviceFramePlugin extends Plugin {
@@ -43,18 +43,13 @@ Widget? _buildIcon(
       : null;
 }
 
-final FocusScopeNode storyFocusNode = FocusScopeNode();
-
 Widget _buildStoryWrapper(BuildContext context, Widget? child) {
   final d = context.watch<DeviceFrameDataNotifier>().value;
   final device = d.device;
 
   final focusableChild = GestureDetector(
     onTap: storyFocusNode.requestFocus,
-    child: FocusScope(
-      node: storyFocusNode,
-      child: child ?? const SizedBox.shrink(),
-    ),
+    child: child ?? const SizedBox.shrink(),
   );
 
   final result = device == null

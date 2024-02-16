@@ -122,6 +122,8 @@ class Storybook extends StatefulWidget {
   State<Storybook> createState() => _StorybookState();
 }
 
+final FocusScopeNode storyFocusNode = FocusScopeNode();
+
 class _StorybookState extends State<Storybook> {
   late final StoryNotifier _storyNotifier;
 
@@ -166,8 +168,10 @@ class _StorybookState extends State<Storybook> {
 
     return TapRegionSurface(
       child: GestureDetector(
-        behavior: HitTestBehavior.deferToChild,
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+          storyFocusNode.unfocus();
+        },
         child: MediaQuery.fromView(
           view: View.of(context),
           child: Nested(
@@ -182,60 +186,63 @@ class _StorybookState extends State<Storybook> {
                   .whereType<TransitionBuilder>()
                   .map((builder) => SingleChildBuilder(builder: builder)),
             ],
-            child: widget.showPanel
-                ? Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Column(
-                        children: [
-                          Expanded(child: currentStory),
-                          RepaintBoundary(
-                            child: Material(
-                              child: SafeArea(
-                                top: false,
-                                child: CompositedTransformTarget(
-                                  link: _layerLink,
-                                  child: Directionality(
-                                    textDirection: TextDirection.ltr,
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          top: BorderSide(
-                                            color: Colors.black12,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: PluginPanel(
-                                              plugins: widget.plugins,
-                                              overlayKey: _overlayKey,
-                                              layerLink: _layerLink,
+            child: FocusScope(
+              node: storyFocusNode,
+              child: widget.showPanel
+                  ? Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Column(
+                          children: [
+                            Expanded(child: currentStory),
+                            RepaintBoundary(
+                              child: Material(
+                                child: SafeArea(
+                                  top: false,
+                                  child: CompositedTransformTarget(
+                                    link: _layerLink,
+                                    child: Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            top: BorderSide(
+                                              color: Colors.black12,
                                             ),
                                           ),
-                                          widget.brandingWidget ??
-                                              const SizedBox.shrink(),
-                                        ],
+                                        ),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: PluginPanel(
+                                                plugins: widget.plugins,
+                                                overlayKey: _overlayKey,
+                                                layerLink: _layerLink,
+                                              ),
+                                            ),
+                                            widget.brandingWidget ??
+                                                const SizedBox.shrink(),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Overlay(key: _overlayKey),
-                      ),
-                    ],
-                  )
-                : currentStory,
+                          ],
+                        ),
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Overlay(key: _overlayKey),
+                        ),
+                      ],
+                    )
+                  : currentStory,
+            ),
           ),
         ),
       ),
