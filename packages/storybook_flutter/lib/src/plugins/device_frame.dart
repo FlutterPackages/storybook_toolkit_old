@@ -49,7 +49,7 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
 
   final focusableChild = GestureDetector(
     onTap: storyFocusNode.requestFocus,
-    child: child ?? const SizedBox.shrink(),
+    child: Container(child: child ?? const SizedBox.shrink()),
   );
 
   final result = device == null
@@ -143,13 +143,16 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
           ),
           trailing: d.device == device ? const Icon(Icons.check) : null,
-          onTap: () => update(
-            (
-              device: device,
-              isFrameVisible: d.isFrameVisible,
-              orientation: d.orientation,
-            ),
-          ),
+          onTap: () {
+            update(
+              (
+                device: device,
+                isFrameVisible: d.isFrameVisible,
+                orientation: d.orientation,
+              ),
+            );
+            storyFocusNode.unfocus();
+          },
         ),
       )
       .toList();
