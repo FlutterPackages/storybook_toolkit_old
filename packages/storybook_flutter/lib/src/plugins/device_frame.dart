@@ -47,9 +47,14 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
   final d = context.watch<DeviceFrameDataNotifier>().value;
   final device = d.device;
 
-  final focusableChild = GestureDetector(
-    onTap: storyFocusNode.requestFocus,
-    child: Container(child: child ?? const SizedBox.shrink()),
+  final focusableChild = TapRegion(
+    onTapOutside: (PointerDownEvent _) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    },
+    onTapInside: (PointerDownEvent _) {
+      if (!storyFocusNode.hasFocus) storyFocusNode.requestFocus();
+    },
+    child: child ?? const SizedBox.shrink(),
   );
 
   final result = device == null
@@ -151,7 +156,6 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
                 orientation: d.orientation,
               ),
             );
-            storyFocusNode.unfocus();
           },
         ),
       )

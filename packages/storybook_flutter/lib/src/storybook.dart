@@ -122,6 +122,7 @@ class Storybook extends StatefulWidget {
   State<Storybook> createState() => _StorybookState();
 }
 
+/// For internal use to manage focus in Storybook.
 final FocusScopeNode storyFocusNode = FocusScopeNode();
 
 class _StorybookState extends State<Storybook> {
@@ -154,6 +155,7 @@ class _StorybookState extends State<Storybook> {
   @override
   void dispose() {
     _storyNotifier.dispose();
+    storyFocusNode.dispose();
     Storybook.storyRouterNotifier.dispose();
 
     super.dispose();
@@ -167,83 +169,74 @@ class _StorybookState extends State<Storybook> {
     );
 
     return TapRegionSurface(
-      child: GestureDetector(
-        onTap: () {
-          FocusManager.instance.primaryFocus?.unfocus();
-          storyFocusNode.unfocus();
-        },
-        child: MediaQuery.fromView(
-          view: View.of(context),
-          child: Nested(
-            children: [
-              Provider.value(value: widget.plugins),
-              ChangeNotifierProvider.value(value: _storyNotifier),
-              ChangeNotifierProvider.value(
-                value: Storybook.storyRouterNotifier,
-              ),
-              ...widget.plugins
-                  .map((p) => p.wrapperBuilder)
-                  .whereType<TransitionBuilder>()
-                  .map((builder) => SingleChildBuilder(builder: builder)),
-            ],
-            child: FocusScope(
-              node: storyFocusNode,
-              child: widget.showPanel
-                  ? Stack(
-                      alignment: Alignment.topCenter,
+      child: MediaQuery.fromView(
+        view: View.of(context),
+        child: Nested(
+          children: [
+            Provider.value(value: widget.plugins),
+            ChangeNotifierProvider.value(value: _storyNotifier),
+            ChangeNotifierProvider.value(
+              value: Storybook.storyRouterNotifier,
+            ),
+            ...widget.plugins
+                .map((p) => p.wrapperBuilder)
+                .whereType<TransitionBuilder>()
+                .map((builder) => SingleChildBuilder(builder: builder)),
+          ],
+          child: widget.showPanel
+              ? Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Column(
                       children: [
-                        Column(
-                          children: [
-                            Expanded(child: currentStory),
-                            RepaintBoundary(
-                              child: Material(
-                                child: SafeArea(
-                                  top: false,
-                                  child: CompositedTransformTarget(
-                                    link: _layerLink,
-                                    child: Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              color: Colors.black12,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: PluginPanel(
-                                                plugins: widget.plugins,
-                                                overlayKey: _overlayKey,
-                                                layerLink: _layerLink,
-                                              ),
-                                            ),
-                                            widget.brandingWidget ??
-                                                const SizedBox.shrink(),
-                                          ],
+                        Expanded(child: currentStory),
+                        RepaintBoundary(
+                          child: Material(
+                            child: SafeArea(
+                              top: false,
+                              child: CompositedTransformTarget(
+                                link: _layerLink,
+                                child: Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: Container(
+                                    width: double.infinity,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(
+                                          color: Colors.black12,
                                         ),
                                       ),
+                                    ),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: PluginPanel(
+                                            plugins: widget.plugins,
+                                            overlayKey: _overlayKey,
+                                            layerLink: _layerLink,
+                                          ),
+                                        ),
+                                        widget.brandingWidget ??
+                                            const SizedBox.shrink(),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ],
-                        ),
-                        Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Overlay(key: _overlayKey),
+                          ),
                         ),
                       ],
-                    )
-                  : currentStory,
-            ),
-          ),
+                    ),
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Overlay(key: _overlayKey),
+                    ),
+                  ],
+                )
+              : currentStory,
         ),
       ),
     );
@@ -297,17 +290,20 @@ class CurrentStory extends StatelessWidget {
           context,
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
-            child: context.watch<CodeViewNotifier>().value
-                ? Stack(
-                    children: [
-                      child ?? const SizedBox.shrink(),
-                      _CurrentStoryCode(
-                        panelBackgroundColor: effectiveRouteWrapperBuilder
-                            .darkTheme.scaffoldBackgroundColor,
-                      ),
-                    ],
-                  )
-                : child ?? const SizedBox.shrink(),
+            child: FocusScope(
+              node: storyFocusNode,
+              child: context.watch<CodeViewNotifier>().value
+                  ? Stack(
+                      children: [
+                        child ?? const SizedBox.shrink(),
+                        _CurrentStoryCode(
+                          panelBackgroundColor: effectiveRouteWrapperBuilder
+                              .darkTheme.scaffoldBackgroundColor,
+                        ),
+                      ],
+                    )
+                  : child ?? const SizedBox.shrink(),
+            ),
           ),
         ),
       );
@@ -315,11 +311,14 @@ class CurrentStory extends StatelessWidget {
       final Widget Function(BuildContext, Widget?) effectiveWrapperBuilder =
           story.wrapperBuilder ?? wrapperBuilder;
 
-      child = effectiveWrapperBuilder(
-        context,
-        context.watch<CodeViewNotifier>().value
-            ? const _CurrentStoryCode()
-            : Builder(builder: story.builder!),
+      child = FocusScope(
+        node: storyFocusNode,
+        child: effectiveWrapperBuilder(
+          context,
+          context.watch<CodeViewNotifier>().value
+              ? const _CurrentStoryCode()
+              : Builder(builder: story.builder!),
+        ),
       );
     }
 
