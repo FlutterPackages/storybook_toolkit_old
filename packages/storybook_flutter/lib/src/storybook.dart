@@ -141,6 +141,16 @@ class _StorybookState extends State<Storybook> {
           .map((story) => MapEntry(story.routePath!, story.name)),
     );
 
+    if (routeMap.isNotEmpty) {
+      final Story story =
+          widget.stories.firstWhere((element) => element.router != null);
+
+      story.router!.routeInformationProvider.addListener(() {
+        Storybook.storyRouterNotifier.currentStoryRoute =
+            story.router!.routeInformationProvider.value.uri.path;
+      });
+    }
+
     _storyNotifier = StoryNotifier(
       widget.stories,
       routeStoriesMap: routeMap,
