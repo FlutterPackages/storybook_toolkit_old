@@ -18,8 +18,7 @@ class KnobsPlugin extends Plugin {
         );
 }
 
-Widget? _buildIcon(BuildContext context) =>
-    switch (context.watch<EffectiveLayout>()) {
+Widget? _buildIcon(BuildContext context) => switch (context.watch<EffectiveLayout>()) {
       EffectiveLayout.compact => const Icon(Icons.settings),
       EffectiveLayout.expanded => null,
     };
@@ -27,8 +26,7 @@ Widget? _buildIcon(BuildContext context) =>
 Widget _buildPanel(BuildContext context) {
   final knobs = context.watch<KnobsNotifier>();
 
-  final List<Knob<dynamic>> items =
-      context.watch<CodeViewNotifier>().value ? [] : knobs.all();
+  final List<Knob<dynamic>> items = context.watch<CodeViewNotifier>().value ? [] : knobs.all();
 
   final currentStory = context.select<StoryNotifier, Story?>(
     (it) => it.currentStory,
@@ -48,8 +46,7 @@ Widget _buildPanel(BuildContext context) {
         );
 }
 
-Widget _buildWrapper(BuildContext context, Widget? child) =>
-    ChangeNotifierProvider(
+Widget _buildWrapper(BuildContext context, Widget? child) => ChangeNotifierProvider(
       create: (context) => KnobsNotifier(context.read<StoryNotifier>()),
       child: switch (context.watch<EffectiveLayout>()) {
         EffectiveLayout.compact => child,
@@ -79,8 +76,7 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
                             locale: const Locale('en', 'US'),
                             child: Navigator(
                               onGenerateRoute: (_) => PageRouteBuilder<void>(
-                                pageBuilder: (context, _, __) =>
-                                    _buildPanel(context),
+                                pageBuilder: (context, _, __) => _buildPanel(context),
                               ),
                             ),
                           ),
@@ -231,7 +227,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
     int? initial,
     int max = 100,
     int min = 0,
-    int divisions = 100,
+    int? divisions,
   }) =>
       _addKnob(
         Knob(
@@ -326,7 +322,7 @@ class _NullableKnobsBuilder extends NullableKnobsBuilder {
     int? initial,
     int max = 100,
     int min = 0,
-    int divisions = 100,
+    int? divisions,
     bool enabled = true,
   }) =>
       _knobs

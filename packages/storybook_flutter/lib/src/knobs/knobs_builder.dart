@@ -57,7 +57,7 @@ abstract class KnobsBuilder {
     int? initial,
     int max = 100,
     int min = 0,
-    int divisions = 100,
+    int? divisions,
   });
 
   /// Creates select field with [label], [description], [initial] value and
@@ -108,13 +108,15 @@ abstract class NullableKnobsBuilder {
   /// Creates slider knob with `int` value.
   ///
   /// If [initial] is not provided, [min] is used.
+  ///
+  /// Using [divisions] will create a lag in the slider drag.
   int? sliderInt({
     required String label,
     String? description,
     int? initial,
     int max = 100,
     int min = 0,
-    int divisions = 100,
+    int? divisions,
     bool enabled = true,
   });
 
