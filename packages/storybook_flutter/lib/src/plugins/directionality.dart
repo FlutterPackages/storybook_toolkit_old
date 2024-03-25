@@ -43,7 +43,7 @@ Widget _buildWrapper(BuildContext _, Widget? child) =>
       ),
     );
 
-/// Use this notifier to get the current directionality.
+/// Use this notifier to listen to changes in directionality state.
 ///
 /// `DirectionalityPlugin` should be added to plugins for this to work.
 class TextDirectionNotifier extends ValueNotifier<TextDirection> {

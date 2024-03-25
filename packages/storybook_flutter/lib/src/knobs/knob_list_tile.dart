@@ -20,36 +20,44 @@ class KnobListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => nullable
-      ? SwitchListTile(
-          isThreeLine: isThreeLine,
-          onChanged: onToggled,
-          value: enabled,
-          controlAffinity: ListTileControlAffinity.leading,
-          title: IgnorePointer(
-            key: const Key('knobListTile_ignorePointer_disableTitle'),
-            ignoring: !enabled,
-            child: Opacity(
-              opacity: enabled ? 1 : 0.5,
-              child: DefaultTextStyle.merge(
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.titleMedium?.color,
+      ? MediaQuery(
+          data: const MediaQueryData(padding: EdgeInsets.zero),
+          child: SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            isThreeLine: isThreeLine,
+            onChanged: onToggled,
+            value: enabled,
+            controlAffinity: ListTileControlAffinity.leading,
+            title: IgnorePointer(
+              key: const Key('knobListTile_ignorePointer_disableTitle'),
+              ignoring: !enabled,
+              child: Opacity(
+                opacity: enabled ? 1 : 0.5,
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.titleMedium?.color,
+                  ),
+                  child: title ?? const SizedBox.shrink(),
                 ),
-                child: title ?? const SizedBox.shrink(),
+              ),
+            ),
+            subtitle: IgnorePointer(
+              key: const Key('knobListTile_ignorePointer_disableSubtitle'),
+              ignoring: !enabled,
+              child: Opacity(
+                opacity: enabled ? 1 : 0.5,
+                child: subtitle,
               ),
             ),
           ),
-          subtitle: IgnorePointer(
-            key: const Key('knobListTile_ignorePointer_disableSubtitle'),
-            ignoring: !enabled,
-            child: Opacity(
-              opacity: enabled ? 1 : 0.5,
-              child: subtitle,
-            ),
-          ),
         )
-      : ListTile(
-          isThreeLine: isThreeLine,
-          title: title,
-          subtitle: subtitle,
+      : MediaQuery(
+          data: const MediaQueryData(padding: EdgeInsets.zero),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+            isThreeLine: isThreeLine,
+            title: title,
+            subtitle: subtitle,
+          ),
         );
 }

@@ -8,59 +8,61 @@ class ThirdPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.knobs.text(
-      label: 'Third page title',
-      initial: 'Third page title',
-      description: 'The title of the app bar.',
+    final titleKnob = context.knobs.text(
+      label: 'title',
+      initial: 'Third Page title',
+      description: 'Title for Third Page app bar.',
     );
 
-    final elevation = context.knobs.nullable.slider(
-      label: 'Third page app bar elevation',
-      initial: 4,
-      min: 0,
-      max: 10,
-      description: 'Elevation of the app bar.',
-    );
-
-    final backgroundColor = context.knobs.nullable.options(
+    final backgroundColorKnob = context.knobs.nullable.options(
       label: 'AppBar color',
-      initial: Colors.blue,
-      description: 'Color of the app bar.',
-      options: const [
+      initial: Colors.deepPurple.shade100,
+      description: 'Color for Third Page app bar.',
+      options: [
         Option(
-          label: 'Blue',
-          value: Colors.blue,
-          description: 'Blue color',
+          label: 'Deep Purple 100',
+          value: Colors.deepPurple.shade100,
         ),
-        Option(
-          label: 'Green',
-          value: Colors.green,
-          description: 'Green color',
+        const Option(
+          label: 'Deep Purple',
+          value: Colors.deepPurple,
         ),
       ],
     );
 
+    final borderRadiusKnob = context.knobs.nullable.sliderInt(
+      label: 'borderRadius',
+      description: 'Border radius for Third Page button.',
+      initial: 8,
+      max: 32,
+    );
+
     return Scaffold(
       appBar: AppBar(
-        elevation: elevation,
-        backgroundColor: backgroundColor,
-        title: Text(title),
+        backgroundColor: backgroundColorKnob,
+        title: Text(titleKnob),
       ),
       body: Center(
-        child: ElevatedButton(
+        child: MaterialButton(
+          color: Colors.deepPurple.shade100,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
+            ),
+          ),
           onPressed: () {
-            context.go(secondRoute);
-            Storybook.storyRouterNotifier.currentStoryRoute = secondRoute;
+            context.go(secondPagePath);
+            Storybook.storyRouterNotifier.currentStoryRoute = secondPagePath;
           },
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.access_time,
+                Icons.navigate_before,
                 size: 16,
               ),
               SizedBox(width: 4),
-              Text('Go to Second page'),
+              Text('Go to Second Page'),
             ],
           ),
         ),

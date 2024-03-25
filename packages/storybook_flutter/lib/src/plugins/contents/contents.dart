@@ -44,7 +44,9 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
                 Material(
                   child: DecoratedBox(
                     decoration: const BoxDecoration(
-                      border: Border(right: BorderSide(color: Colors.black12)),
+                      border: Border(
+                        right: BorderSide(color: Colors.black12),
+                      ),
                     ),
                     child: SizedBox(
                       width: 250,
@@ -97,13 +99,17 @@ class _ContentsState extends State<_Contents> {
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    return ExpansionTile(
-      title: Text(title),
-      initiallyExpanded: storyNotifier.searchTerm.isNotEmpty ||
-          matchSubpages(storyNotifier.routeStoryPath, title) ||
-          (stories.map((s) => s.name).contains(storyNotifier.routeStoryName)),
-      childrenPadding: childrenPadding,
-      children: children,
+    return MediaQuery(
+      data: const MediaQueryData(padding: EdgeInsets.zero),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
+        title: Text(title),
+        initiallyExpanded: storyNotifier.searchTerm.isNotEmpty ||
+            matchSubpages(storyNotifier.routeStoryPath, title) ||
+            (stories.map((s) => s.name).contains(storyNotifier.routeStoryName)),
+        childrenPadding: childrenPadding,
+        children: children,
+      ),
     );
   }
 
@@ -116,28 +122,29 @@ class _ContentsState extends State<_Contents> {
     final bool isRouteAwareStory = router != null && story.routePath != null;
     final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
 
-    return ListTile(
-      selected: isRouteAwareStory
-          ? (story.name == storyNotifier.routeStoryName ||
-                  (storyNotifier.routeStoryPath == '/' &&
-                      story.name == storyNotifier.getInitialStoryName)) &&
-              currentStory?.router != null
-          : story == currentStory,
-      title: Text(story.title),
-      subtitle: description == null ? null : Text(description),
-      onTap: () {
-        storyNotifier.currentStoryName = story.name;
-        context.read<OverlayController?>()?.remove();
+    return MediaQuery(
+      data: const MediaQueryData(padding: EdgeInsets.zero),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+        selected: isRouteAwareStory
+            ? (story.name == storyNotifier.routeStoryName ||
+                    (storyNotifier.routeStoryPath == '/' &&
+                        story.name == storyNotifier.getInitialStoryName)) &&
+                currentStory?.router != null
+            : story == currentStory,
+        title: Text(story.title),
+        subtitle: description == null ? null : Text(description),
+        onTap: () {
+          storyNotifier.currentStoryName = story.name;
+          context.read<OverlayController?>()?.remove();
 
-        router?.go(routeStoryPath!);
-      },
+          router?.go(routeStoryPath!);
+        },
+      ),
     );
   }
 
-  List<Widget> _buildListChildren(
-    List<Story> stories, {
-    int depth = 1,
-  }) {
+  List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
     final grouped = stories.groupListsBy(
       (story) => story.path.length == depth ? '' : story.path[depth - 1],
     );
@@ -169,6 +176,8 @@ class _ContentsState extends State<_Contents> {
       // If there is no overlay, we're in the side panel, so we don't need to
       // add the top padding.
       top: context.watch<OverlayController?>() == null,
+      bottom: context.watch<OverlayController?>() == null,
+      left: context.watch<OverlayController?>() == null,
       right: false,
       child: Column(
         children: [

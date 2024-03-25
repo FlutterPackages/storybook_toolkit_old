@@ -6,10 +6,6 @@ enum Layout { compact, expanded, auto }
 
 enum EffectiveLayout { compact, expanded }
 
-class LayoutProvider extends ValueNotifier<Layout> {
-  LayoutProvider(super._value);
-}
-
 class LayoutPlugin extends Plugin {
   LayoutPlugin(
     Layout initialLayout,
@@ -89,4 +85,9 @@ class _EffectiveLayoutBuilderState extends State<_EffectiveLayoutBuilder> {
         value: _layout,
         child: widget.child,
       );
+}
+
+/// Use this notifier to listen to changes in current layout state.
+class LayoutProvider extends ValueNotifier<Layout> {
+  LayoutProvider(super._value);
 }

@@ -58,13 +58,17 @@ class BooleanKnobWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final description = this.description;
 
-    return CheckboxListTile(
-      tristate: nullable,
-      title: Text(label),
-      subtitle: description == null ? null : Text(description),
-      value: enabled ? value : null,
-      onChanged: (v) => context.read<KnobsNotifier>().update(label, v),
-      controlAffinity: ListTileControlAffinity.leading,
+    return MediaQuery(
+      data: const MediaQueryData(padding: EdgeInsets.zero),
+      child: CheckboxListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        tristate: nullable,
+        title: Text(label),
+        subtitle: description == null ? null : Text(description),
+        value: enabled ? value : null,
+        onChanged: (v) => context.read<KnobsNotifier>().update(label, v),
+        controlAffinity: ListTileControlAffinity.leading,
+      ),
     );
   }
 }

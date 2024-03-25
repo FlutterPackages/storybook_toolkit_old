@@ -15,19 +15,25 @@ class _CounterPageState extends State<CounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.knobs.text(
-      label: 'Title',
-      initial: 'Counter',
+    final titleKnob = context.knobs.text(
+      label: 'title',
+      initial: 'Counter Page title',
+      description: 'Title for Counter Page app bar.',
     );
 
-    final enabled = context.knobs.boolean(
-      label: 'Enabled',
-      initial: true,
+    final enabledKnob = context.knobs.boolean(
+      label: 'FAB enabled',
+      description: 'Whether the FAB is enabled.',
+    );
+
+    final sizeKnob = context.knobs.boolean(
+      label: 'mini',
+      description: 'Whether the FAB is mini.',
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(titleKnob),
         actions: [
           IconButton(
             icon: const Icon(Icons.help),
@@ -53,13 +59,12 @@ class _CounterPageState extends State<CounterPage> {
           ],
         ),
       ),
-      floatingActionButton: enabled
-          ? FloatingActionButton(
-              onPressed: _incrementCounter,
-              tooltip: 'Increment',
-              child: const Icon(Icons.add),
-            )
-          : null,
+      floatingActionButton: FloatingActionButton(
+        mini: sizeKnob,
+        tooltip: 'Increment',
+        onPressed: enabledKnob ? _incrementCounter : null,
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

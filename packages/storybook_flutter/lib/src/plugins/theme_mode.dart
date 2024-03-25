@@ -68,7 +68,7 @@ Widget _buildWrapper(BuildContext _, Widget? child, ThemeMode? initialTheme) =>
       ),
     );
 
-/// Use this notifier to get the current theme mode.
+/// Use this notifier to listen to changes in current theme mode.
 ///
 /// `ThemeModePlugin` should be added to plugins for this to work.
 class ThemeModeNotifier extends ValueNotifier<ThemeMode> {

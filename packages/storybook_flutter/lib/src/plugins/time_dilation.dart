@@ -35,7 +35,7 @@ void _onPressed(
 
 Widget _buildWrapper(BuildContext _, Widget? child) =>
     ChangeNotifierProvider<TimeDilationNotifier>(
-      create: (_) => TimeDilationNotifier(false),
+      create: (_) => TimeDilationNotifier(isTimeDilated: false),
       child: Builder(
         builder: (context) {
           timeDilation = context.watch<TimeDilationNotifier>().value ? 10 : 1;
@@ -45,9 +45,9 @@ Widget _buildWrapper(BuildContext _, Widget? child) =>
       ),
     );
 
-/// Use this notifier to get whether time dilation is applied.
+/// Use this notifier to listen to changes in time dilation state.
 ///
 /// `TimeDilationPlugin` should be added to plugins for this to work.
 class TimeDilationNotifier extends ValueNotifier<bool> {
-  TimeDilationNotifier(super._value);
+  TimeDilationNotifier({required bool isTimeDilated}) : super(isTimeDilated);
 }

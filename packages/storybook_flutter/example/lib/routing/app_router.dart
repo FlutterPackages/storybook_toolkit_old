@@ -5,44 +5,47 @@ import 'package:storybook_flutter_example/stories/first_page.dart';
 import 'package:storybook_flutter_example/stories/second_page.dart';
 import 'package:storybook_flutter_example/stories/third_page.dart';
 
-const String firstRoute = '/routing/first_page';
-const String secondRoute = '/routing/second_page';
-const String thirdRoute = '/route/third_page';
-const String routing = '/routing';
-const String route = '/route';
+const String routingDirectory = '/routing';
+const String routeDirectory = '/route';
+
+const String firstPagePath = '/routing/first_page';
+const String secondPagePath = '/routing/second_page';
+const String thirdPagePath = '/route/third_page';
 
 GoRouter router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: firstRoute,
+  initialLocation: firstPagePath,
   redirect: (context, state) {
-    if (state.uri.path == routing) {
-      return firstRoute;
-    } else if (state.uri.path == route) {
-      return thirdRoute;
+    switch (state.uri.path) {
+      case routingDirectory:
+        return firstPagePath;
+      case routeDirectory:
+        return thirdPagePath;
+      default:
+        return null;
     }
-    return null;
   },
   routes: <RouteBase>[
     GoRoute(
       path: '/',
-      redirect: (BuildContext context, GoRouterState state) {
-        Storybook.storyRouterNotifier.currentStoryRoute = firstRoute;
-        return firstRoute;
+      redirect: (BuildContext _, GoRouterState __) {
+        Storybook.storyRouterNotifier.currentStoryRoute = firstPagePath;
+        return firstPagePath;
       },
     ),
     GoRoute(
-      path: firstRoute,
-      pageBuilder: (BuildContext context, GoRouterState state) =>
+      path: firstPagePath,
+      pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: FirstPage()),
     ),
     GoRoute(
-      path: secondRoute,
-      pageBuilder: (BuildContext context, GoRouterState state) =>
+      path: secondPagePath,
+      pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: SecondPage()),
     ),
     GoRoute(
-      path: thirdRoute,
-      pageBuilder: (BuildContext context, GoRouterState state) =>
+      path: thirdPagePath,
+      pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: ThirdPage()),
     ),
   ],

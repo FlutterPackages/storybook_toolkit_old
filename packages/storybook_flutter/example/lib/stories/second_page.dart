@@ -8,40 +8,52 @@ class SecondPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.knobs.text(
-      label: 'Second page title',
-      initial: 'Second page title',
-      description: 'The title of the app bar.',
+    final titleKnob = context.knobs.text(
+      label: 'title',
+      initial: 'Second Page title',
+      description: 'Title for Second Page app bar.',
     );
 
-    final elevation = context.knobs.nullable.slider(
-      label: 'Second page app bar elevation',
+    final elevationKnob = context.knobs.nullable.slider(
+      label: 'elevation',
       initial: 4,
-      min: 0,
       max: 10,
-      description: 'Second Elevation of the app bar.',
+      description: 'Elevation for Second Page app bar.',
+    );
+
+    final borderRadiusKnob = context.knobs.nullable.sliderInt(
+      label: 'borderRadius',
+      description: 'Border radius for Second Page button.',
+      initial: 8,
+      max: 32,
     );
 
     return Scaffold(
       appBar: AppBar(
-        elevation: elevation,
-        title: Text(title),
+        elevation: elevationKnob,
+        title: Text(titleKnob),
       ),
       body: Center(
-        child: ElevatedButton(
+        child: MaterialButton(
+          color: Colors.deepPurple.shade100,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
+            ),
+          ),
           onPressed: () {
-            context.go(firstRoute);
-            Storybook.storyRouterNotifier.currentStoryRoute = firstRoute;
+            context.go(firstPagePath);
+            Storybook.storyRouterNotifier.currentStoryRoute = firstPagePath;
           },
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.access_time,
+                Icons.navigate_before,
                 size: 16,
               ),
               SizedBox(width: 4),
-              Text('Go to First page'),
+              Text('Go to First Page'),
             ],
           ),
         ),

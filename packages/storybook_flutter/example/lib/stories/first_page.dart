@@ -8,40 +8,58 @@ class FirstPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.knobs.text(
-      label: 'First page title',
-      initial: 'First page title',
-      description: 'The title of the app bar.',
+    final titleKnob = context.knobs.text(
+      label: 'title',
+      initial: 'First Page title',
+      description: 'Title for First Page app bar.',
     );
 
-    final elevation = context.knobs.nullable.slider(
-      label: 'First page app bar elevation',
+    final elevationKnob = context.knobs.nullable.slider(
+      label: 'elevation',
       initial: 4,
-      min: 0,
       max: 10,
-      description: 'Elevation of the app bar.',
+      description: 'Elevation for First Page app bar.',
+    );
+
+    final borderRadiusKnob = context.knobs.nullable.sliderInt(
+      label: 'borderRadius',
+      description: 'Border radius for First Page button.',
+      initial: 8,
+      max: 32,
+    );
+
+    final buttonTextKnob = context.knobs.text(
+      label: 'Button text',
+      initial: 'Go to Second Page',
+      description: 'Label for First Page button.',
     );
 
     return Scaffold(
       appBar: AppBar(
-        elevation: elevation,
-        title: Text(title),
+        elevation: elevationKnob,
+        title: Text(titleKnob),
       ),
       body: Center(
-        child: ElevatedButton(
+        child: MaterialButton(
+          color: Colors.deepPurple.shade100,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
+            ),
+          ),
           onPressed: () {
-            context.go(secondRoute);
-            Storybook.storyRouterNotifier.currentStoryRoute = secondRoute;
+            context.go(secondPagePath);
+            Storybook.storyRouterNotifier.currentStoryRoute = secondPagePath;
           },
-          child: const Row(
+          child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                Icons.access_time,
+              Text(buttonTextKnob),
+              const SizedBox(width: 4),
+              const Icon(
+                Icons.navigate_next,
                 size: 16,
               ),
-              SizedBox(width: 4),
-              Text('Go to Second page'),
             ],
           ),
         ),

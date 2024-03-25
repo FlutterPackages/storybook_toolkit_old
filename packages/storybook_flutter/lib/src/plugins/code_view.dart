@@ -32,15 +32,15 @@ void _onPressed(BuildContext context, ValueSetter<bool>? onShowCodeView) {
 
 Widget _buildWrapper(BuildContext context, Widget? child) =>
     ChangeNotifierProvider<CodeViewNotifier>(
-      create: (_) => CodeViewNotifier(false),
+      create: (_) => CodeViewNotifier(showCodeView: false),
       child: Builder(
         builder: (context) => child ?? const SizedBox.shrink(),
       ),
     );
 
-/// Use this notifier to get whether code view is selected.
+/// Use this notifier to listen to changes in code view selected state.
 ///
 /// `CodeViewPlugin` should be added to plugins for this to work.
 class CodeViewNotifier extends ValueNotifier<bool> {
-  CodeViewNotifier(super._value);
+  CodeViewNotifier({required bool showCodeView}) : super(showCodeView);
 }

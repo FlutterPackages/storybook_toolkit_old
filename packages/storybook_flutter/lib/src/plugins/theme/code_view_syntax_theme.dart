@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:any_syntax_highlighter/themes/any_syntax_highlighter_theme.dart';
 import 'package:flutter/material.dart';
 

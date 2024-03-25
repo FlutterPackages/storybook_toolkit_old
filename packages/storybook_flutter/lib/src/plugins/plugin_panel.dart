@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
 
-const String pluginPanelGroupId = 'plugin_panel';
+const String _pluginPanelGroupId = 'plugin_panel';
 
 class PluginPanel extends StatefulWidget {
   const PluginPanel({
@@ -39,51 +41,77 @@ class _PluginPanelState extends State<PluginPanel> {
               _overlay = null;
             },
           ),
-          child: Positioned(
-            height: 350,
-            width: 250,
-            child: CompositedTransformFollower(
-              link: widget.layerLink,
-              targetAnchor: Alignment.topLeft,
-              followerAnchor: Alignment.bottomLeft,
-              showWhenUnlinked: false,
-              child: TapRegion(
-                groupId: pluginPanelGroupId,
-                onTapOutside: (PointerDownEvent _) {
-                  _overlay?.remove();
-                  _overlay = null;
-                },
-                child: Localizations(
-                  delegates: const [
-                    DefaultMaterialLocalizations.delegate,
-                    DefaultCupertinoLocalizations.delegate,
-                    DefaultWidgetsLocalizations.delegate,
-                  ],
-                  locale: const Locale('en', 'US'),
-                  child: Dialog(
-                    elevation: 4,
-                    clipBehavior: Clip.antiAlias,
-                    shadowColor: Colors.black87,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8),
-                      ),
-                    ),
-                    insetPadding: EdgeInsets.zero,
-                    child: Navigator(
-                      onGenerateRoute: (_) => MaterialPageRoute<void>(
-                        builder: (context) => PointerInterceptor(
-                          child: Material(
-                            child: childBuilder(context),
+          child: OrientationBuilder(
+            builder: (BuildContext context, Orientation orientation) {
+              final MediaQueryData mediaQuery = MediaQuery.of(context);
+
+              final double screenBottomPadding = mediaQuery.padding.bottom;
+              final double viewPadding = mediaQuery.viewPadding.bottom;
+              final double screenHeight = mediaQuery.size.height;
+              final double keyboardHeight = mediaQuery.viewInsets.bottom;
+              final double panelHeight =
+                  widget.layerLink.leaderSize?.height ?? 0;
+
+              // Compensates the System UI bottom padding on mobile devices
+              // when the keyboard is shown/hidden to avoid the Dialog jumping.
+              final double bottomSafeArea = viewPadding - screenBottomPadding;
+              // To smoothly adjust the Dialog height based on the keyboard's dimensions.
+              final double dialogBottomPadding =
+                  max(0, panelHeight - keyboardHeight);
+              final double mobileDialogHeight =
+                  (orientation == Orientation.portrait
+                          ? screenHeight * 0.5
+                          : screenHeight * 0.9) +
+                      bottomSafeArea;
+
+              return Stack(
+                children: [
+                  Positioned(
+                    height: kIsWeb ? 400 : mobileDialogHeight,
+                    width: 250,
+                    child: CompositedTransformFollower(
+                      link: widget.layerLink,
+                      // Linked to target's bottom left corner to avoid the
+                      // white space between the keyboard and dialog.
+                      targetAnchor: Alignment.bottomLeft,
+                      followerAnchor: Alignment.bottomLeft,
+                      showWhenUnlinked: false,
+                      child: TapRegion(
+                        groupId: _pluginPanelGroupId,
+                        onTapOutside: (PointerDownEvent _) {
+                          _overlay?.remove();
+                          _overlay = null;
+                        },
+                        child: Dialog(
+                          elevation: 4,
+                          clipBehavior: Clip.antiAlias,
+                          surfaceTintColor: Colors.purple,
+                          shadowColor: Colors.black87,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                          ),
+                          insetAnimationDuration: Duration.zero,
+                          insetPadding:
+                              EdgeInsets.only(bottom: dialogBottomPadding),
+                          child: Navigator(
+                            onGenerateRoute: (_) => MaterialPageRoute<void>(
+                              builder: (context) => PointerInterceptor(
+                                child: Material(
+                                  child: childBuilder(context),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
+                ],
+              );
+            },
           ),
         ),
       );
@@ -121,7 +149,7 @@ class _PluginPanelState extends State<PluginPanel> {
             .whereType<(Plugin, Widget)>()
             .map(
               (p) => TapRegion(
-                groupId: pluginPanelGroupId,
+                groupId: _pluginPanelGroupId,
                 child: IconButton(
                   icon: p.$2,
                   onPressed: () => _onPluginButtonPressed(p.$1),

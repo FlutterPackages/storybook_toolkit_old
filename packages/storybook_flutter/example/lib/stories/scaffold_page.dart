@@ -6,57 +6,54 @@ class ScaffoldPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.knobs.text(
-      label: 'Title',
-      initial: 'Scaffold',
-      description: 'The title of the app bar.',
+    final titleKnob = context.knobs.text(
+      label: 'title',
+      initial: 'Scaffold Page title',
+      description: 'Title for Scaffold Page app bar.',
     );
 
-    final elevation = context.knobs.nullable.slider(
-      label: 'AppBar elevation',
+    final elevationKnob = context.knobs.nullable.slider(
+      label: 'elevation',
       initial: 4,
       min: 0,
       max: 10,
-      description: 'Elevation of the app bar.',
+      description: 'Elevation for Scaffold Page app bar.',
     );
 
-    final backgroundColor = context.knobs.nullable.options(
+    final backgroundColorKnob = context.knobs.nullable.options(
       label: 'AppBar color',
       initial: Colors.blue,
-      description: 'Background color of the app bar.',
+      description: 'Background color for Scaffold Page app bar.',
       options: const [
         Option(
           label: 'Blue',
           value: Colors.blue,
-          description: 'Blue color',
         ),
         Option(
-          label: 'Green',
-          value: Colors.green,
-          description: 'Green color',
+          label: 'Indigo Accent',
+          value: Colors.indigoAccent,
         ),
       ],
     );
 
-    final itemCount = context.knobs.sliderInt(
+    final itemCountKnob = context.knobs.sliderInt(
       label: 'Items count',
       initial: 2,
       min: 1,
       max: 5,
-      description: 'Number of items in the body container.',
+      description: 'Number of text items to show.',
     );
 
-    final showFab = context.knobs.boolean(
-      label: 'FAB',
-      initial: true,
+    final showFabKnob = context.knobs.boolean(
+      label: 'show FAB',
       description: 'Show FAB button',
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
-        elevation: elevation,
-        backgroundColor: backgroundColor,
+        title: Text(titleKnob),
+        elevation: elevationKnob,
+        backgroundColor: backgroundColorKnob,
       ),
       body: SizedBox(
         width: double.infinity,
@@ -64,15 +61,12 @@ class ScaffoldPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(
-            itemCount,
-            (int _) => const Padding(
-              padding: EdgeInsets.all(8),
-              child: Text('Hello World!'),
-            ),
+            itemCountKnob,
+            (int _) => const Text('Hello World!'),
           ),
         ),
       ),
-      floatingActionButton: showFab
+      floatingActionButton: showFabKnob
           ? FloatingActionButton(
               onPressed: () {},
               child: const Icon(Icons.add),
