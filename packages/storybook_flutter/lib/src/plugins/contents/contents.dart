@@ -110,10 +110,10 @@ class _ContentsState extends State<_Contents> {
       childrenPadding: childrenPadding,
       initiallyExpanded: initiallyExpanded,
       onExpansionChanged: (bool expanded) => setState(() {}),
-      leading: const Icon(
+      leading: Icon(
         Icons.folder,
         size: 16,
-        color: Colors.deepPurple,
+        color: Theme.of(context).primaryColor,
       ),
       title: Text(title),
       trailing: Builder(
@@ -153,6 +153,9 @@ class _ContentsState extends State<_Contents> {
 
     return CustomListTile(
       selected: isSelected,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
+      ),
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();

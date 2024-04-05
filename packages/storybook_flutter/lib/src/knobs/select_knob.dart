@@ -103,6 +103,10 @@ class SelectKnobWidget<T> extends StatelessWidget {
     return KnobListTile(
       nullable: nullable,
       enabled: enabled,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 4.0,
+      ),
       onToggled: (bool enabled) => context
           .read<KnobsNotifier>()
           .update<T?>(label, enabled ? value : null),

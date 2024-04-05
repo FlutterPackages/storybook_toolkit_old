@@ -129,6 +129,9 @@ Widget _buildWrapper(
 Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
   final currentDevice = context.watch<DeviceFrameDataNotifier>().value;
 
+  final ThemeData theme = Theme.of(context);
+  final ListTileThemeData listTileTheme = theme.listTileTheme;
+
   void update(DeviceFrameData data) =>
       context.read<DeviceFrameDataNotifier>().value = data;
 
@@ -141,7 +144,6 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
       return CustomListTile(
         selected: currentDevice.device == device,
-        shape: const RoundedRectangleBorder(),
         onTap: () {
           update(
             (
@@ -171,12 +173,11 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
               child: Text(
                 '${device.screenSize.width.toInt()}×'
                 '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
-                style:
-                    Theme.of(context).listTileTheme.subtitleTextStyle?.copyWith(
-                          color: currentDevice.device == device
-                              ? Theme.of(context).listTileTheme.selectedColor
-                              : null,
-                        ),
+                style: listTileTheme.subtitleTextStyle?.copyWith(
+                  color: currentDevice.device == device
+                      ? listTileTheme.selectedColor
+                      : null,
+                ),
               ),
             ),
           ],
@@ -192,12 +193,11 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
     primary: false,
     padding: EdgeInsets.zero,
     separatorBuilder: (BuildContext context, index) => index == 1
-        ? Container(height: 1, color: Theme.of(context).dividerColor)
+        ? Container(height: 1, color: theme.dividerColor)
         : const SizedBox(),
     itemBuilder: (BuildContext context, int index) {
       if (index == 0) {
         return CustomListTile(
-          shape: const RoundedRectangleBorder(),
           onTap: () {
             update(
               (
@@ -215,7 +215,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
                 padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
                 child: Text(
                   currentDevice.isFrameVisible ? 'visible' : 'hidden',
-                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                  style: listTileTheme.subtitleTextStyle,
                 ),
               ),
             ],
@@ -225,7 +225,6 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
       if (index == 1) {
         return CustomListTile(
-          shape: const RoundedRectangleBorder(),
           onTap: () {
             final orientation =
                 currentDevice.orientation == Orientation.portrait
@@ -247,7 +246,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
                 padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
                 child: Text(
                   currentDevice.orientation.name,
-                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                  style: listTileTheme.subtitleTextStyle,
                 ),
               ),
             ],
@@ -259,7 +258,6 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
         return Padding(
           padding: const EdgeInsets.only(top: 8.0),
           child: CustomListTile(
-            shape: const RoundedRectangleBorder(),
             contentPadding: const EdgeInsets.symmetric(
               vertical: 4.0,
               horizontal: 16.0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/custom_list_tile.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/knobs.dart';
 
@@ -58,36 +59,30 @@ class BooleanKnobWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final description = this.description;
 
-    return MediaQuery(
-      data: const MediaQueryData(padding: EdgeInsets.zero),
-      child: CheckboxListTile(
-        tristate: nullable,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 8.0,
-          horizontal: 16.0,
-        ),
-        checkboxShape: ContinuousRectangleBorder(
+    return CustomListTile(
+      onTap: () => context.read<KnobsNotifier>().update(label, !value),
+      leading: Checkbox(
+        value: enabled ? value : null,
+        shape: ContinuousRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
-        controlAffinity: ListTileControlAffinity.leading,
-        value: enabled ? value : null,
         onChanged: (bool? value) =>
             context.read<KnobsNotifier>().update(label, value),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(label),
-            if (description != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 2.0),
-                child: Text(
-                  description,
-                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                ),
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(label),
+          if (description != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              child: Text(
+                description,
+                style: Theme.of(context).listTileTheme.subtitleTextStyle,
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

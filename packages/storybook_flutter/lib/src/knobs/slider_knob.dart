@@ -99,10 +99,6 @@ class SliderKnobWidget extends StatelessWidget {
   Widget build(BuildContext context) => KnobListTile(
         nullable: nullable,
         enabled: enabled,
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 4.0,
-          horizontal: 16.0,
-        ),
         onToggled: (bool enabled) =>
             context.read<KnobsNotifier>().update(label, enabled ? value : null),
         title: Column(

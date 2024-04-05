@@ -46,8 +46,8 @@ class _SearchTextFieldState extends State<SearchTextField> {
                 contentPadding: EdgeInsets.zero,
                 hoverColor: Colors.transparent,
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.deepPurple,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).primaryColor,
                     width: 1.25,
                   ),
                   borderRadius: BorderRadius.circular(8),

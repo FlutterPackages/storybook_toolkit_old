@@ -85,7 +85,6 @@ class _PluginPanelState extends State<PluginPanel> {
                         child: Dialog(
                           elevation: 4,
                           clipBehavior: Clip.antiAlias,
-                          surfaceTintColor: Colors.purple,
                           shadowColor: Colors.black87,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.only(

@@ -26,48 +26,43 @@ class KnobListTile extends StatefulWidget {
 
 class _KnobListTileState extends State<KnobListTile> {
   @override
-  Widget build(BuildContext context) {
-    final EdgeInsetsGeometry contentPadding = widget.contentPadding ??
-        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
-
-    return widget.nullable
-        ? CustomListTile(
-            isThreeLine: true,
-            contentPadding: contentPadding,
-            onTap: () => widget.onToggled(!widget.enabled),
-            leading: SizedBox(
-              height: double.infinity,
-              child: Transform.scale(
-                scaleX: 0.85,
-                scaleY: 0.8,
-                child: Switch(
-                  value: widget.enabled,
-                  onChanged: widget.onToggled,
-                ),
+  Widget build(BuildContext context) => widget.nullable
+      ? CustomListTile(
+          isThreeLine: true,
+          contentPadding: widget.contentPadding,
+          onTap: () => widget.onToggled(!widget.enabled),
+          leading: SizedBox(
+            height: double.infinity,
+            child: Transform.scale(
+              scaleX: 0.85,
+              scaleY: 0.8,
+              child: Switch(
+                value: widget.enabled,
+                onChanged: widget.onToggled,
               ),
             ),
-            title: IgnorePointer(
-              key: const Key('knobListTile_ignorePointer_disableTitle'),
-              ignoring: !widget.enabled,
-              child: Opacity(
-                opacity: widget.enabled ? 1 : 0.5,
-                child: widget.title ?? const SizedBox.shrink(),
-              ),
+          ),
+          title: IgnorePointer(
+            key: const Key('knobListTile_ignorePointer_disableTitle'),
+            ignoring: !widget.enabled,
+            child: Opacity(
+              opacity: widget.enabled ? 1 : 0.5,
+              child: widget.title ?? const SizedBox.shrink(),
             ),
-            subtitle: IgnorePointer(
-              key: const Key('knobListTile_ignorePointer_disableSubtitle'),
-              ignoring: !widget.enabled,
-              child: Opacity(
-                opacity: widget.enabled ? 1 : 0.5,
-                child: widget.subtitle,
-              ),
+          ),
+          subtitle: IgnorePointer(
+            key: const Key('knobListTile_ignorePointer_disableSubtitle'),
+            ignoring: !widget.enabled,
+            child: Opacity(
+              opacity: widget.enabled ? 1 : 0.5,
+              child: widget.subtitle,
             ),
-          )
-        : CustomListTile(
-            isThreeLine: false,
-            contentPadding: contentPadding,
-            title: widget.title,
-            subtitle: widget.subtitle,
-          );
-  }
+          ),
+        )
+      : CustomListTile(
+          isThreeLine: false,
+          contentPadding: widget.contentPadding,
+          title: widget.title,
+          subtitle: widget.subtitle,
+        );
 }

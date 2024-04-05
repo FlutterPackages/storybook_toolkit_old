@@ -25,7 +25,6 @@ class _ThemeWrapperBuilder {
           ),
           listTileTheme: ListTileThemeData(
             minLeadingWidth: 0,
-            minVerticalPadding: 4,
             horizontalTitleGap: 12,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),

@@ -63,6 +63,10 @@ class StringKnobWidget extends StatelessWidget {
     return KnobListTile(
       enabled: enabled,
       nullable: nullable,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 4.0,
+      ),
       onToggled: (enabled) =>
           context.read<KnobsNotifier>().update(label, enabled ? value : null),
       title: Column(
@@ -81,8 +85,8 @@ class StringKnobWidget extends StatelessWidget {
                 hoverColor: Colors.transparent,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Colors.deepPurple,
+                  borderSide: BorderSide(
+                    color: Theme.of(context).primaryColor,
                     width: 1.25,
                   ),
                   borderRadius: BorderRadius.circular(8),
