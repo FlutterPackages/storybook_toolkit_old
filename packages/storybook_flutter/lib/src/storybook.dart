@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
@@ -147,9 +148,6 @@ class Storybook extends StatefulWidget {
   /// Branding widget to use in the plugin panel.
   final Widget? brandingWidget;
 
-  /// Route notifier to use when routing from inside the story.
-  static StoryRouteNotifier storyRouterNotifier = StoryRouteNotifier();
-
   /// Logo widget to use in the left side panel above search field.
   final Widget? logoWidget;
 
@@ -176,32 +174,31 @@ class _StorybookState extends State<Storybook> {
           .map((story) => MapEntry(story.routePath!, story.name)),
     );
 
-    if (routeMap.isNotEmpty) {
-      final Story story =
-          widget.stories.firstWhere((element) => element.router != null);
-
-      story.router!.routeInformationProvider.addListener(() {
-        Storybook.storyRouterNotifier.currentStoryRoute =
-            story.router!.routeInformationProvider.value.uri.path;
-      });
-    }
-
     _storyNotifier = StoryNotifier(
       widget.stories,
       routeStoriesMap: routeMap,
       initial: widget.initialStory,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-      _storyNotifier.listenToStoryRouteNotifier(Storybook.storyRouterNotifier);
-    });
+    if (routeMap.isNotEmpty) {
+      final GoRouter? router =
+          widget.stories.firstWhere((element) => element.router != null).router;
+
+      if (router != null) {
+        router.routerDelegate.addListener(() {
+          WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+            _storyNotifier.currentStoryFromPath =
+                router.routerDelegate.currentConfiguration.uri.path;
+          });
+        });
+      }
+    }
   }
 
   @override
   void dispose() {
     _storyNotifier.dispose();
     storyFocusNode.dispose();
-    Storybook.storyRouterNotifier.dispose();
 
     super.dispose();
   }
@@ -229,9 +226,6 @@ class _StorybookState extends State<Storybook> {
               children: [
                 Provider.value(value: widget.plugins),
                 ChangeNotifierProvider.value(value: _storyNotifier),
-                ChangeNotifierProvider.value(
-                  value: Storybook.storyRouterNotifier,
-                ),
                 ...widget.plugins
                     .map((p) => p.wrapperBuilder)
                     .whereType<TransitionBuilder>()

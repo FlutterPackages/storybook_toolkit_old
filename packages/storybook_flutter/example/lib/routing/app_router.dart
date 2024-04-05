@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:storybook_flutter_example/stories/first_page.dart';
 import 'package:storybook_flutter_example/stories/second_page.dart';
 import 'package:storybook_flutter_example/stories/third_page.dart';
@@ -26,13 +25,6 @@ GoRouter router = GoRouter(
     }
   },
   routes: <RouteBase>[
-    GoRoute(
-      path: '/',
-      redirect: (BuildContext _, GoRouterState __) {
-        Storybook.storyRouterNotifier.currentStoryRoute = firstPagePath;
-        return firstPagePath;
-      },
-    ),
     GoRoute(
       path: firstPagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>

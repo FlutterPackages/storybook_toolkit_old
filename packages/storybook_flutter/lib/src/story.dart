@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:storybook_flutter/src/storybook.dart';
 
+const _sectionSeparator = '/';
+
 @immutable
 class Story {
   const Story({
@@ -130,8 +132,13 @@ class StoryNotifier extends ChangeNotifier {
 
   String? get currentStoryName => _currentStoryName;
 
-  set currentStoryName(String? value) {
-    _currentStoryName = value;
+  set currentStoryName(String? storyName) {
+    _currentStoryName = storyName;
+    notifyListeners();
+  }
+
+  set currentStoryFromPath(String? uriPath) {
+    _currentStoryName = _getRouteName(uriPath);
     notifyListeners();
   }
 
@@ -141,28 +148,6 @@ class StoryNotifier extends ChangeNotifier {
 
   set searchTerm(String value) {
     _searchTerm = value;
-    notifyListeners();
-  }
-
-  void listenToStoryRouteNotifier(StoryRouteNotifier storyRouterNotifier) {
-    storyRouterNotifier.addListener(() {
-      _currentStoryName = _getRouteName(storyRouterNotifier.currentStoryRoute);
-      notifyListeners();
-    });
-  }
-}
-
-const _sectionSeparator = '/';
-
-/// Use this notifier to set the current story route when using routing
-/// from inside the story.
-class StoryRouteNotifier extends ChangeNotifier {
-  String _storyRoute = '';
-
-  String get currentStoryRoute => _storyRoute;
-
-  set currentStoryRoute(String route) {
-    _storyRoute = route;
     notifyListeners();
   }
 }
