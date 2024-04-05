@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
-import 'package:storybook_flutter/src/story.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Plugin that adds story customization knobs.
 ///
@@ -41,8 +38,8 @@ Widget _buildPanel(BuildContext context) {
       : ListView.separated(
           key: ValueKey(currentStoryName ?? currentStory?.name ?? ''),
           primary: false,
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          separatorBuilder: (context, index) => const SizedBox(height: 8),
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          separatorBuilder: (context, index) => const SizedBox(height: 4),
           itemCount: items.length,
           itemBuilder: (context, index) => items[index].build(),
         );
@@ -58,25 +55,28 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
             child: Row(
               children: [
                 Expanded(child: child ?? const SizedBox.shrink()),
-                RepaintBoundary(
-                  child: Material(
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          left: BorderSide(color: Colors.black12),
+                TapRegion(
+                  onTapOutside: (PointerDownEvent? _) {
+                    final BuildContext? selectKnobContext =
+                        SelectKnobWidget.focusScope?.context;
+
+                    if (selectKnobContext != null &&
+                        Navigator.of(selectKnobContext).canPop()) {
+                      Navigator.of(selectKnobContext).pop();
+                    }
+                  },
+                  child: RepaintBoundary(
+                    child: Material(
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(color: Colors.black12),
+                          ),
                         ),
-                      ),
-                      child: SafeArea(
-                        left: false,
-                        child: SizedBox(
-                          width: 250,
-                          child: Localizations(
-                            delegates: const [
-                              DefaultMaterialLocalizations.delegate,
-                              DefaultCupertinoLocalizations.delegate,
-                              DefaultWidgetsLocalizations.delegate,
-                            ],
-                            locale: const Locale('en', 'US'),
+                        child: SafeArea(
+                          left: false,
+                          child: SizedBox(
+                            width: 250,
                             child: Navigator(
                               onGenerateRoute: (_) => PageRouteBuilder<void>(
                                 pageBuilder: (BuildContext context, _, __) =>

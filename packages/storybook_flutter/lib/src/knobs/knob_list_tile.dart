@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class KnobListTile extends StatelessWidget {
+import 'package:storybook_flutter/src/common/custom_list_tile.dart';
+
+class KnobListTile extends StatefulWidget {
   const KnobListTile({
     super.key,
     required this.enabled,
@@ -8,7 +10,7 @@ class KnobListTile extends StatelessWidget {
     required this.onToggled,
     this.title,
     this.subtitle,
-    this.isThreeLine = false,
+    this.contentPadding,
   });
 
   final Widget? title;
@@ -16,48 +18,56 @@ class KnobListTile extends StatelessWidget {
   final bool enabled;
   final bool nullable;
   final ValueChanged<bool> onToggled;
-  final bool isThreeLine;
+  final EdgeInsetsGeometry? contentPadding;
 
   @override
-  Widget build(BuildContext context) => nullable
-      ? MediaQuery(
-          data: const MediaQueryData(padding: EdgeInsets.zero),
-          child: SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            isThreeLine: isThreeLine,
-            onChanged: onToggled,
-            value: enabled,
-            controlAffinity: ListTileControlAffinity.leading,
+  State<KnobListTile> createState() => _KnobListTileState();
+}
+
+class _KnobListTileState extends State<KnobListTile> {
+  @override
+  Widget build(BuildContext context) {
+    final EdgeInsetsGeometry contentPadding = widget.contentPadding ??
+        const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
+
+    return widget.nullable
+        ? CustomListTile(
+            isThreeLine: true,
+            contentPadding: contentPadding,
+            onTap: () => widget.onToggled(!widget.enabled),
+            leading: SizedBox(
+              height: double.infinity,
+              child: Transform.scale(
+                scaleX: 0.85,
+                scaleY: 0.8,
+                child: Switch(
+                  value: widget.enabled,
+                  onChanged: widget.onToggled,
+                ),
+              ),
+            ),
             title: IgnorePointer(
               key: const Key('knobListTile_ignorePointer_disableTitle'),
-              ignoring: !enabled,
+              ignoring: !widget.enabled,
               child: Opacity(
-                opacity: enabled ? 1 : 0.5,
-                child: DefaultTextStyle.merge(
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.titleMedium?.color,
-                  ),
-                  child: title ?? const SizedBox.shrink(),
-                ),
+                opacity: widget.enabled ? 1 : 0.5,
+                child: widget.title ?? const SizedBox.shrink(),
               ),
             ),
             subtitle: IgnorePointer(
               key: const Key('knobListTile_ignorePointer_disableSubtitle'),
-              ignoring: !enabled,
+              ignoring: !widget.enabled,
               child: Opacity(
-                opacity: enabled ? 1 : 0.5,
-                child: subtitle,
+                opacity: widget.enabled ? 1 : 0.5,
+                child: widget.subtitle,
               ),
             ),
-          ),
-        )
-      : MediaQuery(
-          data: const MediaQueryData(padding: EdgeInsets.zero),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            isThreeLine: isThreeLine,
-            title: title,
-            subtitle: subtitle,
-          ),
-        );
+          )
+        : CustomListTile(
+            isThreeLine: false,
+            contentPadding: contentPadding,
+            title: widget.title,
+            subtitle: widget.subtitle,
+          );
+  }
 }

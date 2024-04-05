@@ -24,6 +24,7 @@ class _CounterPageState extends State<CounterPage> {
     final enabledKnob = context.knobs.boolean(
       label: 'FAB enabled',
       description: 'Whether the FAB is enabled.',
+      initial: true,
     );
 
     final sizeKnob = context.knobs.boolean(

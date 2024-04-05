@@ -61,13 +61,33 @@ class BooleanKnobWidget extends StatelessWidget {
     return MediaQuery(
       data: const MediaQueryData(padding: EdgeInsets.zero),
       child: CheckboxListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
         tristate: nullable,
-        title: Text(label),
-        subtitle: description == null ? null : Text(description),
-        value: enabled ? value : null,
-        onChanged: (v) => context.read<KnobsNotifier>().update(label, v),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 8.0,
+          horizontal: 16.0,
+        ),
+        checkboxShape: ContinuousRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
         controlAffinity: ListTileControlAffinity.leading,
+        value: enabled ? value : null,
+        onChanged: (bool? value) =>
+            context.read<KnobsNotifier>().update(label, value),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(label),
+            if (description != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Text(
+                  description,
+                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

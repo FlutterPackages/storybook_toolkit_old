@@ -50,10 +50,7 @@ class ThirdPage extends StatelessWidget {
               borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
             ),
           ),
-          onPressed: () {
-            context.go(secondPagePath);
-            Storybook.storyRouterNotifier.currentStoryRoute = secondPagePath;
-          },
+          onPressed: () => context.go(secondPagePath),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [

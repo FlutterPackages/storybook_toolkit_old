@@ -21,16 +21,37 @@ class MyApp extends StatelessWidget {
         initialStory: 'Routing/First page',
         plugins: initializePlugins(enableCodeView: true),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
+        logoWidget: const SizedBox(
+          height: 64,
+          child: Padding(
+            padding: EdgeInsets.only(top: 16.0, bottom: 0, left: 16, right: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                FlutterLogo(
+                  size: 50,
+                ),
+                Text(
+                  'Flutter',
+                  style: TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.w500,
+                    color: Color.fromARGB(255, 117, 117, 117),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         stories: [
           ...routeAwareStories,
           Story(
             name: 'Screens/Scaffold',
-            description: 'Story with scaffold and different knobs.',
             builder: (context) => const ScaffoldPage(),
           ),
           Story(
             name: 'Screens/Counter',
-            description: 'Demo Counter app with about dialog.',
+            description: 'Counter app with dialog.',
             builder: (context) => const CounterPage(),
           ),
           Story(
@@ -56,6 +77,7 @@ class MyApp extends StatelessWidget {
           ),
           Story(
             name: 'Story without a category',
+            description: 'Story with a longer description example.',
             builder: (context) => const Center(child: Text('Simple text')),
           ),
         ],

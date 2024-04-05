@@ -2,8 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
-import 'package:storybook_flutter/src/knobs/knobs.dart';
-import 'package:storybook_flutter/src/plugins/knobs.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// {@template select_knob}
 /// A knob that allows the user to select an option from a list of options.
@@ -92,64 +91,108 @@ class SelectKnobWidget<T> extends StatelessWidget {
   final bool enabled;
   final bool nullable;
 
+  static FocusScopeNode? focusScope;
+
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final description = this.description;
+    final ThemeData theme = Theme.of(context);
+    final String? description = this.description;
+
+    focusScope ??= FocusScope.of(context);
 
     return KnobListTile(
       nullable: nullable,
       enabled: enabled,
-      onToggled: (enabled) => context
+      onToggled: (bool enabled) => context
           .read<KnobsNotifier>()
           .update<T?>(label, enabled ? value : null),
-      isThreeLine: description != null,
-      title: DropdownButtonFormField<Option<T>>(
-        decoration: InputDecoration(
-          isDense: true,
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        isExpanded: true,
-        value: values.firstWhereOrNull((e) => e.value == value),
-        selectedItemBuilder: (context) => [
-          for (final option in values) Text(option.label),
-        ],
-        items: [
-          for (final option in values)
-            DropdownMenuItem<Option<T>>(
-              value: option,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(option.label),
-                  if (option.description != null) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      // ignore: avoid-non-null-assertion, checked for null
-                      option.description!,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: textTheme.bodySmall?.color,
-                      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 40,
+            child: DropdownButtonFormField<Option<T>>(
+              isExpanded: true,
+              borderRadius: BorderRadius.circular(12),
+              decoration: InputDecoration(
+                labelText: label,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              value: values.firstWhereOrNull(
+                (Option<T> option) => option.value == value,
+              ),
+              onTap: () => FocusScope.of(context).focusedChild?.unfocus(),
+              selectedItemBuilder: (BuildContext context) => [
+                for (final option in values)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2.0),
+                    child: Text(
+                      option.label,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.listTileTheme.titleTextStyle,
                     ),
-                  ],
-                ],
+                  ),
+              ],
+              items: [
+                for (final option in values)
+                  DropdownMenuItem<Option<T>>(
+                    value: option,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                option.label,
+                                style: theme.listTileTheme.titleTextStyle
+                                    ?.copyWith(
+                                  color: value == option.value
+                                      ? theme.listTileTheme.selectedColor
+                                      : null,
+                                ),
+                              ),
+                            ),
+                            if (value == option.value) ...[
+                              const SizedBox(width: 8),
+                              Icon(
+                                Icons.check,
+                                size: 16,
+                                color: theme.listTileTheme.selectedColor,
+                              ),
+                            ],
+                          ],
+                        ),
+                        if (option.description != null)
+                          Text(
+                            // ignore: avoid-non-null-assertion, checked for null
+                            option.description!,
+                            style: theme.listTileTheme.subtitleTextStyle,
+                          ),
+                      ],
+                    ),
+                  ),
+              ],
+              onChanged: (Option<T>? option) {
+                if (option != null) {
+                  context.read<KnobsNotifier>().update<T>(label, option.value);
+                }
+              },
+            ),
+          ),
+          if (description != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Text(
+                description,
+                style: theme.listTileTheme.subtitleTextStyle,
               ),
             ),
         ],
-        onChanged: (v) {
-          if (v != null) {
-            context.read<KnobsNotifier>().update<T>(label, v.value);
-          }
-        },
       ),
-      subtitle: description == null
-          ? null
-          : Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Text(description),
-            ),
     );
   }
 }

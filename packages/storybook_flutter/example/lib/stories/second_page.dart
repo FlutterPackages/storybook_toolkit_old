@@ -41,10 +41,7 @@ class SecondPage extends StatelessWidget {
               borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
             ),
           ),
-          onPressed: () {
-            context.go(firstPagePath);
-            Storybook.storyRouterNotifier.currentStoryRoute = firstPagePath;
-          },
+          onPressed: () => context.go(firstPagePath),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [

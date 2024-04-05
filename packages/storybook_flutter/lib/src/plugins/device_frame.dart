@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/custom_list_tile.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
-
 import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Plugin that allows wrapping each story into a device frame.
@@ -44,8 +44,8 @@ Widget? _buildIcon(
 }
 
 Widget _buildStoryWrapper(BuildContext context, Widget? child) {
-  final d = context.watch<DeviceFrameDataNotifier>().value;
-  final device = d.device;
+  final deviceFrame = context.watch<DeviceFrameDataNotifier>().value;
+  final DeviceInfo? device = deviceFrame.device;
 
   final focusableChild = TapRegion(
     onTapOutside: (PointerDownEvent _) {
@@ -57,29 +57,30 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
     child: child ?? const SizedBox.shrink(),
   );
 
-  final result = device == null
-      ? focusableChild
-      : SizedBox(
-          width: double.infinity,
-          child: Material(
-            child: SafeArea(
-              bottom: false,
-              child: context.watch<CodeViewNotifier>().value
-                  ? focusableChild
-                  : Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: DeviceFrame(
-                        device: device,
-                        isFrameVisible: d.isFrameVisible,
-                        orientation: d.orientation,
-                        screen: focusableChild,
+  return Directionality(
+    textDirection: TextDirection.ltr,
+    child: device == null
+        ? focusableChild
+        : SizedBox(
+            width: double.infinity,
+            child: Material(
+              child: SafeArea(
+                bottom: false,
+                child: context.watch<CodeViewNotifier>().value
+                    ? focusableChild
+                    : Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: DeviceFrame(
+                          device: device,
+                          isFrameVisible: deviceFrame.isFrameVisible,
+                          orientation: deviceFrame.orientation,
+                          screen: focusableChild,
+                        ),
                       ),
-                    ),
+              ),
             ),
           ),
-        );
-
-  return Directionality(textDirection: TextDirection.ltr, child: result);
+  );
 }
 
 typedef DeviceFrameData = ({
@@ -126,97 +127,165 @@ Widget _buildWrapper(
 }
 
 Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
-  final d = context.watch<DeviceFrameDataNotifier>().value;
+  final currentDevice = context.watch<DeviceFrameDataNotifier>().value;
+
   void update(DeviceFrameData data) =>
       context.read<DeviceFrameDataNotifier>().value = data;
 
-  final devices = (deviceInfoList ?? Devices.all)
-      .map(
-        (device) => ListTile(
-          leading: CircleAvatar(
-            child: Icon(
-              device.identifier.type.icon(device.identifier.platform),
+  final devices = (deviceInfoList ?? Devices.all).map(
+    (DeviceInfo device) {
+      // We skip this device because it has a misaligned frame.
+      if (device.identifier == Devices.ios.iPhone14Pro.identifier) {
+        return const SizedBox.shrink();
+      }
+
+      return CustomListTile(
+        selected: currentDevice.device == device,
+        shape: const RoundedRectangleBorder(),
+        onTap: () {
+          update(
+            (
+              device: device,
+              isFrameVisible: currentDevice.isFrameVisible,
+              orientation: currentDevice.orientation,
             ),
+          );
+        },
+        leading: CircleAvatar(
+          radius: 16,
+          child: Icon(
+            device.identifier.type.icon(device.identifier.platform),
+            size: 16,
           ),
-          title: Text(
-            device.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            '${device.screenSize.width.toInt()}×'
-            '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
-          ),
-          trailing: d.device == device ? const Icon(Icons.check) : null,
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              device.name,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              child: Text(
+                '${device.screenSize.width.toInt()}×'
+                '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
+                style:
+                    Theme.of(context).listTileTheme.subtitleTextStyle?.copyWith(
+                          color: currentDevice.device == device
+                              ? Theme.of(context).listTileTheme.selectedColor
+                              : null,
+                        ),
+              ),
+            ),
+          ],
+        ),
+        trailing: currentDevice.device == device
+            ? const Icon(Icons.check, size: 16)
+            : null,
+      );
+    },
+  ).toList();
+
+  return ListView.separated(
+    primary: false,
+    padding: EdgeInsets.zero,
+    separatorBuilder: (BuildContext context, index) => index == 1
+        ? Container(height: 1, color: Theme.of(context).dividerColor)
+        : const SizedBox(),
+    itemBuilder: (BuildContext context, int index) {
+      if (index == 0) {
+        return CustomListTile(
+          shape: const RoundedRectangleBorder(),
           onTap: () {
             update(
               (
-                device: device,
-                isFrameVisible: d.isFrameVisible,
-                orientation: d.orientation,
+                orientation: currentDevice.orientation,
+                device: currentDevice.device,
+                isFrameVisible: !currentDevice.isFrameVisible,
               ),
             );
           },
-        ),
-      )
-      .toList();
-
-  return ListView.separated(
-    padding: EdgeInsets.zero,
-    primary: false,
-    separatorBuilder: (context, i) => i == 1
-        ? Container(height: 1, color: Theme.of(context).dividerColor)
-        : const SizedBox(),
-    itemBuilder: (context, i) {
-      if (i == 0) {
-        return CheckboxListTile(
-          title: const Text('Display frame'),
-          value: d.isFrameVisible,
-          onChanged: (v) => update(
-            (
-              device: d.device,
-              isFrameVisible: v ?? false,
-              orientation: d.orientation,
-            ),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Frame visibility'),
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                child: Text(
+                  currentDevice.isFrameVisible ? 'visible' : 'hidden',
+                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                ),
+              ),
+            ],
           ),
         );
       }
 
-      if (i == 1) {
-        return ListTile(
-          title: const Text('Orientation'),
-          subtitle: Text(d.orientation.name),
+      if (index == 1) {
+        return CustomListTile(
+          shape: const RoundedRectangleBorder(),
           onTap: () {
-            final orientation = d.orientation == Orientation.portrait
-                ? Orientation.landscape
-                : Orientation.portrait;
+            final orientation =
+                currentDevice.orientation == Orientation.portrait
+                    ? Orientation.landscape
+                    : Orientation.portrait;
             update(
               (
                 orientation: orientation,
-                device: d.device,
-                isFrameVisible: d.isFrameVisible,
+                device: currentDevice.device,
+                isFrameVisible: currentDevice.isFrameVisible,
               ),
             );
           },
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Orientation'),
+              Padding(
+                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                child: Text(
+                  currentDevice.orientation.name,
+                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                ),
+              ),
+            ],
+          ),
         );
       }
 
-      if (i == 2) {
-        return ListTile(
-          title: const Text('No device'),
-          trailing: d.device == null ? const Icon(Icons.check) : null,
-          onTap: () => update(
-            (
-              device: null,
-              isFrameVisible: d.isFrameVisible,
-              orientation: d.orientation,
+      if (index == 2) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: CustomListTile(
+            shape: const RoundedRectangleBorder(),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 16.0,
             ),
+            selected: currentDevice.device == null,
+            onTap: () => update(
+              (
+                device: null,
+                isFrameVisible: currentDevice.isFrameVisible,
+                orientation: currentDevice.orientation,
+              ),
+            ),
+            title: const Text('No device'),
+            leading: const CircleAvatar(
+              radius: 16,
+              child: Icon(Icons.phonelink_off, size: 16),
+            ),
+            trailing: currentDevice.device == null
+                ? const Icon(Icons.check, size: 16)
+                : null,
           ),
         );
       }
 
       // ignore: prefer-returning-conditional-expressions, more readable
-      return devices[i - 3];
+      return devices[index - 3];
     },
     itemCount: devices.length + 3,
   );

@@ -57,7 +57,7 @@ class StringKnobWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
     final description = this.description;
 
     return KnobListTile(
@@ -65,23 +65,50 @@ class StringKnobWidget extends StatelessWidget {
       nullable: nullable,
       onToggled: (enabled) =>
           context.read<KnobsNotifier>().update(label, enabled ? value : null),
-      title: TextFormField(
-        decoration: InputDecoration(
-          isDense: false,
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        initialValue: value,
-        onChanged: (v) => context.read<KnobsNotifier>().update(label, v),
-      ),
-      subtitle: description != null
-          ? Text(
-              description,
-              style: textTheme.bodyMedium?.copyWith(
-                color: textTheme.bodySmall?.color,
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 40,
+            child: TextFormField(
+              style: theme.textTheme.bodyMedium,
+              textAlignVertical: TextAlignVertical.center,
+              cursorColor: Colors.black87,
+              cursorWidth: 1.8,
+              cursorRadius: const Radius.circular(32),
+              decoration: InputDecoration(
+                labelText: label,
+                hoverColor: Colors.transparent,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Colors.deepPurple,
+                    width: 1.25,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-            )
-          : null,
+              textInputAction: TextInputAction.done,
+              initialValue: value,
+              onChanged: (String value) => context.read<KnobsNotifier>().update(
+                    label,
+                    value,
+                  ),
+            ),
+          ),
+          if (description != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Text(
+                description,
+                style: theme.listTileTheme.subtitleTextStyle,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

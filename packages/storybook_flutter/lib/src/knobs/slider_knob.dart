@@ -96,35 +96,41 @@ class SliderKnobWidget extends StatelessWidget {
   final bool nullable;
 
   @override
-  Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    return KnobListTile(
-      nullable: nullable,
-      enabled: enabled,
-      onToggled: (enabled) => context.read<KnobsNotifier>().update(label, enabled ? value : null),
-      title: Text('$label (${formatValue(value)})'),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (description != null) ...[
-            Text(
-              description!,
-              style: textTheme.bodyMedium?.copyWith(color: textTheme.bodySmall?.color),
+  Widget build(BuildContext context) => KnobListTile(
+        nullable: nullable,
+        enabled: enabled,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 4.0,
+          horizontal: 16.0,
+        ),
+        onToggled: (bool enabled) =>
+            context.read<KnobsNotifier>().update(label, enabled ? value : null),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('$label (${formatValue(value)})'),
+            if (description != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4.0, top: 2.0),
+                child: Text(
+                  description!,
+                  style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Slider(
+                value: value,
+                onChanged: (double value) =>
+                    context.read<KnobsNotifier>().update(label, value),
+                max: max,
+                min: min,
+                divisions: divisions,
+                autofocus: false,
+              ),
             ),
-            const SizedBox(height: 4),
           ],
-          Slider(
-            value: value,
-            onChanged: (v) => context.read<KnobsNotifier>().update(label, v),
-            max: max,
-            min: min,
-            divisions: divisions,
-            autofocus: false,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
 }

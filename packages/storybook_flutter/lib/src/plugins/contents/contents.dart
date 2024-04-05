@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/custom_list_tile.dart';
 import 'package:storybook_flutter/src/plugins/contents/search_text_field.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -11,11 +11,13 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 /// If `sidePanel` is true, the stories are shown in a left side panel,
 /// otherwise as a popup.
 class ContentsPlugin extends Plugin {
-  const ContentsPlugin()
+  ContentsPlugin({Widget? logoWidget})
       : super(
           icon: _buildIcon,
-          panelBuilder: _buildPanel,
-          wrapperBuilder: _buildWrapper,
+          panelBuilder: (BuildContext context) =>
+              _buildPanel(context, logoWidget),
+          wrapperBuilder: (BuildContext context, Widget? child) =>
+              _buildWrapper(context, child, logoWidget),
         );
 }
 
@@ -25,50 +27,44 @@ Widget? _buildIcon(BuildContext context) =>
       EffectiveLayout.expanded => null,
     };
 
-Widget _buildPanel(BuildContext _) => const _Contents();
+Widget _buildPanel(BuildContext _, Widget? logoWidget) => _Contents(logoWidget);
 
-Widget _buildWrapper(BuildContext context, Widget? child) =>
+Widget _buildWrapper(BuildContext context, Widget? child, Widget? logoWidget) =>
     switch (context.watch<EffectiveLayout>()) {
       EffectiveLayout.compact => child ?? const SizedBox.shrink(),
-      EffectiveLayout.expanded => Localizations(
-          delegates: const [
-            DefaultMaterialLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-          ],
-          locale: const Locale('en', 'US'),
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: Row(
-              children: [
-                Material(
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        right: BorderSide(color: Colors.black12),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: 250,
-                      child: Navigator(
-                        onGenerateRoute: (_) => PageRouteBuilder<void>(
-                          pageBuilder: (_, __, ___) => const _Contents(),
-                        ),
-                      ),
+      EffectiveLayout.expanded => Row(
+          children: [
+            Material(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: Colors.black12),
+                  ),
+                ),
+                child: SizedBox(
+                  width: 250,
+                  child: Navigator(
+                    onGenerateRoute: (_) => PageRouteBuilder<void>(
+                      pageBuilder: (_, __, ___) => _Contents(logoWidget),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: ClipRect(clipBehavior: Clip.hardEdge, child: child),
-                ),
-              ],
+              ),
             ),
-          ),
+            Expanded(
+              child: ClipRect(
+                clipBehavior: Clip.hardEdge,
+                child: child,
+              ),
+            ),
+          ],
         ),
     };
 
 class _Contents extends StatefulWidget {
-  const _Contents();
+  const _Contents(this.logoWidget);
+
+  final Widget? logoWidget;
 
   @override
   _ContentsState createState() => _ContentsState();
@@ -99,17 +95,44 @@ class _ContentsState extends State<_Contents> {
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    return MediaQuery(
-      data: const MediaQueryData(padding: EdgeInsets.zero),
-      child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 16),
-        title: Text(title),
-        initiallyExpanded: storyNotifier.searchTerm.isNotEmpty ||
-            matchSubpages(storyNotifier.routeStoryPath, title) ||
-            (stories.map((s) => s.name).contains(storyNotifier.routeStoryName)),
-        childrenPadding: childrenPadding,
-        children: children,
+    final bool nonRouteStoryFolderOpened = storyNotifier.currentStory != null
+        ? storyNotifier.currentStory!.name.contains(title)
+        : false;
+
+    final bool initiallyExpanded = nonRouteStoryFolderOpened ||
+        storyNotifier.searchTerm.isNotEmpty ||
+        matchSubpages(storyNotifier.routeStoryPath, title) ||
+        (stories
+            .map((story) => story.name)
+            .contains(storyNotifier.routeStoryName));
+
+    return ExpansionTile(
+      childrenPadding: childrenPadding,
+      initiallyExpanded: initiallyExpanded,
+      onExpansionChanged: (bool expanded) => setState(() {}),
+      leading: const Icon(
+        Icons.folder,
+        size: 16,
+        color: Colors.deepPurple,
       ),
+      title: Text(title),
+      trailing: Builder(
+        builder: (BuildContext context) => SizedBox(
+          width: 20,
+          height: 20,
+          child: Center(
+            child: AnimatedRotation(
+              duration: const Duration(milliseconds: 200),
+              turns: ExpansionTileController.of(context).isExpanded ? 0.5 : 0,
+              child: const Icon(
+                Icons.expand_more,
+                size: 20,
+              ),
+            ),
+          ),
+        ),
+      ),
+      children: children,
     );
   }
 
@@ -122,45 +145,76 @@ class _ContentsState extends State<_Contents> {
     final bool isRouteAwareStory = router != null && story.routePath != null;
     final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
 
-    return MediaQuery(
-      data: const MediaQueryData(padding: EdgeInsets.zero),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-        selected: isRouteAwareStory
-            ? (story.name == storyNotifier.routeStoryName ||
-                    (storyNotifier.routeStoryPath == '/' &&
-                        story.name == storyNotifier.getInitialStoryName)) &&
-                currentStory?.router != null
-            : story == currentStory,
-        title: Text(story.title),
-        subtitle: description == null ? null : Text(description),
-        onTap: () {
-          storyNotifier.currentStoryName = story.name;
-          context.read<OverlayController?>()?.remove();
+    final bool isSelected = isRouteAwareStory
+        ? (story.name == storyNotifier.routeStoryName ||
+            (storyNotifier.routeStoryPath == '/' &&
+                story.name == storyNotifier.getInitialStoryName))
+        : story == currentStory;
 
-          router?.go(routeStoryPath!);
-        },
+    return CustomListTile(
+      selected: isSelected,
+      onTap: () {
+        storyNotifier.currentStoryName = story.name;
+        context.read<OverlayController?>()?.remove();
+        router?.go(routeStoryPath!);
+      },
+      leading: const Icon(
+        Icons.widgets_outlined,
+        size: 14,
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(story.title),
+          if (description != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              child: Text(
+                description,
+                style:
+                    Theme.of(context).listTileTheme.subtitleTextStyle?.copyWith(
+                          color: isSelected
+                              ? Theme.of(context).listTileTheme.selectedColor
+                              : null,
+                        ),
+              ),
+            ),
+        ],
       ),
     );
   }
 
-  List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
-    final grouped = stories.groupListsBy(
+  List<Widget> _buildListChildren(
+    BuildContext context,
+    List<Story> stories, {
+    int depth = 1,
+  }) {
+    const double sectionPadding = 16.0;
+
+    final EdgeInsetsGeometry childrenPadding = EdgeInsets.only(
+      left: depth + sectionPadding,
+    );
+
+    final Map<String, List<Story>> grouped = stories.groupListsBy(
       (story) => story.path.length == depth ? '' : story.path[depth - 1],
     );
 
-    final sectionStories = (grouped[''] ?? []).map(_buildStoryTile).toList();
+    final List<Widget> sectionStories =
+        (grouped[''] ?? []).map(_buildStoryTile).toList();
 
     return stories.length == sectionStories.length
         ? sectionStories
         : [
-            ...grouped.keys.where((k) => k.isNotEmpty).map(
-                  (k) => _buildExpansionTile(
-                    title: k,
-                    childrenPadding:
-                        EdgeInsets.only(left: (depth - 1) * _sectionPadding),
-                    stories: grouped[k]!,
-                    children: _buildListChildren(grouped[k]!, depth: depth + 1),
+            ...grouped.keys.where((key) => key.isNotEmpty).map(
+                  (key) => _buildExpansionTile(
+                    childrenPadding: childrenPadding,
+                    title: key,
+                    stories: grouped[key]!,
+                    children: _buildListChildren(
+                      context,
+                      grouped[key]!,
+                      depth: depth + 1,
+                    ),
                   ),
                 ),
             ...sectionStories,
@@ -169,29 +223,43 @@ class _ContentsState extends State<_Contents> {
 
   @override
   Widget build(BuildContext context) {
-    final children = _buildListChildren(context.watch<StoryNotifier>().stories);
-    final searchTerm = context.watch<StoryNotifier>().searchTerm;
+    final bool isSidePanel = context.watch<OverlayController?>() == null;
+    final String searchTerm = context.watch<StoryNotifier>().searchTerm;
+
+    final List<Widget> children = _buildListChildren(
+      context,
+      context.watch<StoryNotifier>().stories,
+    );
 
     return SafeArea(
-      // If there is no overlay, we're in the side panel, so we don't need to
-      // add the top padding.
-      top: context.watch<OverlayController?>() == null,
-      bottom: context.watch<OverlayController?>() == null,
-      left: context.watch<OverlayController?>() == null,
+      top: isSidePanel,
+      bottom: isSidePanel,
+      left: isSidePanel,
       right: false,
       child: Column(
         children: [
+          if (widget.logoWidget != null && isSidePanel) widget.logoWidget!,
           const SearchTextField(),
           Expanded(
             key: ValueKey(searchTerm),
             child: children.isEmpty && searchTerm.isNotEmpty
                 ? const Center(child: Text('Nothing found'))
-                : ListTileTheme(
-                    style: ListTileStyle.drawer,
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      primary: false,
-                      children: children,
+                : Material(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          right: BorderSide(color: Colors.black12),
+                        ),
+                      ),
+                      child: ListView(
+                        primary: false,
+                        addAutomaticKeepAlives: true,
+                        padding: EdgeInsets.only(
+                          bottom: isSidePanel ? 16 : 0,
+                          top: 8,
+                        ),
+                        children: children,
+                      ),
                     ),
                   ),
           ),
@@ -200,5 +268,3 @@ class _ContentsState extends State<_Contents> {
     );
   }
 }
-
-const double _sectionPadding = 8;

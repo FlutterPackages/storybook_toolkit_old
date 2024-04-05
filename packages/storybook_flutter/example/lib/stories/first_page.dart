@@ -14,6 +14,30 @@ class FirstPage extends StatelessWidget {
       description: 'Title for First Page app bar.',
     );
 
+    final backgroundColorKnob = context.knobs.nullable.options(
+      label: 'AppBar color',
+      initial: Colors.deepPurple.shade100,
+      description: 'Color for Third Page app bar.',
+      options: [
+        Option(
+          label: 'DeepPurple 100',
+          value: Colors.deepPurple.shade100,
+        ),
+        const Option(
+          label: 'Deep Purple',
+          value: Colors.deepPurple,
+        ),
+        const Option(
+          label: 'Blue Grey',
+          value: Colors.blueGrey,
+        ),
+        const Option(
+          label: 'Blue',
+          value: Colors.blue,
+        ),
+      ],
+    );
+
     final elevationKnob = context.knobs.nullable.slider(
       label: 'elevation',
       initial: 4,
@@ -28,6 +52,11 @@ class FirstPage extends StatelessWidget {
       max: 32,
     );
 
+    final showFabKnob = context.knobs.boolean(
+      label: 'show FAB',
+      description: 'Show FAB button',
+    );
+
     final buttonTextKnob = context.knobs.text(
       label: 'Button text',
       initial: 'Go to Second Page',
@@ -37,6 +66,7 @@ class FirstPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: elevationKnob,
+        backgroundColor: backgroundColorKnob,
         title: Text(titleKnob),
       ),
       body: Center(
@@ -47,10 +77,7 @@ class FirstPage extends StatelessWidget {
               borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
             ),
           ),
-          onPressed: () {
-            context.go(secondPagePath);
-            Storybook.storyRouterNotifier.currentStoryRoute = secondPagePath;
-          },
+          onPressed: () => context.go(secondPagePath),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -64,6 +91,12 @@ class FirstPage extends StatelessWidget {
           ),
         ),
       ),
+      floatingActionButton: showFabKnob
+          ? FloatingActionButton(
+              onPressed: () {},
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 }

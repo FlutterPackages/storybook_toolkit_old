@@ -11,6 +11,37 @@ import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/src/plugins/theme/code_view_syntax_theme.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
+class _ThemeWrapperBuilder {
+  _ThemeWrapperBuilder();
+
+  static Widget themeBuilder(BuildContext context, Widget child) => Theme(
+        data: ThemeData(
+          splashColor: Colors.transparent,
+          focusColor: Theme.of(context).focusColor.withAlpha(18),
+          expansionTileTheme: const ExpansionTileThemeData(
+            shape: RoundedRectangleBorder(),
+            collapsedShape: RoundedRectangleBorder(),
+          ),
+          listTileTheme: ListTileThemeData(
+            minLeadingWidth: 0,
+            minVerticalPadding: 4,
+            horizontalTitleGap: 12,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+            titleTextStyle: Theme.of(context).textTheme.bodyMedium,
+            subtitleTextStyle:
+                Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.0),
+            selectedColor: Theme.of(context).primaryColor,
+            selectedTileColor: Theme.of(context).focusColor.withAlpha(18),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
+            ),
+          ),
+        ),
+        child: child,
+      );
+}
+
 /// Use this wrapper to wrap each route aware story inside default
 /// [MaterialApp.router] widget.
 class RouteWrapperBuilder {
@@ -77,6 +108,7 @@ class Storybook extends StatefulWidget {
     this.showPanel = true,
     this.enableLayout = true,
     this.brandingWidget,
+    this.logoWidget,
     Layout initialLayout = Layout.auto,
     double autoLayoutThreshold = 800,
   })  : plugins = UnmodifiableListView([
@@ -85,7 +117,7 @@ class Storybook extends StatefulWidget {
             autoLayoutThreshold,
             enableLayout: enableLayout,
           ),
-          const ContentsPlugin(),
+          ContentsPlugin(logoWidget: logoWidget),
           ...plugins ?? _defaultPlugins,
           const KnobsPlugin(),
         ]),
@@ -117,6 +149,9 @@ class Storybook extends StatefulWidget {
 
   /// Route notifier to use when routing from inside the story.
   static StoryRouteNotifier storyRouterNotifier = StoryRouteNotifier();
+
+  /// Logo widget to use in the left side panel above search field.
+  final Widget? logoWidget;
 
   @override
   State<Storybook> createState() => _StorybookState();
@@ -178,82 +213,85 @@ class _StorybookState extends State<Storybook> {
       routeWrapperBuilder: widget.routeWrapperBuilder,
     );
 
-    return TapRegionSurface(
-      child: MediaQuery.fromView(
-        view: View.of(context),
-        child: Localizations(
-          delegates: const [
-            DefaultMaterialLocalizations.delegate,
-            DefaultCupertinoLocalizations.delegate,
-            DefaultWidgetsLocalizations.delegate,
-          ],
-          locale: const Locale('en', 'US'),
-          child: Nested(
-            children: [
-              Provider.value(value: widget.plugins),
-              ChangeNotifierProvider.value(value: _storyNotifier),
-              ChangeNotifierProvider.value(
-                value: Storybook.storyRouterNotifier,
-              ),
-              ...widget.plugins
-                  .map((p) => p.wrapperBuilder)
-                  .whereType<TransitionBuilder>()
-                  .map((builder) => SingleChildBuilder(builder: builder)),
+    return _ThemeWrapperBuilder.themeBuilder(
+      context,
+      TapRegionSurface(
+        child: MediaQuery.fromView(
+          view: View.of(context),
+          child: Localizations(
+            delegates: const [
+              DefaultMaterialLocalizations.delegate,
+              DefaultCupertinoLocalizations.delegate,
+              DefaultWidgetsLocalizations.delegate,
             ],
-            child: widget.showPanel
-                ? Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Column(
-                        children: [
-                          Expanded(child: currentStory),
-                          RepaintBoundary(
-                            child: Material(
-                              child: SafeArea(
-                                top: false,
-                                child: CompositedTransformTarget(
-                                  link: _layerLink,
-                                  child: Directionality(
-                                    textDirection: TextDirection.ltr,
-                                    child: Container(
-                                      width: double.infinity,
-                                      decoration: const BoxDecoration(
-                                        border: Border(
-                                          top: BorderSide(
-                                            color: Colors.black12,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: PluginPanel(
-                                              plugins: widget.plugins,
-                                              overlayKey: _overlayKey,
-                                              layerLink: _layerLink,
+            locale: const Locale('en', 'US'),
+            child: Nested(
+              children: [
+                Provider.value(value: widget.plugins),
+                ChangeNotifierProvider.value(value: _storyNotifier),
+                ChangeNotifierProvider.value(
+                  value: Storybook.storyRouterNotifier,
+                ),
+                ...widget.plugins
+                    .map((p) => p.wrapperBuilder)
+                    .whereType<TransitionBuilder>()
+                    .map((builder) => SingleChildBuilder(builder: builder)),
+              ],
+              child: widget.showPanel
+                  ? Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Column(
+                          children: [
+                            Expanded(child: currentStory),
+                            RepaintBoundary(
+                              child: Material(
+                                child: SafeArea(
+                                  top: false,
+                                  child: CompositedTransformTarget(
+                                    link: _layerLink,
+                                    child: Directionality(
+                                      textDirection: TextDirection.ltr,
+                                      child: Container(
+                                        width: double.infinity,
+                                        decoration: const BoxDecoration(
+                                          border: Border(
+                                            top: BorderSide(
+                                              color: Colors.black12,
                                             ),
                                           ),
-                                          widget.brandingWidget ??
-                                              const SizedBox.shrink(),
-                                        ],
+                                        ),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: PluginPanel(
+                                                plugins: widget.plugins,
+                                                overlayKey: _overlayKey,
+                                                layerLink: _layerLink,
+                                              ),
+                                            ),
+                                            widget.brandingWidget ??
+                                                const SizedBox.shrink(),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Directionality(
-                        textDirection: TextDirection.ltr,
-                        child: Overlay(key: _overlayKey),
-                      ),
-                    ],
-                  )
-                : currentStory,
+                          ],
+                        ),
+                        Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Overlay(key: _overlayKey),
+                        ),
+                      ],
+                    )
+                  : currentStory,
+            ),
           ),
         ),
       ),
@@ -370,6 +408,9 @@ class _CurrentStoryCode extends StatelessWidget {
             (defaultTargetPlatform == TargetPlatform.iOS ||
                 defaultTargetPlatform == TargetPlatform.android));
 
+    final TextStyle? textStyle =
+        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70);
+
     return ColoredBox(
       color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
       child: SafeArea(
@@ -386,13 +427,10 @@ class _CurrentStoryCode extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
-                    return const Center(
+                    return Center(
                       child: Text(
                         'Houston, we have a problem with showing the code :(',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white70,
-                        ),
+                        style: textStyle,
                       ),
                     );
                   } else if (snapshot.hasData) {
@@ -401,7 +439,7 @@ class _CurrentStoryCode extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: AnySyntaxHighlighter(
                           snapshot.data ?? '',
-                          fontSize: 14,
+                          fontSize: 12,
                           padding: 16,
                           hasCopyButton: true,
                           isSelectableText: isDesktopWeb,
@@ -411,13 +449,10 @@ class _CurrentStoryCode extends StatelessWidget {
                       ),
                     );
                   }
-                  return const Center(
+                  return Center(
                     child: Text(
                       'No code provided',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white70,
-                      ),
+                      style: textStyle,
                     ),
                   );
                 },
