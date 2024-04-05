@@ -135,7 +135,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
   final devices = (deviceInfoList ?? Devices.all).map(
     (DeviceInfo device) {
       // We skip this device because it has a misaligned frame.
-      if (device.identifier == Devices.ios.iPhone14Pro.identifier) {
+      if (device.name == 'iPhone 14 Pro') {
         return const SizedBox.shrink();
       }
 
