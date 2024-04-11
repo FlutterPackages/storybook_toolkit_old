@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -12,7 +13,12 @@ class LayoutPlugin extends Plugin {
     double autoLayoutThreshold, {
     bool enableLayout = true,
   }) : super(
-          icon: enableLayout ? _buildIcon : null,
+          id: PluginId.layout,
+          icon: kIsWeb
+              ? enableLayout
+                  ? _buildIcon
+                  : null
+              : null,
           wrapperBuilder: (context, child) => _buildWrapper(
             context,
             child,

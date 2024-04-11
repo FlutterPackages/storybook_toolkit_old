@@ -32,13 +32,18 @@ class _KnobListTileState extends State<KnobListTile> {
           contentPadding: widget.contentPadding,
           onTap: () => widget.onToggled(!widget.enabled),
           leading: SizedBox(
-            height: double.infinity,
+            width: 40,
             child: Transform.scale(
-              scaleX: 0.85,
-              scaleY: 0.8,
-              child: Switch(
-                value: widget.enabled,
-                onChanged: widget.onToggled,
+              scaleX: 0.75,
+              scaleY: 0.75,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: Switch(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: widget.enabled,
+                  onChanged: widget.onToggled,
+                ),
               ),
             ),
           ),

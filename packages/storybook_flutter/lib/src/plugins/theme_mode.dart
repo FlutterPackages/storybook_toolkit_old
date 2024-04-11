@@ -7,6 +7,7 @@ class ThemeModePlugin extends Plugin {
     ThemeMode? initialTheme,
     ValueSetter<ThemeMode>? onThemeChanged,
   }) : super(
+          id: PluginId.themeMode,
           icon: _buildIcon,
           wrapperBuilder: (context, widget) => _buildWrapper(
             context,

@@ -31,48 +31,54 @@ class _SearchTextFieldState extends State<SearchTextField> {
   Widget build(BuildContext context) =>
       ValueListenableBuilder<TextEditingValue>(
         valueListenable: _searchController,
-        builder: (BuildContext context, TextEditingValue value, Widget? _) =>
-            Padding(
-          padding: const EdgeInsets.all(16),
-          child: SizedBox(
-            height: 40,
-            child: TextFormField(
-              controller: _searchController,
-              style: Theme.of(context).textTheme.bodyMedium,
-              cursorColor: Colors.black87,
-              cursorWidth: 1.8,
-              cursorRadius: const Radius.circular(32),
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.zero,
-                hoverColor: Colors.transparent,
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Theme.of(context).primaryColor,
-                    width: 1.25,
+        builder: (BuildContext context, TextEditingValue value, Widget? _) {
+          final ThemeData theme = Theme.of(context);
+
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              height: 40,
+              child: TextFormField(
+                controller: _searchController,
+                style: theme.textTheme.bodyMedium,
+                cursorColor: Colors.black87,
+                cursorWidth: 1.2,
+                cursorHeight: 17,
+                cursorRadius: const Radius.circular(32),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.zero,
+                  hoverColor: Colors.transparent,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: theme.primaryColor,
+                      width: 1.25,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'Search...',
+                  prefixIcon: const Icon(Icons.search, size: 20),
+                  suffixIcon: _searchController.text.isNotEmpty
+                      ? IconButton(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          onPressed: () {
+                            _searchController.clear();
+                            context.read<StoryNotifier>().searchTerm = '';
+                          },
+                          icon: const Icon(Icons.clear, size: 16),
+                        )
+                      : null,
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                hintText: 'Search...',
-                prefixIcon: const Icon(Icons.search, size: 20),
-                suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        onPressed: () {
-                          _searchController.clear();
-                          context.read<StoryNotifier>().searchTerm = '';
-                        },
-                        icon: const Icon(Icons.clear, size: 16),
-                      )
-                    : null,
+                textInputAction: TextInputAction.search,
+                onChanged: (String value) {
+                  context.read<StoryNotifier>().searchTerm = value;
+                },
               ),
-              textInputAction: TextInputAction.search,
-              onChanged: (String value) {
-                context.read<StoryNotifier>().searchTerm = value;
-              },
             ),
-          ),
-        ),
+          );
+        },
       );
 }

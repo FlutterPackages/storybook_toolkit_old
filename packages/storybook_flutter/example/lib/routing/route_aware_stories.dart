@@ -16,6 +16,11 @@ List<Story> routeAwareStories = [
     codeString: fetchAsset('second_page.md'),
   ),
   Story.asRoute(
+    name: 'Routing/Nesting/Example Page',
+    routePath: examplePagePath,
+    router: router,
+  ),
+  Story.asRoute(
     name: 'Route/Third page',
     routePath: thirdPagePath,
     router: router,

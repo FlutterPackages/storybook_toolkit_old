@@ -12,6 +12,7 @@ class DeviceFramePlugin extends Plugin {
     DeviceFrameData initialData = defaultDeviceFrameData,
     List<DeviceInfo>? deviceInfoList,
   }) : super(
+          id: PluginId.deviceFrame,
           icon: (BuildContext context) => _buildIcon(
             context,
             enableCompactLayoutDeviceFrame,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
+import 'package:storybook_flutter/src/story.dart';
 
 const String _pluginPanelGroupId = 'plugin_panel';
 
@@ -115,14 +116,15 @@ class _PluginPanelState extends State<PluginPanel> {
         ),
       );
 
-  void _onPluginButtonPressed(Plugin p) {
-    p.onPressed?.call(context);
-    final panelBuilder = p.panelBuilder;
+  void _onPluginButtonPressed(Plugin plugin) {
+    plugin.onPressed?.call(context);
+    final panelBuilder = plugin.panelBuilder;
+
     if (panelBuilder == null) return;
 
     void insertOverlay() {
       final overlay =
-          PluginOverlay(plugin: p, entry: _createEntry(panelBuilder));
+          PluginOverlay(plugin: plugin, entry: _createEntry(panelBuilder));
       _overlay = overlay;
       widget.overlayKey.currentState?.insert(overlay.entry);
     }
@@ -130,7 +132,7 @@ class _PluginPanelState extends State<PluginPanel> {
     final overlay = _overlay;
     if (overlay != null) {
       overlay.remove();
-      if (overlay.plugin != p) {
+      if (overlay.plugin != plugin) {
         insertOverlay();
       } else {
         _overlay = null;
@@ -144,14 +146,19 @@ class _PluginPanelState extends State<PluginPanel> {
   Widget build(BuildContext context) => Wrap(
         runAlignment: WrapAlignment.center,
         children: widget.plugins
-            .map((p) => (p, p.icon?.call(context)))
+            .map((plugin) => (plugin, plugin.icon?.call(context)))
             .whereType<(Plugin, Widget)>()
             .map(
-              (p) => TapRegion(
+              (plugin) => TapRegion(
                 groupId: _pluginPanelGroupId,
                 child: IconButton(
-                  icon: p.$2,
-                  onPressed: () => _onPluginButtonPressed(p.$1),
+                  icon: plugin.$2,
+                  onPressed:
+                      context.watch<StoryNotifier>().routerHasPathMatch ?? true
+                          ? () => _onPluginButtonPressed(plugin.$1)
+                          : plugin.$1.id == PluginId.contents
+                              ? () => _onPluginButtonPressed(plugin.$1)
+                              : null,
                 ),
               ),
             )

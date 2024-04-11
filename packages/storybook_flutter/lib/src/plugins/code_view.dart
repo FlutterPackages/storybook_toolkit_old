@@ -7,6 +7,7 @@ class CodeViewPlugin extends Plugin {
     required bool enableCodeView,
     ValueSetter<bool>? onShowCodeView,
   }) : super(
+          id: PluginId.codeView,
           icon: enableCodeView ? _buildIcon : null,
           wrapperBuilder: _buildWrapper,
           onPressed: (context) => _onPressed(context, onShowCodeView),

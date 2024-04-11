@@ -7,6 +7,7 @@ class TimeDilationPlugin extends Plugin {
   TimeDilationPlugin({
     ValueSetter<bool>? onTimeDilationChanged,
   }) : super(
+          id: PluginId.timeDilation,
           icon: _buildIcon,
           wrapperBuilder: _buildWrapper,
           onPressed: (context) => _onPressed(context, onTimeDilationChanged),

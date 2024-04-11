@@ -57,17 +57,26 @@ class BooleanKnobWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final description = this.description;
+    final ThemeData theme = Theme.of(context);
+    final String? description = this.description;
 
     return CustomListTile(
       onTap: () => context.read<KnobsNotifier>().update(label, !value),
-      leading: Checkbox(
-        value: enabled ? value : null,
-        shape: ContinuousRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+      leading: SizedBox(
+        width: 20,
+        child: Checkbox(
+          overlayColor: MaterialStateProperty.all(Colors.transparent),
+          value: enabled ? value : null,
+          side: BorderSide(
+            color: theme.unselectedWidgetColor,
+            width: 1.3,
+          ),
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          onChanged: (bool? value) =>
+              context.read<KnobsNotifier>().update(label, value),
         ),
-        onChanged: (bool? value) =>
-            context.read<KnobsNotifier>().update(label, value),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +88,7 @@ class BooleanKnobWidget extends StatelessWidget {
               padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
               child: Text(
                 description,
-                style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                style: theme.listTileTheme.subtitleTextStyle,
               ),
             ),
         ],

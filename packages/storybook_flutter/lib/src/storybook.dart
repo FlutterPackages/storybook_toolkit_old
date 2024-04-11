@@ -17,7 +17,7 @@ class _ThemeWrapperBuilder {
 
   static Widget themeBuilder(BuildContext context, Widget child) => Theme(
         data: ThemeData(
-          splashColor: Colors.transparent,
+          splashFactory: NoSplash.splashFactory,
           focusColor: Theme.of(context).focusColor.withAlpha(18),
           expansionTileTheme: const ExpansionTileThemeData(
             shape: RoundedRectangleBorder(),
@@ -25,12 +25,15 @@ class _ThemeWrapperBuilder {
           ),
           listTileTheme: ListTileThemeData(
             minLeadingWidth: 0,
+            minVerticalPadding: 4,
             horizontalTitleGap: 12,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
             titleTextStyle: Theme.of(context).textTheme.bodyMedium,
-            subtitleTextStyle:
-                Theme.of(context).textTheme.bodySmall?.copyWith(height: 1.0),
+            subtitleTextStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  height: 1.2,
+                  color: Colors.black54,
+                ),
             selectedColor: Theme.of(context).primaryColor,
             selectedTileColor: Theme.of(context).focusColor.withAlpha(18),
             shape: const RoundedRectangleBorder(
@@ -175,7 +178,7 @@ class _StorybookState extends State<Storybook> {
 
     _storyNotifier = StoryNotifier(
       widget.stories,
-      routeStoriesMap: routeMap,
+      storyRouteMap: routeMap,
       initial: widget.initialStory,
     );
 
@@ -186,8 +189,19 @@ class _StorybookState extends State<Storybook> {
       if (router != null) {
         router.routerDelegate.addListener(() {
           WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-            _storyNotifier.currentStoryFromPath =
+            final String currentUriPath =
                 router.routerDelegate.currentConfiguration.uri.path;
+
+            // Check if router has a match for the entered url path.
+            final bool routerHasMatch = router
+                .routeInformationParser.configuration
+                .findMatch(currentUriPath)
+                .isNotEmpty;
+
+            _storyNotifier.routerHasPathMatch = routerHasMatch;
+
+            // If new route path exists, update the story route path.
+            if (routerHasMatch) _storyNotifier.storyRoutePath = currentUriPath;
           });
         });
       }
@@ -226,7 +240,7 @@ class _StorybookState extends State<Storybook> {
                 Provider.value(value: widget.plugins),
                 ChangeNotifierProvider.value(value: _storyNotifier),
                 ...widget.plugins
-                    .map((p) => p.wrapperBuilder)
+                    .map((plugin) => plugin.wrapperBuilder)
                     .whereType<TransitionBuilder>()
                     .map((builder) => SingleChildBuilder(builder: builder)),
               ],
@@ -241,6 +255,10 @@ class _StorybookState extends State<Storybook> {
                               child: Material(
                                 child: SafeArea(
                                   top: false,
+                                  left: context.watch<OverlayController?>() !=
+                                      null,
+                                  right: context.watch<OverlayController?>() !=
+                                      null,
                                   child: CompositedTransformTarget(
                                     link: _layerLink,
                                     child: Directionality(
@@ -305,10 +323,15 @@ class CurrentStory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final story = context.watch<StoryNotifier>().currentStory;
+
     if (story == null) {
       return const Directionality(
         textDirection: TextDirection.ltr,
-        child: Material(child: Center(child: Text('Select story'))),
+        child: Material(
+          child: Center(
+            child: Text('Something went wrong. Page not found.'),
+          ),
+        ),
       );
     }
 
@@ -408,13 +431,16 @@ class _CurrentStoryCode extends StatelessWidget {
       color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
       child: SafeArea(
         bottom: false,
+        left: false,
+        right: false,
         child: Overlay(
           initialEntries: [
             OverlayEntry(
-              builder: (context) => FutureBuilder<String?>(
+              builder: (BuildContext context) => FutureBuilder<String?>(
                 future:
-                    context.read<StoryNotifier>().currentRouteStory?.codeString,
-                builder: (context, snapshot) {
+                    context.read<StoryNotifier>().currentStoryRoute?.codeString,
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(),

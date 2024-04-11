@@ -37,14 +37,29 @@ List<Plugin> initializePlugins({
 typedef OnPluginButtonPressed = void Function(BuildContext context);
 typedef NullableWidgetBuilder = Widget? Function(BuildContext context);
 
+enum PluginId {
+  contents,
+  codeView,
+  directionality,
+  deviceFrame,
+  knobs,
+  layout,
+  themeMode,
+  timeDilation,
+}
+
 class Plugin {
   const Plugin({
+    required this.id,
     this.wrapperBuilder,
     this.panelBuilder,
     this.storyBuilder,
     this.icon,
     this.onPressed,
   });
+
+  /// Plugin identifier.
+  final PluginId id;
 
   /// Optional wrapper that will be inserted above the whole storybook content,
   /// including panel.

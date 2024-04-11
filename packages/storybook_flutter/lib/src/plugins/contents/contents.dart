@@ -13,6 +13,7 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 class ContentsPlugin extends Plugin {
   ContentsPlugin({Widget? logoWidget})
       : super(
+          id: PluginId.contents,
           icon: _buildIcon,
           panelBuilder: (BuildContext context) =>
               _buildPanel(context, logoWidget),
@@ -71,22 +72,6 @@ class _Contents extends StatefulWidget {
 }
 
 class _ContentsState extends State<_Contents> {
-  bool matchSubpages(String? url, String? title) {
-    final List<String> parts = url?.split('/') ?? [];
-
-    if (parts.isEmpty) return false;
-
-    for (int i = 0; i < parts.length; i++) {
-      if (parts[i].isNotEmpty) {
-        final String capitalizedSubpage =
-            parts[i][0].toUpperCase() + parts[i].substring(1);
-        if (title == capitalizedSubpage) return true;
-      }
-    }
-
-    return false;
-  }
-
   Widget _buildExpansionTile({
     required String title,
     required Iterable<Story> stories,
@@ -94,62 +79,73 @@ class _ContentsState extends State<_Contents> {
     EdgeInsetsGeometry? childrenPadding,
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+    final String? storyRoutePath = storyNotifier.storyRoutePath;
 
-    final bool nonRouteStoryFolderOpened = storyNotifier.currentStory != null
-        ? storyNotifier.currentStory!.name.contains(title)
+    bool isCurrentRoutePathFolder = false;
+    if (storyRoutePath != null) {
+      // Check if the current route path contains the current folder name.
+      isCurrentRoutePathFolder = storyNotifier.storyRouteMap.entries
+              .firstWhereOrNull((entry) => entry.key.contains(storyRoutePath))
+              ?.value
+              .contains(title) ??
+          false;
+    }
+
+    // Check if the current story is a non-route-aware and initialStory.
+    final isNonRouteAwareStory = storyNotifier.storyRoutePath == null
+        ? storyNotifier.getInitialStoryName?.contains(title) ?? false
         : false;
 
-    final bool initiallyExpanded = nonRouteStoryFolderOpened ||
-        storyNotifier.searchTerm.isNotEmpty ||
-        matchSubpages(storyNotifier.routeStoryPath, title) ||
-        (stories
-            .map((story) => story.name)
-            .contains(storyNotifier.routeStoryName));
+    final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
+        isNonRouteAwareStory ||
+        isCurrentRoutePathFolder;
 
-    return ExpansionTile(
-      childrenPadding: childrenPadding,
-      initiallyExpanded: initiallyExpanded,
-      onExpansionChanged: (bool expanded) => setState(() {}),
-      leading: Icon(
-        Icons.folder,
-        size: 16,
-        color: Theme.of(context).primaryColor,
-      ),
-      title: Text(title),
-      trailing: Builder(
-        builder: (BuildContext context) => SizedBox(
-          width: 20,
-          height: 20,
-          child: Center(
-            child: AnimatedRotation(
-              duration: const Duration(milliseconds: 200),
-              turns: ExpansionTileController.of(context).isExpanded ? 0.5 : 0,
-              child: const Icon(
-                Icons.expand_more,
-                size: 20,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
+      child: ExpansionTile(
+        childrenPadding: childrenPadding,
+        initiallyExpanded: initiallyExpanded,
+        onExpansionChanged: (bool expanded) => setState(() {}),
+        leading: Icon(
+          Icons.folder,
+          size: 16,
+          color: Theme.of(context).primaryColor,
+        ),
+        title: Text(title),
+        trailing: Builder(
+          builder: (BuildContext context) => SizedBox(
+            width: 20,
+            height: 20,
+            child: Center(
+              child: AnimatedRotation(
+                duration: const Duration(milliseconds: 200),
+                turns: ExpansionTileController.of(context).isExpanded ? 0.5 : 0,
+                child: const Icon(
+                  Icons.expand_more,
+                  size: 20,
+                ),
               ),
             ),
           ),
         ),
+        children: children,
       ),
-      children: children,
     );
   }
 
   Widget _buildStoryTile(Story story) {
+    final ListTileThemeData listTileTheme = Theme.of(context).listTileTheme;
+
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
-
-    final Story? currentStory = storyNotifier.currentStory;
-    final String? description = story.description;
     final GoRouter? router = story.router;
-    final bool isRouteAwareStory = router != null && story.routePath != null;
-    final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
+    final String? description = story.description;
 
+    final bool isRouteAwareStory = router != null && story.routePath != null;
     final bool isSelected = isRouteAwareStory
-        ? (story.name == storyNotifier.routeStoryName ||
-            (storyNotifier.routeStoryPath == '/' &&
+        ? (story.name == storyNotifier.storyRouteName ||
+            (storyNotifier.storyRoutePath == '/' &&
                 story.name == storyNotifier.getInitialStoryName))
-        : story == currentStory;
+        : story == storyNotifier.currentStory;
 
     return CustomListTile(
       selected: isSelected,
@@ -159,7 +155,7 @@ class _ContentsState extends State<_Contents> {
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
-        router?.go(routeStoryPath!);
+        if (isRouteAwareStory) router.go(story.routePath!);
       },
       leading: const Icon(
         Icons.widgets_outlined,
@@ -174,12 +170,9 @@ class _ContentsState extends State<_Contents> {
               padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
               child: Text(
                 description,
-                style:
-                    Theme.of(context).listTileTheme.subtitleTextStyle?.copyWith(
-                          color: isSelected
-                              ? Theme.of(context).listTileTheme.selectedColor
-                              : null,
-                        ),
+                style: listTileTheme.subtitleTextStyle?.copyWith(
+                  color: isSelected ? listTileTheme.selectedColor : null,
+                ),
               ),
             ),
         ],
@@ -258,8 +251,8 @@ class _ContentsState extends State<_Contents> {
                         primary: false,
                         addAutomaticKeepAlives: true,
                         padding: EdgeInsets.only(
-                          bottom: isSidePanel ? 16 : 0,
-                          top: 8,
+                          bottom: isSidePanel ? 16.0 : 0.0,
+                          top: 8.0,
                         ),
                         children: children,
                       ),

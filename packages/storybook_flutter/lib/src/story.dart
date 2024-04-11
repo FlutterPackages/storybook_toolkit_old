@@ -41,7 +41,7 @@ class Story {
 
   /// Optional description of the story.
   ///
-  /// It will be used in the contents as a secondary text.
+  /// It will be used as a secondary text under story name.
   final String? description;
 
   /// Code string to show for the story.
@@ -66,21 +66,29 @@ class StoryNotifier extends ChangeNotifier {
   StoryNotifier(
     List<Story> stories, {
     String? initial,
-    Map<String, String>? routeStoriesMap,
+    Map<String, String>? storyRouteMap,
   })  : _stories = stories.toList(),
         _currentStoryName = initial,
-        _routeStoriesMap = routeStoriesMap ?? {};
+        _storyRouteMap = storyRouteMap ?? {};
+
+  final Map<String, String> _storyRouteMap;
+
+  /// Map of story route path as key and story route name as value.
+  Map<String, String> get storyRouteMap => _storyRouteMap;
 
   String? get getInitialStoryName => _currentStoryName;
 
-  final Map<String, String> _routeStoriesMap;
+  // GoRouter.
+  bool? _routerHasPathMatch;
 
-  String? _getRouteName(String? route) => _routeStoriesMap[route];
+  bool? get routerHasPathMatch => _routerHasPathMatch;
 
-  String? getStoryRoute(String? name) => _routeStoriesMap.entries
-      .firstWhereOrNull((entry) => entry.value == name)
-      ?.key;
+  set routerHasPathMatch(bool? routerHasMatch) {
+    _routerHasPathMatch = routerHasMatch;
+    notifyListeners();
+  }
 
+  // Stories.
   List<Story> _stories;
 
   set stories(List<Story> value) {
@@ -97,32 +105,49 @@ class StoryNotifier extends ChangeNotifier {
               ),
       );
 
-  String? _routeStoryPath;
+  // Story route path.
+  String? _storyRoutePath;
 
-  String? get routeStoryPath => _routeStoryPath;
+  String? get storyRoutePath => _storyRoutePath;
 
-  String? _routeStoryName;
+  set storyRoutePath(String? path) {
+    _storyRoutePath = path;
+    _storyRouteName = _storyRouteMap[path];
+    _currentStoryName = _storyRouteName;
+    notifyListeners();
+  }
 
-  String? get routeStoryName => _routeStoryName;
+  // Story route name.
+  String? _storyRouteName;
 
+  String? get storyRouteName => _storyRouteName;
+
+  // Current story name.
   String? _currentStoryName;
 
-  Story? get currentStory {
-    final index = _stories.indexWhere((s) => s.name == _currentStoryName);
+  set currentStoryName(String? storyName) {
+    _currentStoryName = storyName;
+    _routerHasPathMatch = true;
+    notifyListeners();
+  }
 
+  // Current story.
+  Story? get currentStory {
+    final int index =
+        _stories.indexWhere((story) => story.name == _currentStoryName);
     final Story? story = index != -1 ? _stories[index] : null;
 
-    _routeStoryPath = story?.router?.routeInformationProvider.value.uri.path;
-    _routeStoryName = _getRouteName(_routeStoryPath);
+    _storyRoutePath = story?.router?.routeInformationProvider.value.uri.path;
+    _storyRouteName = _storyRouteMap[_storyRoutePath];
 
     return story;
   }
 
   // After web page refresh, the story is reset, so we need to get the correct
   // last story via router.
-  Story? get currentRouteStory {
-    final index = _stories.indexWhere(
-      (s) => s.name == (_routeStoryName ?? _currentStoryName),
+  Story? get currentStoryRoute {
+    final int index = _stories.indexWhere(
+      (story) => story.name == (_storyRouteName ?? _currentStoryName),
     );
 
     final Story? story = index != -1 ? _stories[index] : null;
@@ -130,18 +155,7 @@ class StoryNotifier extends ChangeNotifier {
     return story;
   }
 
-  String? get currentStoryName => _currentStoryName;
-
-  set currentStoryName(String? storyName) {
-    _currentStoryName = storyName;
-    notifyListeners();
-  }
-
-  set currentStoryFromPath(String? uriPath) {
-    _currentStoryName = _getRouteName(uriPath);
-    notifyListeners();
-  }
-
+  // Search term.
   String _searchTerm = '';
 
   String get searchTerm => _searchTerm;

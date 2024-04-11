@@ -72,6 +72,12 @@ class Option<T> {
 /// See also:
 /// * [SelectKnobValue], which is the knob that this widget represents.
 /// {@endtemplate}
+
+/// A global key for the navigator that is used to display
+/// the select knob dropdown menu.
+final GlobalKey<NavigatorState> selectKnobNavigatorKey =
+    GlobalKey<NavigatorState>();
+
 class SelectKnobWidget<T> extends StatelessWidget {
   /// {@macro select_knob_widget}
   const SelectKnobWidget({
@@ -91,21 +97,19 @@ class SelectKnobWidget<T> extends StatelessWidget {
   final bool enabled;
   final bool nullable;
 
-  static FocusScopeNode? focusScope;
-
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final String? description = this.description;
 
-    focusScope ??= FocusScope.of(context);
-
     return KnobListTile(
       nullable: nullable,
       enabled: enabled,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 4.0,
+      contentPadding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 4.0,
+        left: 16.0,
+        right: 16.0,
       ),
       onToggled: (bool enabled) => context
           .read<KnobsNotifier>()
@@ -116,6 +120,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
           SizedBox(
             height: 40,
             child: DropdownButtonFormField<Option<T>>(
+              key: selectKnobNavigatorKey,
               isExpanded: true,
               borderRadius: BorderRadius.circular(12),
               decoration: InputDecoration(

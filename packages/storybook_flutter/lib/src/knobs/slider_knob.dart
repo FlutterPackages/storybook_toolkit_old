@@ -115,18 +115,41 @@ class SliderKnobWidget extends StatelessWidget {
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.only(top: 4.0),
-              child: Slider(
-                value: value,
-                onChanged: (double value) =>
-                    context.read<KnobsNotifier>().update(label, value),
-                max: max,
-                min: min,
-                divisions: divisions,
-                autofocus: false,
+              padding: const EdgeInsets.only(top: 2.0),
+              child: SliderTheme(
+                data: SliderThemeData(
+                  trackShape: _CustomTrackShape(),
+                ),
+                child: Slider(
+                  value: value,
+                  onChanged: (double value) =>
+                      context.read<KnobsNotifier>().update(label, value),
+                  max: max,
+                  min: min,
+                  divisions: divisions,
+                  autofocus: false,
+                ),
               ),
             ),
           ],
         ),
       );
+}
+
+class _CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double? trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx + 11.0;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final double trackWidth = parentBox.size.width - 21.0;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
+  }
 }

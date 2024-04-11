@@ -63,9 +63,11 @@ class StringKnobWidget extends StatelessWidget {
     return KnobListTile(
       enabled: enabled,
       nullable: nullable,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16.0,
-        vertical: 4.0,
+      contentPadding: const EdgeInsets.only(
+        top: 8.0,
+        bottom: 4.0,
+        left: 16.0,
+        right: 16.0,
       ),
       onToggled: (enabled) =>
           context.read<KnobsNotifier>().update(label, enabled ? value : null),
@@ -76,17 +78,17 @@ class StringKnobWidget extends StatelessWidget {
             height: 40,
             child: TextFormField(
               style: theme.textTheme.bodyMedium,
-              textAlignVertical: TextAlignVertical.center,
               cursorColor: Colors.black87,
-              cursorWidth: 1.8,
+              cursorWidth: 1.2,
+              cursorHeight: 17,
               cursorRadius: const Radius.circular(32),
               decoration: InputDecoration(
                 labelText: label,
-                hoverColor: Colors.transparent,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+                hoverColor: Colors.transparent,
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Theme.of(context).primaryColor,
+                    color: theme.primaryColor,
                     width: 1.25,
                   ),
                   borderRadius: BorderRadius.circular(8),

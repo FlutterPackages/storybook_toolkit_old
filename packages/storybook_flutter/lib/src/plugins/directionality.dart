@@ -6,6 +6,7 @@ class DirectionalityPlugin extends Plugin {
   DirectionalityPlugin({
     ValueSetter<TextDirection>? onTextDirectionChanged,
   }) : super(
+          id: PluginId.directionality,
           icon: _buildIcon,
           wrapperBuilder: _buildWrapper,
           onPressed: (context) => _onPressed(context, onTextDirectionChanged),

@@ -9,6 +9,7 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 class KnobsPlugin extends Plugin {
   const KnobsPlugin()
       : super(
+          id: PluginId.knobs,
           icon: _buildIcon,
           panelBuilder: _buildPanel,
           wrapperBuilder: _buildWrapper,
@@ -31,14 +32,16 @@ Widget _buildPanel(BuildContext context) {
     (it) => it.currentStory,
   );
 
-  final String? currentStoryName = context.read<StoryNotifier>().routeStoryName;
+  final bool isSidePanel = context.watch<OverlayController?>() == null;
+
+  final String? currentStoryName = context.read<StoryNotifier>().storyRouteName;
 
   return items.isEmpty
       ? const Center(child: Text('No knobs'))
       : ListView.separated(
           key: ValueKey(currentStoryName ?? currentStory?.name ?? ''),
           primary: false,
-          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          padding: EdgeInsets.symmetric(vertical: isSidePanel ? 16.0 : 0.0),
           separatorBuilder: (context, index) => const SizedBox(height: 4),
           itemCount: items.length,
           itemBuilder: (context, index) => items[index].build(),
@@ -57,12 +60,12 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
                 Expanded(child: child ?? const SizedBox.shrink()),
                 TapRegion(
                   onTapOutside: (PointerDownEvent? _) {
-                    final BuildContext? selectKnobContext =
-                        SelectKnobWidget.focusScope?.context;
+                    final BuildContext? navigatorContext =
+                        selectKnobNavigatorKey.currentContext;
 
-                    if (selectKnobContext != null &&
-                        Navigator.of(selectKnobContext).canPop()) {
-                      Navigator.of(selectKnobContext).pop();
+                    if (navigatorContext != null &&
+                        Navigator.of(navigatorContext).canPop()) {
+                      Navigator.of(navigatorContext).pop();
                     }
                   },
                   child: RepaintBoundary(
@@ -106,6 +109,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
 
   final StoryNotifier _storyNotifier;
   final Map<String, Map<String, Knob<dynamic>>> _knobs = {};
+
   @override
   late final nullable = _NullableKnobsBuilder(this);
 
@@ -115,7 +119,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
     final story = _storyNotifier.currentStory;
     if (story == null) return;
 
-    final String? currentStoryName = _storyNotifier.routeStoryName;
+    final String? currentStoryName = _storyNotifier.storyRouteName;
 
     _knobs[currentStoryName ?? story.name]![label]!.value = value;
 
@@ -125,26 +129,26 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
   T get<T>(String label) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? storyRouteName = _storyNotifier.storyRouteName;
 
-    return _knobs[routeStoryName ?? story.name]![label]!.value as T;
+    return _knobs[storyRouteName ?? story.name]![label]!.value as T;
   }
 
   List<Knob<dynamic>> all() {
     final story = _storyNotifier.currentStory;
     if (story == null) return [];
 
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? storyRouteName = _storyNotifier.storyRouteName;
 
-    return _knobs[routeStoryName ?? story.name]?.values.toList() ?? [];
+    return _knobs[storyRouteName ?? story.name]?.values.toList() ?? [];
   }
 
   T _addKnob<T>(Knob<T> value) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? storyRouteName = _storyNotifier.storyRouteName;
 
-    final knobs = _knobs.putIfAbsent(routeStoryName ?? story.name, () => {});
+    final knobs = _knobs.putIfAbsent(storyRouteName ?? story.name, () => {});
 
     return (knobs.putIfAbsent(value.label, () {
       Future.microtask(notifyListeners);
