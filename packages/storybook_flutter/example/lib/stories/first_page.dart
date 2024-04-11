@@ -38,6 +38,54 @@ class FirstPage extends StatelessWidget {
       ],
     );
 
+    final buttonColorKnob = context.knobs.nullable.options(
+      label: 'Button color',
+      initial: Colors.orange,
+      description: 'Color for Third Page button.',
+      options: [
+        const Option(
+          label: 'Orange',
+          value: Colors.orange,
+        ),
+        const Option(
+          label: 'Blue',
+          value: Colors.blue,
+        ),
+        const Option(
+          label: 'Blue Grey',
+          value: Colors.blueGrey,
+        ),
+        const Option(
+          label: 'Light Green',
+          value: Colors.lightGreen,
+        ),
+      ],
+    );
+
+    final fabColorKnob = context.knobs.nullable.options(
+      label: 'FAB color',
+      initial: Colors.pink,
+      description: 'Color for Third Page FAB.',
+      options: [
+        const Option(
+          label: 'Pink',
+          value: Colors.pink,
+        ),
+        const Option(
+          label: 'Indigo',
+          value: Colors.indigo,
+        ),
+        const Option(
+          label: 'Blue Grey',
+          value: Colors.blueGrey,
+        ),
+        const Option(
+          label: 'Lime',
+          value: Colors.lime,
+        ),
+      ],
+    );
+
     final elevationKnob = context.knobs.nullable.slider(
       label: 'elevation',
       initial: 4,
@@ -71,7 +119,7 @@ class FirstPage extends StatelessWidget {
       ),
       body: Center(
         child: MaterialButton(
-          color: Colors.deepPurple.shade100,
+          color: buttonColorKnob,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
@@ -93,6 +141,7 @@ class FirstPage extends StatelessWidget {
       ),
       floatingActionButton: showFabKnob
           ? FloatingActionButton(
+              backgroundColor: fabColorKnob,
               onPressed: () {},
               child: const Icon(Icons.add),
             )

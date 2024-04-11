@@ -73,11 +73,6 @@ class Option<T> {
 /// * [SelectKnobValue], which is the knob that this widget represents.
 /// {@endtemplate}
 
-/// A global key for the navigator that is used to display
-/// the select knob dropdown menu.
-final GlobalKey<NavigatorState> selectKnobNavigatorKey =
-    GlobalKey<NavigatorState>();
-
 class SelectKnobWidget<T> extends StatelessWidget {
   /// {@macro select_knob_widget}
   const SelectKnobWidget({
@@ -120,7 +115,6 @@ class SelectKnobWidget<T> extends StatelessWidget {
           SizedBox(
             height: 40,
             child: DropdownButtonFormField<Option<T>>(
-              key: selectKnobNavigatorKey,
               isExpanded: true,
               borderRadius: BorderRadius.circular(12),
               decoration: InputDecoration(

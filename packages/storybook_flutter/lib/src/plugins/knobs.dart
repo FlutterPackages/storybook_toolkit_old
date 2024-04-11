@@ -58,33 +58,22 @@ Widget _buildWrapper(BuildContext context, Widget? child) =>
             child: Row(
               children: [
                 Expanded(child: child ?? const SizedBox.shrink()),
-                TapRegion(
-                  onTapOutside: (PointerDownEvent? _) {
-                    final BuildContext? navigatorContext =
-                        selectKnobNavigatorKey.currentContext;
-
-                    if (navigatorContext != null &&
-                        Navigator.of(navigatorContext).canPop()) {
-                      Navigator.of(navigatorContext).pop();
-                    }
-                  },
-                  child: RepaintBoundary(
-                    child: Material(
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            left: BorderSide(color: Colors.black12),
-                          ),
+                RepaintBoundary(
+                  child: Material(
+                    child: DecoratedBox(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          left: BorderSide(color: Colors.black12),
                         ),
-                        child: SafeArea(
-                          left: false,
-                          child: SizedBox(
-                            width: 250,
-                            child: Navigator(
-                              onGenerateRoute: (_) => PageRouteBuilder<void>(
-                                pageBuilder: (BuildContext context, _, __) =>
-                                    _buildPanel(context),
-                              ),
+                      ),
+                      child: SafeArea(
+                        left: false,
+                        child: SizedBox(
+                          width: 250,
+                          child: Navigator(
+                            onGenerateRoute: (_) => PageRouteBuilder<void>(
+                              pageBuilder: (BuildContext context, _, __) =>
+                                  _buildPanel(context),
                             ),
                           ),
                         ),
