@@ -152,18 +152,16 @@ class Storybook extends StatefulWidget {
   /// Logo widget to use in the left side panel above search field.
   final Widget? logoWidget;
 
-  /// Route notifier to use when routing from inside the story.
-  static StoryRouteNotifier storyRouterNotifier = StoryRouteNotifier();
-
   @override
   State<Storybook> createState() => _StorybookState();
 }
 
-/// For internal use to manage focus in Storybook.
+/// For internal use to manage focus in _
 final FocusScopeNode storyFocusNode = FocusScopeNode();
 
 class _StorybookState extends State<Storybook> {
   late final StoryNotifier _storyNotifier;
+  late final StoryRouteNotifier _storyRouteNotifier;
 
   final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
   final LayerLink _layerLink = LayerLink();
@@ -178,9 +176,11 @@ class _StorybookState extends State<Storybook> {
           .map((story) => MapEntry(story.routePath!, story.name)),
     );
 
+    _storyRouteNotifier = StoryRouteNotifier();
+
     _storyNotifier = StoryNotifier(
       widget.stories,
-      routeStoriesMap: routeMap,
+      storyRouteMap: routeMap,
       initial: widget.initialStory,
     );
 
@@ -189,13 +189,13 @@ class _StorybookState extends State<Storybook> {
           widget.stories.firstWhere((element) => element.router != null);
 
       story.router!.routerDelegate.addListener(() {
-        Storybook.storyRouterNotifier.currentStoryRoute =
+        _storyRouteNotifier.currentStoryRoutePath =
             story.router!.routerDelegate.currentConfiguration.uri.path;
       });
     }
 
     WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-      _storyNotifier.listenToStoryRouteNotifier(Storybook.storyRouterNotifier);
+      _storyNotifier.listenToStoryRouteNotifier(_storyRouteNotifier);
     });
   }
 
@@ -203,7 +203,7 @@ class _StorybookState extends State<Storybook> {
   void dispose() {
     _storyNotifier.dispose();
     storyFocusNode.dispose();
-    Storybook.storyRouterNotifier.dispose();
+    _storyRouteNotifier.dispose();
 
     super.dispose();
   }
@@ -232,7 +232,7 @@ class _StorybookState extends State<Storybook> {
                 Provider.value(value: widget.plugins),
                 ChangeNotifierProvider.value(value: _storyNotifier),
                 ChangeNotifierProvider.value(
-                  value: Storybook.storyRouterNotifier,
+                  value: _storyRouteNotifier,
                 ),
                 ...widget.plugins
                     .map((plugin) => plugin.wrapperBuilder)
@@ -433,7 +433,7 @@ class _CurrentStoryCode extends StatelessWidget {
             OverlayEntry(
               builder: (context) => FutureBuilder<String?>(
                 future:
-                    context.read<StoryNotifier>().currentRouteStory?.codeString,
+                    context.read<StoryNotifier>().currentStoryRoute?.codeString,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(

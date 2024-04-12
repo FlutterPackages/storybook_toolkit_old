@@ -98,7 +98,9 @@ class _ContentsState extends State<_Contents> {
 
     final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
         matchSubpages(storyNotifier.routeStoryPath, title) ||
-        (stories.map((s) => s.name).contains(storyNotifier.routeStoryName));
+        (stories
+            .map((story) => story.name)
+            .contains(storyNotifier.storyRouteName));
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
@@ -138,13 +140,13 @@ class _ContentsState extends State<_Contents> {
 
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
     final Story? currentStory = storyNotifier.currentStory;
-    final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
+    final String? storyRoutePath = storyNotifier.getStoryRoutePath(story.name);
     final GoRouter? router = story.router;
     final String? description = story.description;
     final bool isRouteAwareStory = router != null && story.routePath != null;
 
     final bool isSelected = isRouteAwareStory
-        ? (story.name == storyNotifier.routeStoryName ||
+        ? (story.name == storyNotifier.storyRouteName ||
                 (storyNotifier.routeStoryPath == '/' &&
                     story.name == storyNotifier.getInitialStoryName)) &&
             currentStory?.router != null
@@ -158,7 +160,7 @@ class _ContentsState extends State<_Contents> {
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
-        router?.go(routeStoryPath!);
+        router?.go(storyRoutePath!);
       },
       leading: const Icon(
         Icons.widgets_outlined,

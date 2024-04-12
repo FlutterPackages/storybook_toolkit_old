@@ -34,7 +34,7 @@ Widget _buildPanel(BuildContext context) {
 
   final bool isSidePanel = context.watch<OverlayController?>() == null;
 
-  final String? currentStoryName = context.read<StoryNotifier>().routeStoryName;
+  final String? currentStoryName = context.read<StoryNotifier>().storyRouteName;
 
   return items.isEmpty
       ? const Center(child: Text('No knobs'))
@@ -108,7 +108,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
     final story = _storyNotifier.currentStory;
     if (story == null) return;
 
-    final String? currentStoryName = _storyNotifier.routeStoryName;
+    final String? currentStoryName = _storyNotifier.storyRouteName;
 
     _knobs[currentStoryName ?? story.name]![label]!.value = value;
 
@@ -118,7 +118,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
   T get<T>(String label) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? routeStoryName = _storyNotifier.storyRouteName;
 
     return _knobs[routeStoryName ?? story.name]![label]!.value as T;
   }
@@ -127,7 +127,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
     final story = _storyNotifier.currentStory;
     if (story == null) return [];
 
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? routeStoryName = _storyNotifier.storyRouteName;
 
     return _knobs[routeStoryName ?? story.name]?.values.toList() ?? [];
   }
@@ -135,7 +135,7 @@ class KnobsNotifier extends ChangeNotifier implements KnobsBuilder {
   T _addKnob<T>(Knob<T> value) {
     // ignore: avoid-non-null-assertion, having null here is a bug
     final story = _storyNotifier.currentStory!;
-    final String? routeStoryName = _storyNotifier.routeStoryName;
+    final String? routeStoryName = _storyNotifier.storyRouteName;
 
     final knobs = _knobs.putIfAbsent(routeStoryName ?? story.name, () => {});
 
