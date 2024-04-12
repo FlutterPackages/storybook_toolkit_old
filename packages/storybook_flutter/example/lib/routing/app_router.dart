@@ -34,10 +34,6 @@ GoRouter router = GoRouter(
   },
   routes: <RouteBase>[
     GoRoute(
-      path: '/',
-      redirect: (BuildContext _, GoRouterState __) => firstPagePath,
-    ),
-    GoRoute(
       path: firstPagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: FirstPage()),

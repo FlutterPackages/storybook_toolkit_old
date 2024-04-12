@@ -75,12 +75,15 @@ class StoryNotifier extends ChangeNotifier {
 
   final Map<String, String> _storyRouteMap;
 
+  Map<String, String> get storyRouteMap => _storyRouteMap;
+
   String? _getStoryRouteName(String? route) => _storyRouteMap[route];
 
   String? getStoryRoutePath(String? name) => _storyRouteMap.entries
       .firstWhereOrNull((entry) => entry.value == name)
       ?.key;
 
+  // Stories.
   List<Story> _stories;
 
   set stories(List<Story> value) {
@@ -98,6 +101,7 @@ class StoryNotifier extends ChangeNotifier {
               ),
       );
 
+  // Story route path.
   String? _routeStoryPath;
 
   String? get routeStoryPath => _routeStoryPath;
@@ -108,11 +112,20 @@ class StoryNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Story route name.
   String? _storyRouteName;
 
   String? get storyRouteName => _storyRouteName;
 
+  // Current Story name.
   String? _currentStoryName;
+
+  String? get currentStoryName => _currentStoryName;
+
+  set currentStoryName(String? value) {
+    _currentStoryName = value;
+    notifyListeners();
+  }
 
   Story? get currentStory {
     final index =
@@ -138,13 +151,7 @@ class StoryNotifier extends ChangeNotifier {
     return story;
   }
 
-  String? get currentStoryName => _currentStoryName;
-
-  set currentStoryName(String? value) {
-    _currentStoryName = value;
-    notifyListeners();
-  }
-
+  // Search term.
   String _searchTerm = '';
 
   String get searchTerm => _searchTerm;

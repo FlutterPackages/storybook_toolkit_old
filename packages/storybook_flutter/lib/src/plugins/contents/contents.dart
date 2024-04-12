@@ -72,22 +72,6 @@ class _Contents extends StatefulWidget {
 }
 
 class _ContentsState extends State<_Contents> {
-  bool matchSubpages(String? url, String? title) {
-    final List<String> parts = url?.split('/') ?? [];
-
-    if (parts.isEmpty) return false;
-
-    for (int i = 0; i < parts.length; i++) {
-      if (parts[i].isNotEmpty) {
-        final String capitalizedSubpage =
-            parts[i][0].toUpperCase() + parts[i].substring(1);
-        if (title == capitalizedSubpage) return true;
-      }
-    }
-
-    return false;
-  }
-
   Widget _buildExpansionTile({
     required String title,
     required Iterable<Story> stories,
@@ -95,12 +79,22 @@ class _ContentsState extends State<_Contents> {
     EdgeInsetsGeometry? childrenPadding,
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+    final String? routeStoryPath = storyNotifier.routeStoryPath;
 
-    final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
-        matchSubpages(storyNotifier.routeStoryPath, title) ||
-        (stories
-            .map((story) => story.name)
-            .contains(storyNotifier.storyRouteName));
+    bool storyNameContainsFolder = false;
+    if (routeStoryPath != null && routeStoryPath.isNotEmpty) {
+      storyNameContainsFolder = storyNotifier.storyRouteMap.entries
+              .firstWhereOrNull((entry) => entry.key.contains(routeStoryPath))
+              ?.value
+              .contains(title) ??
+          false;
+    } else {
+      storyNameContainsFolder =
+          storyNotifier.getInitialStoryName?.contains(title) ?? false;
+    }
+
+    final bool initiallyExpanded =
+        storyNotifier.searchTerm.isNotEmpty || storyNameContainsFolder;
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
@@ -137,20 +131,20 @@ class _ContentsState extends State<_Contents> {
 
   Widget _buildStoryTile(Story story) {
     final ListTileThemeData listTileTheme = Theme.of(context).listTileTheme;
-
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
-    final Story? currentStory = storyNotifier.currentStory;
-    final String? storyRoutePath = storyNotifier.getStoryRoutePath(story.name);
     final GoRouter? router = story.router;
-    final String? description = story.description;
+
+    final String? storyTileRoutePath =
+        storyNotifier.getStoryRoutePath(story.name);
+    final Story? currentSelectedStory = storyNotifier.currentStory;
     final bool isRouteAwareStory = router != null && story.routePath != null;
 
     final bool isSelected = isRouteAwareStory
         ? (story.name == storyNotifier.storyRouteName ||
                 (storyNotifier.routeStoryPath == '/' &&
                     story.name == storyNotifier.getInitialStoryName)) &&
-            currentStory?.router != null
-        : story == currentStory;
+            currentSelectedStory?.router != null
+        : story == currentSelectedStory;
 
     return CustomListTile(
       selected: isSelected,
@@ -160,7 +154,7 @@ class _ContentsState extends State<_Contents> {
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
-        router?.go(storyRoutePath!);
+        router?.go(storyTileRoutePath!);
       },
       leading: const Icon(
         Icons.widgets_outlined,
@@ -170,11 +164,11 @@ class _ContentsState extends State<_Contents> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(story.title),
-          if (description != null)
+          if (story.description != null)
             Padding(
               padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
               child: Text(
-                description,
+                story.description!,
                 style: listTileTheme.subtitleTextStyle?.copyWith(
                   color: isSelected ? listTileTheme.selectedColor : null,
                 ),
