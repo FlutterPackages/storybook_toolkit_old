@@ -189,12 +189,8 @@ class _StorybookState extends State<Storybook> {
           widget.stories.firstWhere((element) => element.router != null);
 
       story.router!.routerDelegate.addListener(() {
-        WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-          final String currentUriPath =
-              story.router!.routerDelegate.currentConfiguration.uri.path;
-
-          _storyNotifier.routeStoryPath = currentUriPath;
-        });
+        Storybook.storyRouterNotifier.currentStoryRoute =
+            story.router!.routerDelegate.currentConfiguration.uri.path;
       });
     }
 
