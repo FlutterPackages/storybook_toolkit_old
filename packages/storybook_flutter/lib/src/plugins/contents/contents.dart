@@ -72,6 +72,22 @@ class _Contents extends StatefulWidget {
 }
 
 class _ContentsState extends State<_Contents> {
+  bool matchSubpages(String? url, String? title) {
+    final List<String> parts = url?.split('/') ?? [];
+
+    if (parts.isEmpty) return false;
+
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].isNotEmpty) {
+        final String capitalizedSubpage =
+            parts[i][0].toUpperCase() + parts[i].substring(1);
+        if (title == capitalizedSubpage) return true;
+      }
+    }
+
+    return false;
+  }
+
   Widget _buildExpansionTile({
     required String title,
     required Iterable<Story> stories,
@@ -79,26 +95,10 @@ class _ContentsState extends State<_Contents> {
     EdgeInsetsGeometry? childrenPadding,
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
-    final String? storyRoutePath = storyNotifier.storyRoutePath;
-
-    bool isCurrentRoutePathFolder = false;
-    if (storyRoutePath != null) {
-      // Check if the current route path contains the current folder name.
-      isCurrentRoutePathFolder = storyNotifier.storyRouteMap.entries
-              .firstWhereOrNull((entry) => entry.key.contains(storyRoutePath))
-              ?.value
-              .contains(title) ??
-          false;
-    }
-
-    // Check if the current story is a non-route-aware and initialStory.
-    final isNonRouteAwareStory = storyNotifier.storyRoutePath == null
-        ? storyNotifier.getInitialStoryName?.contains(title) ?? false
-        : false;
 
     final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
-        isNonRouteAwareStory ||
-        isCurrentRoutePathFolder;
+        matchSubpages(storyNotifier.routeStoryPath, title) ||
+        (stories.map((s) => s.name).contains(storyNotifier.routeStoryName));
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
@@ -137,15 +137,18 @@ class _ContentsState extends State<_Contents> {
     final ListTileThemeData listTileTheme = Theme.of(context).listTileTheme;
 
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+    final Story? currentStory = storyNotifier.currentStory;
+    final String? routeStoryPath = storyNotifier.getStoryRoute(story.name);
     final GoRouter? router = story.router;
     final String? description = story.description;
-
     final bool isRouteAwareStory = router != null && story.routePath != null;
+
     final bool isSelected = isRouteAwareStory
-        ? (story.name == storyNotifier.storyRouteName ||
-            (storyNotifier.storyRoutePath == '/' &&
-                story.name == storyNotifier.getInitialStoryName))
-        : story == storyNotifier.currentStory;
+        ? (story.name == storyNotifier.routeStoryName ||
+                (storyNotifier.routeStoryPath == '/' &&
+                    story.name == storyNotifier.getInitialStoryName)) &&
+            currentStory?.router != null
+        : story == currentStory;
 
     return CustomListTile(
       selected: isSelected,
@@ -155,7 +158,7 @@ class _ContentsState extends State<_Contents> {
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
-        if (isRouteAwareStory) router.go(story.routePath!);
+        router?.go(routeStoryPath!);
       },
       leading: const Icon(
         Icons.widgets_outlined,
@@ -180,11 +183,7 @@ class _ContentsState extends State<_Contents> {
     );
   }
 
-  List<Widget> _buildListChildren(
-    BuildContext context,
-    List<Story> stories, {
-    int depth = 1,
-  }) {
+  List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
     const double sectionPadding = 16.0;
 
     final EdgeInsetsGeometry childrenPadding = EdgeInsets.only(
@@ -207,7 +206,6 @@ class _ContentsState extends State<_Contents> {
                     title: key,
                     stories: grouped[key]!,
                     children: _buildListChildren(
-                      context,
                       grouped[key]!,
                       depth: depth + 1,
                     ),
@@ -223,7 +221,6 @@ class _ContentsState extends State<_Contents> {
     final String searchTerm = context.watch<StoryNotifier>().searchTerm;
 
     final List<Widget> children = _buildListChildren(
-      context,
       context.watch<StoryNotifier>().stories,
     );
 

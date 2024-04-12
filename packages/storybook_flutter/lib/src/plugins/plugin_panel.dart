@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/plugin.dart';
-import 'package:storybook_flutter/src/story.dart';
 
 const String _pluginPanelGroupId = 'plugin_panel';
 
@@ -153,12 +152,7 @@ class _PluginPanelState extends State<PluginPanel> {
                 groupId: _pluginPanelGroupId,
                 child: IconButton(
                   icon: plugin.$2,
-                  onPressed:
-                      context.watch<StoryNotifier>().routerHasPathMatch ?? true
-                          ? () => _onPluginButtonPressed(plugin.$1)
-                          : plugin.$1.id == PluginId.contents
-                              ? () => _onPluginButtonPressed(plugin.$1)
-                              : null,
+                  onPressed: () => _onPluginButtonPressed(plugin.$1),
                 ),
               ),
             )

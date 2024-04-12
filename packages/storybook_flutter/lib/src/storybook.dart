@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
@@ -153,6 +152,9 @@ class Storybook extends StatefulWidget {
   /// Logo widget to use in the left side panel above search field.
   final Widget? logoWidget;
 
+  /// Route notifier to use when routing from inside the story.
+  static StoryRouteNotifier storyRouterNotifier = StoryRouteNotifier();
+
   @override
   State<Storybook> createState() => _StorybookState();
 }
@@ -178,40 +180,34 @@ class _StorybookState extends State<Storybook> {
 
     _storyNotifier = StoryNotifier(
       widget.stories,
-      storyRouteMap: routeMap,
+      routeStoriesMap: routeMap,
       initial: widget.initialStory,
     );
 
     if (routeMap.isNotEmpty) {
-      final GoRouter? router =
-          widget.stories.firstWhere((element) => element.router != null).router;
+      final Story story =
+          widget.stories.firstWhere((element) => element.router != null);
 
-      if (router != null) {
-        router.routerDelegate.addListener(() {
-          WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-            final String currentUriPath =
-                router.routerDelegate.currentConfiguration.uri.path;
+      story.router!.routerDelegate.addListener(() {
+        WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+          final String currentUriPath =
+              story.router!.routerDelegate.currentConfiguration.uri.path;
 
-            // Check if router has a match for the entered url path.
-            final bool routerHasMatch = router
-                .routeInformationParser.configuration
-                .findMatch(currentUriPath)
-                .isNotEmpty;
-
-            _storyNotifier.routerHasPathMatch = routerHasMatch;
-
-            // If new route path exists, update the story route path.
-            if (routerHasMatch) _storyNotifier.storyRoutePath = currentUriPath;
-          });
+          _storyNotifier.routeStoryPath = currentUriPath;
         });
-      }
+      });
     }
+
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      _storyNotifier.listenToStoryRouteNotifier(Storybook.storyRouterNotifier);
+    });
   }
 
   @override
   void dispose() {
     _storyNotifier.dispose();
     storyFocusNode.dispose();
+    Storybook.storyRouterNotifier.dispose();
 
     super.dispose();
   }
@@ -239,6 +235,9 @@ class _StorybookState extends State<Storybook> {
               children: [
                 Provider.value(value: widget.plugins),
                 ChangeNotifierProvider.value(value: _storyNotifier),
+                ChangeNotifierProvider.value(
+                  value: Storybook.storyRouterNotifier,
+                ),
                 ...widget.plugins
                     .map((plugin) => plugin.wrapperBuilder)
                     .whereType<TransitionBuilder>()
@@ -436,11 +435,10 @@ class _CurrentStoryCode extends StatelessWidget {
         child: Overlay(
           initialEntries: [
             OverlayEntry(
-              builder: (BuildContext context) => FutureBuilder<String?>(
+              builder: (context) => FutureBuilder<String?>(
                 future:
-                    context.read<StoryNotifier>().currentStoryRoute?.codeString,
-                builder:
-                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                    context.read<StoryNotifier>().currentRouteStory?.codeString,
+                builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(),
