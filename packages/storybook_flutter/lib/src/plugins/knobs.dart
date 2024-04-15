@@ -48,32 +48,45 @@ Widget _buildPanel(BuildContext context) {
         );
 }
 
-Widget _buildWrapper(BuildContext context, Widget? child) =>
-    ChangeNotifierProvider(
-      create: (context) => KnobsNotifier(context.read<StoryNotifier>()),
-      child: switch (context.watch<EffectiveLayout>()) {
-        EffectiveLayout.compact => child,
+Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => SelectKnobDropdownStateManager(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => KnobsNotifier(context.read<StoryNotifier>()),
+        ),
+      ],
+      builder: (context, _) => switch (context.watch<EffectiveLayout>()) {
+        EffectiveLayout.compact => child!,
         EffectiveLayout.expanded => Directionality(
             textDirection: TextDirection.ltr,
             child: Row(
               children: [
                 Expanded(child: child ?? const SizedBox.shrink()),
-                RepaintBoundary(
-                  child: Material(
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          left: BorderSide(color: Colors.black12),
+                TapRegion(
+                  onTapOutside: (PointerDownEvent _) {
+                    context
+                        .read<SelectKnobDropdownStateManager>()
+                        .popDropdown();
+                  },
+                  child: RepaintBoundary(
+                    child: Material(
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(color: Colors.black12),
+                          ),
                         ),
-                      ),
-                      child: SafeArea(
-                        left: false,
-                        child: SizedBox(
-                          width: 250,
-                          child: Navigator(
-                            onGenerateRoute: (_) => PageRouteBuilder<void>(
-                              pageBuilder: (BuildContext context, _, __) =>
-                                  _buildPanel(context),
+                        child: SafeArea(
+                          left: false,
+                          child: SizedBox(
+                            width: 250,
+                            child: Navigator(
+                              onGenerateRoute: (_) => PageRouteBuilder<void>(
+                                pageBuilder: (BuildContext context, _, __) =>
+                                    _buildPanel(context),
+                              ),
                             ),
                           ),
                         ),

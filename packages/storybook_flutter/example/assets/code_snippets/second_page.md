@@ -16,10 +16,7 @@ class SecondPage extends StatelessWidget {
           child: MaterialButton(
             color: Colors.deepPurple.shade100,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            onPressed: () {
-              context.go(firstRoute);
-              Storybook.storyRouterNotifier.currentStoryRoute = firstRoute;
-            },
+            onPressed: () => context.go(firstRoute),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [

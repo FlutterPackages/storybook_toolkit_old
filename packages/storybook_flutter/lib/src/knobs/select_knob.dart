@@ -127,7 +127,12 @@ class SelectKnobWidget<T> extends StatelessWidget {
               value: values.firstWhereOrNull(
                 (Option<T> option) => option.value == value,
               ),
-              onTap: () => FocusScope.of(context).focusedChild?.unfocus(),
+              onTap: () {
+                FocusScope.of(context).focusedChild?.unfocus();
+
+                context.read<SelectKnobDropdownStateManager>().context =
+                    context;
+              },
               selectedItemBuilder: (BuildContext context) => [
                 for (final option in values)
                   Padding(
@@ -197,5 +202,21 @@ class SelectKnobWidget<T> extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class SelectKnobDropdownStateManager extends ChangeNotifier {
+  BuildContext? _context;
+
+  set context(BuildContext context) {
+    _context = context;
+  }
+
+  void popDropdown() {
+    final bool contextIsMounted = _context != null && _context!.mounted;
+
+    if (contextIsMounted && Navigator.of(_context!).canPop()) {
+      Navigator.of(_context!).pop();
+    }
   }
 }

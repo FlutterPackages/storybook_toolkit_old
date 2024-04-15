@@ -16,10 +16,7 @@ class ThirdPage extends StatelessWidget {
           child: MaterialButton(
             color: Colors.deepPurple.shade100,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            onPressed: () {
-              context.go(secondRoute);
-              Storybook.storyRouterNotifier.currentStoryRoute = secondRoute;
-            },
+            onPressed: () => context.go(secondRoute),
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
