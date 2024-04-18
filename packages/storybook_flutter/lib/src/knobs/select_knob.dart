@@ -100,12 +100,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
     return KnobListTile(
       nullable: nullable,
       enabled: enabled,
-      contentPadding: const EdgeInsets.only(
-        top: 8.0,
-        bottom: 4.0,
-        left: 16.0,
-        right: 16.0,
-      ),
+      contentPadding: inputKnobContentPadding,
       onToggled: (bool enabled) => context
           .read<KnobsNotifier>()
           .update<T?>(label, enabled ? value : null),
@@ -116,6 +111,12 @@ class SelectKnobWidget<T> extends StatelessWidget {
             height: 40,
             child: DropdownButtonFormField<Option<T>>(
               isExpanded: true,
+              icon: const Center(
+                child: Icon(
+                  Icons.arrow_drop_down_rounded,
+                  color: Colors.black26,
+                ),
+              ),
               borderRadius: BorderRadius.circular(12),
               decoration: InputDecoration(
                 labelText: label,
@@ -133,6 +134,11 @@ class SelectKnobWidget<T> extends StatelessWidget {
                 context.read<SelectKnobDropdownStateManager>().context =
                     context;
               },
+              onChanged: (Option<T>? option) {
+                if (option != null) {
+                  context.read<KnobsNotifier>().update<T>(label, option.value);
+                }
+              },
               selectedItemBuilder: (BuildContext context) => [
                 for (final option in values)
                   Padding(
@@ -148,47 +154,47 @@ class SelectKnobWidget<T> extends StatelessWidget {
                 for (final option in values)
                   DropdownMenuItem<Option<T>>(
                     value: option,
-                    child: Column(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Text(
-                                option.label,
-                                style: theme.listTileTheme.titleTextStyle
+                            Text(
+                              option.label,
+                              style:
+                                  theme.listTileTheme.titleTextStyle?.copyWith(
+                                color: value == option.value
+                                    ? theme.listTileTheme.selectedColor
+                                    : null,
+                              ),
+                            ),
+                            if (option.description != null)
+                              Text(
+                                option.description!,
+                                style: theme.listTileTheme.subtitleTextStyle
                                     ?.copyWith(
                                   color: value == option.value
                                       ? theme.listTileTheme.selectedColor
                                       : null,
                                 ),
                               ),
-                            ),
-                            if (value == option.value) ...[
-                              const SizedBox(width: 8),
-                              Icon(
-                                Icons.check,
-                                size: 16,
-                                color: theme.listTileTheme.selectedColor,
-                              ),
-                            ],
                           ],
                         ),
-                        if (option.description != null)
-                          Text(
-                            // ignore: avoid-non-null-assertion, checked for null
-                            option.description!,
-                            style: theme.listTileTheme.subtitleTextStyle,
+                        if (value == option.value) ...[
+                          const SizedBox(width: 8),
+                          Center(
+                            child: Icon(
+                              Icons.check,
+                              size: 16,
+                              color: theme.listTileTheme.selectedColor,
+                            ),
                           ),
+                        ],
                       ],
                     ),
                   ),
               ],
-              onChanged: (Option<T>? option) {
-                if (option != null) {
-                  context.read<KnobsNotifier>().update<T>(label, option.value);
-                }
-              },
             ),
           ),
           if (description != null)

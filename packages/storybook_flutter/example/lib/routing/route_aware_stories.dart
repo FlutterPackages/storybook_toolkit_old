@@ -7,6 +7,7 @@ List<Story> routeAwareStories = [
     name: 'Routing/First page',
     routePath: firstPagePath,
     router: router,
+    description: 'First page description',
     codeString: fetchAsset('first_page.md'),
   ),
   Story.asRoute(

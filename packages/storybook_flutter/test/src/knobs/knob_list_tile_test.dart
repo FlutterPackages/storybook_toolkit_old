@@ -26,10 +26,17 @@ void main() {
         );
 
     group('when knob is nullable', () {
-      testWidgets('contains SwitchListTile', (tester) async {
+      testWidgets('contains KnobListTile', (tester) async {
         await tester.pumpWidget(buildSubject(nullable: true));
 
-        expect(find.byType(SwitchListTile), findsOneWidget);
+        final knobListTileFinder = find.byType(KnobListTile);
+
+        expect(knobListTileFinder, findsOneWidget);
+
+        final KnobListTile? knobListTile =
+            tester.widget(knobListTileFinder) as KnobListTile?;
+
+        expect(knobListTile!.onToggled, isNotNull);
       });
 
       testWidgets('contains title', (tester) async {

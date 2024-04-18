@@ -88,7 +88,7 @@ class CustomListTile extends StatelessWidget {
             isThreeLine: isThreeLine,
             dense: dense,
             visualDensity: visualDensity,
-            shape: shape ?? const RoundedRectangleBorder(),
+            shape: shape,
             contentPadding: contentPadding,
             enabled: enabled,
             onTap: onTap,

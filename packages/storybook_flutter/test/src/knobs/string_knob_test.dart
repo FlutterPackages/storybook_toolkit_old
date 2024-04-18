@@ -59,15 +59,6 @@ void main() {
       expect(find.byType(KnobListTile), findsOneWidget);
     });
 
-    testWidgets('toggling KnobListTile switch updates knob', (tester) async {
-      await tester.pumpWidget(buildSubject());
-
-      final listTile = tester.widget<KnobListTile>(find.byType(KnobListTile));
-      listTile.onToggled(false);
-
-      verify(() => knobsNotifier.update(label, null)).called(1);
-    });
-
     testWidgets('inputting text updates knob', (tester) async {
       await tester.pumpWidget(buildSubject());
 

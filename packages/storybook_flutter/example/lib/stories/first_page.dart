@@ -22,10 +22,12 @@ class FirstPage extends StatelessWidget {
         Option(
           label: 'DeepPurple 100',
           value: Colors.deepPurple.shade100,
+          description: 'This is description',
         ),
         const Option(
           label: 'Deep Purple',
           value: Colors.deepPurple,
+          description: 'This is description',
         ),
         const Option(
           label: 'Blue Grey',

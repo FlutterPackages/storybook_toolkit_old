@@ -108,7 +108,7 @@ class SliderKnobWidget extends StatelessWidget {
             Text('$label (${formatValue(value)})'),
             if (description != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 4.0, top: 2.0),
+                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
                 child: Text(
                   description!,
                   style: Theme.of(context).listTileTheme.subtitleTextStyle,
@@ -119,6 +119,9 @@ class SliderKnobWidget extends StatelessWidget {
               child: SliderTheme(
                 data: SliderThemeData(
                   trackShape: _CustomTrackShape(),
+                  trackHeight: 2.0,
+                  thumbShape:
+                      const RoundSliderThumbShape(enabledThumbRadius: 8.0),
                 ),
                 child: Slider(
                   value: value,
@@ -146,10 +149,10 @@ class _CustomTrackShape extends RoundedRectSliderTrackShape {
     bool isDiscrete = false,
   }) {
     final double? trackHeight = sliderTheme.trackHeight;
-    final double trackLeft = offset.dx + 11.0;
+    final double trackLeft = offset.dx + 10.0;
     final double trackTop =
         offset.dy + (parentBox.size.height - trackHeight!) / 2;
-    final double trackWidth = parentBox.size.width - 21.0;
+    final double trackWidth = parentBox.size.width - 18.0;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

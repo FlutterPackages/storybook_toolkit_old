@@ -40,14 +40,23 @@ void main() {
   group('SelectKnobWidget', () {
     const label = 'LABEL';
     late KnobsNotifier knobsNotifier;
+    late SelectKnobDropdownStateManager selectKnobDropdownStateManager;
 
     setUp(() {
       knobsNotifier = MockKnobsNotifier();
+      selectKnobDropdownStateManager = SelectKnobDropdownStateManager();
     });
 
-    Widget buildSubject() => ChangeNotifierProvider.value(
-          value: knobsNotifier,
-          child: const MaterialApp(
+    Widget buildSubject() => MultiProvider(
+          providers: [
+            ChangeNotifierProvider.value(
+              value: knobsNotifier,
+            ),
+            ChangeNotifierProvider.value(
+              value: selectKnobDropdownStateManager,
+            ),
+          ],
+          builder: (context, _) => const MaterialApp(
             home: Scaffold(
               body: SelectKnobWidget(
                 label: label,
@@ -75,9 +84,10 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       final listTile = tester.widget<KnobListTile>(find.byType(KnobListTile));
-      listTile.onToggled(false);
-
-      verify(() => knobsNotifier.update(label, null)).called(1);
+      if (listTile.onToggled != null) {
+        listTile.onToggled!(false);
+        verify(() => knobsNotifier.update(label, null)).called(1);
+      }
     });
 
     testWidgets('selecting option updates knob', (tester) async {

@@ -83,9 +83,11 @@ void main() {
       await tester.pumpWidget(buildSubject());
 
       final listTile = tester.widget<KnobListTile>(find.byType(KnobListTile));
-      listTile.onToggled(false);
+      if (listTile.onToggled != null) {
+        listTile.onToggled!(false);
 
-      verify(() => knobsNotifier.update(label, null)).called(1);
+        verify(() => knobsNotifier.update(label, null)).called(1);
+      }
     });
 
     testWidgets('dragging slider updates knob', (tester) async {

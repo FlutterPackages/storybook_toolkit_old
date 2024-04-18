@@ -63,47 +63,40 @@ class StringKnobWidget extends StatelessWidget {
     return KnobListTile(
       enabled: enabled,
       nullable: nullable,
-      contentPadding: const EdgeInsets.only(
-        top: 8.0,
-        bottom: 4.0,
-        left: 16.0,
-        right: 16.0,
-      ),
-      onToggled: (enabled) =>
-          context.read<KnobsNotifier>().update(label, enabled ? value : null),
+      contentPadding: inputKnobContentPadding,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 40,
-            child: TextFormField(
-              style: theme.textTheme.bodyMedium,
-              cursorColor: Colors.black87,
-              cursorWidth: 1.2,
-              cursorHeight: 17,
-              cursorRadius: const Radius.circular(32),
-              decoration: InputDecoration(
-                labelText: label,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
-                hoverColor: Colors.transparent,
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: theme.primaryColor,
-                    width: 1.25,
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+          TextFormField(
+            style: theme.textTheme.bodyMedium,
+            cursorColor: Colors.black87,
+            cursorWidth: 1.2,
+            cursorHeight: 17,
+            cursorRadius: const Radius.circular(32),
+            decoration: InputDecoration(
+              labelText: label,
+              constraints: BoxConstraints.tight(
+                const Size.fromHeight(40),
               ),
-              textInputAction: TextInputAction.done,
-              initialValue: value,
-              onChanged: (String value) => context.read<KnobsNotifier>().update(
-                    label,
-                    value,
-                  ),
+              contentPadding: inputKnobInputPadding,
+              hoverColor: Colors.transparent,
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: theme.primaryColor,
+                  width: 1.25,
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
+            textInputAction: TextInputAction.done,
+            initialValue: value,
+            onChanged: (String value) => context.read<KnobsNotifier>().update(
+                  label,
+                  value,
+                ),
           ),
           if (description != null)
             Padding(

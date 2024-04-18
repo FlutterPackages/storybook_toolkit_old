@@ -24,20 +24,16 @@ class _ThemeWrapperBuilder {
           ),
           listTileTheme: ListTileThemeData(
             minLeadingWidth: 0,
-            minVerticalPadding: 4,
-            horizontalTitleGap: 12,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+            minVerticalPadding: 4.0,
+            horizontalTitleGap: 5.0,
+            selectedColor: Theme.of(context).primaryColor,
+            selectedTileColor: Theme.of(context).focusColor.withAlpha(18),
             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
             titleTextStyle: Theme.of(context).textTheme.bodyMedium,
             subtitleTextStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
                   height: 1.2,
                   color: Colors.black54,
                 ),
-            selectedColor: Theme.of(context).primaryColor,
-            selectedTileColor: Theme.of(context).focusColor.withAlpha(18),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
-            ),
           ),
         ),
         child: child,
@@ -152,12 +148,12 @@ class Storybook extends StatefulWidget {
   /// Logo widget to use in the left side panel above search field.
   final Widget? logoWidget;
 
+  /// For internal use to manage focus in Storybook.
+  static late FocusScopeNode? storyFocusNode;
+
   @override
   State<Storybook> createState() => _StorybookState();
 }
-
-/// For internal use to manage focus in _
-final FocusScopeNode storyFocusNode = FocusScopeNode();
 
 class _StorybookState extends State<Storybook> {
   late final StoryNotifier _storyNotifier;
@@ -169,6 +165,8 @@ class _StorybookState extends State<Storybook> {
   @override
   void initState() {
     super.initState();
+
+    Storybook.storyFocusNode = FocusScopeNode();
 
     final routeMap = Map.fromEntries(
       widget.stories
@@ -202,8 +200,8 @@ class _StorybookState extends State<Storybook> {
   @override
   void dispose() {
     _storyNotifier.dispose();
-    storyFocusNode.dispose();
     _storyRouteNotifier.dispose();
+    Storybook.storyFocusNode?.dispose();
 
     super.dispose();
   }
@@ -358,7 +356,7 @@ class CurrentStory extends StatelessWidget {
           Directionality(
             textDirection: context.watch<TextDirectionNotifier>().value,
             child: FocusScope(
-              node: storyFocusNode,
+              node: Storybook.storyFocusNode,
               child: context.watch<CodeViewNotifier>().value
                   ? Stack(
                       children: [
@@ -379,7 +377,7 @@ class CurrentStory extends StatelessWidget {
           story.wrapperBuilder ?? wrapperBuilder;
 
       child = FocusScope(
-        node: storyFocusNode,
+        node: Storybook.storyFocusNode,
         child: effectiveWrapperBuilder(
           context,
           context.watch<CodeViewNotifier>().value

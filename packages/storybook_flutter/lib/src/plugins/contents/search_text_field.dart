@@ -35,7 +35,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
           final ThemeData theme = Theme.of(context);
 
           return Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16.0),
             child: SizedBox(
               height: 40,
               child: TextFormField(

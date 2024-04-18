@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/common/custom_list_tile.dart';
+import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/knobs.dart';
 
@@ -60,22 +60,28 @@ class BooleanKnobWidget extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final String? description = this.description;
 
-    return CustomListTile(
-      onTap: () => context.read<KnobsNotifier>().update(label, !value),
+    return KnobListTile(
+      enabled: value,
+      nullable: nullable,
+      onToggled: (bool value) =>
+          context.read<KnobsNotifier>().update(label, value),
       leading: SizedBox(
-        width: 20,
-        child: Checkbox(
-          overlayColor: MaterialStateProperty.all(Colors.transparent),
-          value: enabled ? value : null,
-          side: BorderSide(
-            color: theme.unselectedWidgetColor,
-            width: 1.3,
+        width: 16,
+        child: Transform.scale(
+          scale: 0.9,
+          child: Checkbox(
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
+            value: enabled ? value : null,
+            side: BorderSide(
+              color: theme.unselectedWidgetColor,
+              width: 1.2,
+            ),
+            shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            onChanged: (bool? value) =>
+                context.read<KnobsNotifier>().update(label, value),
           ),
-          shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          onChanged: (bool? value) =>
-              context.read<KnobsNotifier>().update(label, value),
         ),
       ),
       title: Column(

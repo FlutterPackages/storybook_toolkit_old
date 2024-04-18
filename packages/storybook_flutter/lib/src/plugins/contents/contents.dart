@@ -76,7 +76,7 @@ class _ContentsState extends State<_Contents> {
     required String title,
     required Iterable<Story> stories,
     required List<Widget> children,
-    EdgeInsetsGeometry? childrenPadding,
+    required double sectionLeftPadding,
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
     final String? routeStoryPath = storyNotifier.routeStoryPath;
@@ -96,40 +96,49 @@ class _ContentsState extends State<_Contents> {
     final bool initiallyExpanded =
         storyNotifier.searchTerm.isNotEmpty || storyNameContainsFolder;
 
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
-      child: ExpansionTile(
-        childrenPadding: childrenPadding,
-        initiallyExpanded: initiallyExpanded,
-        onExpansionChanged: (bool expanded) => setState(() {}),
-        leading: Icon(
-          Icons.folder,
-          size: 16,
-          color: Theme.of(context).primaryColor,
-        ),
-        title: Text(title),
-        trailing: Builder(
-          builder: (BuildContext context) => SizedBox(
-            width: 20,
-            height: 20,
-            child: Center(
-              child: AnimatedRotation(
-                duration: const Duration(milliseconds: 200),
-                turns: ExpansionTileController.of(context).isExpanded ? 0.5 : 0,
-                child: const Icon(
-                  Icons.expand_more,
-                  size: 20,
+    return Material(
+      color: Colors.transparent,
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
+        child: ExpansionTile(
+          initiallyExpanded: initiallyExpanded,
+          tilePadding: EdgeInsets.only(left: sectionLeftPadding, right: 24.0),
+          onExpansionChanged: (bool expanded) => setState(() {}),
+          leading: SizedBox(
+            width: 40,
+            height: 24,
+            child: Row(
+              children: [
+                Builder(
+                  builder: (BuildContext context) => AnimatedRotation(
+                    duration: const Duration(milliseconds: 200),
+                    turns: ExpansionTileController.of(context).isExpanded
+                        ? 0.25
+                        : 0,
+                    child: const Icon(
+                      Icons.arrow_right_rounded,
+                      size: 24,
+                      color: Colors.black26,
+                    ),
+                  ),
                 ),
-              ),
+                Icon(
+                  Icons.folder,
+                  size: 16,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ],
             ),
           ),
+          trailing: const SizedBox.shrink(),
+          title: Text(title),
+          children: children,
         ),
-        children: children,
       ),
     );
   }
 
-  Widget _buildStoryTile(Story story) {
+  Widget _buildStoryTile(Story story, double leftPadding) {
     final ListTileThemeData listTileTheme = Theme.of(context).listTileTheme;
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
     final GoRouter? router = story.router;
@@ -148,17 +157,19 @@ class _ContentsState extends State<_Contents> {
 
     return CustomListTile(
       selected: isSelected,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.horizontal(left: Radius.circular(8)),
-      ),
+      contentPadding: EdgeInsets.only(left: leftPadding, right: 24.0),
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
         router?.go(storyTileRoutePath!);
       },
-      leading: const Icon(
-        Icons.widgets_outlined,
-        size: 14,
+      leading: const SizedBox(
+        height: 16,
+        width: 16,
+        child: Icon(
+          Icons.widgets_outlined,
+          size: 14,
+        ),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,25 +191,25 @@ class _ContentsState extends State<_Contents> {
   }
 
   List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
-    const double sectionPadding = 16.0;
+    const double sectionLeftPadding = 20.0;
+    const double storyLeftPadding = 24.0;
 
-    final EdgeInsetsGeometry childrenPadding = EdgeInsets.only(
-      left: depth + sectionPadding,
-    );
+    final double leftPadding = (depth - 1) * sectionLeftPadding;
 
     final Map<String, List<Story>> grouped = stories.groupListsBy(
       (story) => story.path.length == depth ? '' : story.path[depth - 1],
     );
 
-    final List<Widget> sectionStories =
-        (grouped[''] ?? []).map(_buildStoryTile).toList();
+    final List<Widget> sectionStories = (grouped[''] ?? [])
+        .map((story) => _buildStoryTile(story, leftPadding + storyLeftPadding))
+        .toList();
 
     return stories.length == sectionStories.length
         ? sectionStories
         : [
             ...grouped.keys.where((key) => key.isNotEmpty).map(
                   (key) => _buildExpansionTile(
-                    childrenPadding: childrenPadding,
+                    sectionLeftPadding: leftPadding,
                     title: key,
                     stories: grouped[key]!,
                     children: _buildListChildren(
@@ -214,11 +225,9 @@ class _ContentsState extends State<_Contents> {
   @override
   Widget build(BuildContext context) {
     final bool isSidePanel = context.watch<OverlayController?>() == null;
-    final String searchTerm = context.watch<StoryNotifier>().searchTerm;
+    final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    final List<Widget> children = _buildListChildren(
-      context.watch<StoryNotifier>().stories,
-    );
+    final List<Widget> children = _buildListChildren(storyNotifier.stories);
 
     return SafeArea(
       top: isSidePanel,
@@ -230,26 +239,17 @@ class _ContentsState extends State<_Contents> {
           if (widget.logoWidget != null && isSidePanel) widget.logoWidget!,
           const SearchTextField(),
           Expanded(
-            key: ValueKey(searchTerm),
-            child: children.isEmpty && searchTerm.isNotEmpty
+            key: ValueKey(storyNotifier.searchTerm),
+            child: children.isEmpty && storyNotifier.searchTerm.isNotEmpty
                 ? const Center(child: Text('Nothing found'))
-                : Material(
-                    child: DecoratedBox(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          right: BorderSide(color: Colors.black12),
-                        ),
-                      ),
-                      child: ListView(
-                        primary: false,
-                        addAutomaticKeepAlives: true,
-                        padding: EdgeInsets.only(
-                          bottom: isSidePanel ? 16.0 : 0.0,
-                          top: 8.0,
-                        ),
-                        children: children,
-                      ),
+                : ListView(
+                    primary: false,
+                    addAutomaticKeepAlives: true,
+                    padding: EdgeInsets.only(
+                      bottom: isSidePanel ? 16.0 : 0.0,
+                      top: 8.0,
                     ),
+                    children: children,
                   ),
           ),
         ],

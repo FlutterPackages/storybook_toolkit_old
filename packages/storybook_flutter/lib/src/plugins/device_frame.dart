@@ -53,7 +53,10 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
       FocusManager.instance.primaryFocus?.unfocus();
     },
     onTapInside: (PointerDownEvent _) {
-      if (!storyFocusNode.hasFocus) storyFocusNode.requestFocus();
+      if (Storybook.storyFocusNode != null &&
+          !Storybook.storyFocusNode!.hasFocus) {
+        Storybook.storyFocusNode!.requestFocus();
+      }
     },
     child: child ?? const SizedBox.shrink(),
   );
@@ -128,6 +131,12 @@ Widget _buildWrapper(
 }
 
 Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
+  const double horizontalTitleGap = 8.0;
+  const EdgeInsetsGeometry descriptionPadding =
+      EdgeInsets.only(top: 2.0, bottom: 4.0);
+  const EdgeInsetsGeometry contentPadding =
+      EdgeInsets.symmetric(horizontal: 16.0);
+
   final currentDevice = context.watch<DeviceFrameDataNotifier>().value;
 
   final ThemeData theme = Theme.of(context);
@@ -138,12 +147,14 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
   final devices = (deviceInfoList ?? Devices.all).map(
     (DeviceInfo device) {
-      // We skip this device because it has a misaligned frame.
+      // Skip this device because it has a misaligned frame.
       if (device.identifier == Devices.ios.iPhone14Pro.identifier) {
         return const SizedBox.shrink();
       }
 
       return CustomListTile(
+        contentPadding: contentPadding,
+        horizontalTitleGap: horizontalTitleGap,
         selected: currentDevice.device == device,
         onTap: () {
           update(
@@ -170,7 +181,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
               overflow: TextOverflow.ellipsis,
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              padding: descriptionPadding,
               child: Text(
                 '${device.screenSize.width.toInt()}×'
                 '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
@@ -194,11 +205,12 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
     primary: false,
     padding: EdgeInsets.zero,
     separatorBuilder: (BuildContext context, index) => index == 1
-        ? Container(height: 1, color: theme.dividerColor)
+        ? Divider(height: 8, color: theme.dividerColor)
         : const SizedBox(),
     itemBuilder: (BuildContext context, int index) {
       if (index == 0) {
         return CustomListTile(
+          contentPadding: contentPadding,
           onTap: () {
             update(
               (
@@ -213,7 +225,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             children: [
               const Text('Frame visibility'),
               Padding(
-                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                padding: descriptionPadding,
                 child: Text(
                   currentDevice.isFrameVisible ? 'visible' : 'hidden',
                   style: listTileTheme.subtitleTextStyle,
@@ -226,6 +238,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
       if (index == 1) {
         return CustomListTile(
+          contentPadding: contentPadding,
           onTap: () {
             final orientation =
                 currentDevice.orientation == Orientation.portrait
@@ -244,7 +257,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             children: [
               const Text('Orientation'),
               Padding(
-                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                padding: descriptionPadding,
                 child: Text(
                   currentDevice.orientation.name,
                   style: listTileTheme.subtitleTextStyle,
@@ -256,30 +269,28 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
       }
 
       if (index == 2) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: CustomListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 4.0,
-              horizontal: 16.0,
-            ),
-            selected: currentDevice.device == null,
-            onTap: () => update(
-              (
-                device: null,
-                isFrameVisible: currentDevice.isFrameVisible,
-                orientation: currentDevice.orientation,
-              ),
-            ),
-            title: const Text('No device'),
-            leading: const CircleAvatar(
-              radius: 16,
-              child: Icon(Icons.phonelink_off, size: 16),
-            ),
-            trailing: currentDevice.device == null
-                ? const Icon(Icons.check, size: 16)
-                : null,
+        return CustomListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 4.0,
+            horizontal: 16.0,
           ),
+          horizontalTitleGap: horizontalTitleGap,
+          selected: currentDevice.device == null,
+          onTap: () => update(
+            (
+              device: null,
+              isFrameVisible: currentDevice.isFrameVisible,
+              orientation: currentDevice.orientation,
+            ),
+          ),
+          title: const Text('No device'),
+          leading: const CircleAvatar(
+            radius: 16,
+            child: Icon(Icons.phonelink_off, size: 16),
+          ),
+          trailing: currentDevice.device == null
+              ? const Icon(Icons.check, size: 16)
+              : null,
         );
       }
 
