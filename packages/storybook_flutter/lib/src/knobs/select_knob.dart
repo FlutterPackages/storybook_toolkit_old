@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -100,7 +101,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
     return KnobListTile(
       nullable: nullable,
       enabled: enabled,
-      contentPadding: inputKnobContentPadding,
+      contentPadding: inputKnobTilePadding,
       onToggled: (bool enabled) => context
           .read<KnobsNotifier>()
           .update<T?>(label, enabled ? value : null),
@@ -108,22 +109,23 @@ class SelectKnobWidget<T> extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: 40,
+            height: containerHeight,
             child: DropdownButtonFormField<Option<T>>(
               isExpanded: true,
-              icon: const Center(
+              icon: const Padding(
+                padding: inputTextPadding,
                 child: Icon(
                   Icons.arrow_drop_down_rounded,
                   color: Colors.black26,
                 ),
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: borderRadius,
               decoration: InputDecoration(
                 labelText: label,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+                border: const OutlineInputBorder(borderRadius: borderRadius),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: knobsHorizontalTitleGap,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
               ),
               value: values.firstWhereOrNull(
                 (Option<T> option) => option.value == value,
@@ -142,7 +144,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
               selectedItemBuilder: (BuildContext context) => [
                 for (final option in values)
                   Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
+                    padding: inputTextPadding,
                     child: Text(
                       option.label,
                       overflow: TextOverflow.ellipsis,
@@ -199,7 +201,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
           ),
           if (description != null)
             Padding(
-              padding: const EdgeInsets.only(top: 4.0),
+              padding: inputKnobDescriptionPadding,
               child: Text(
                 description,
                 style: theme.listTileTheme.subtitleTextStyle,

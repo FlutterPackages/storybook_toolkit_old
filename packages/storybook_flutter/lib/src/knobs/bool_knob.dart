@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/knobs.dart';
@@ -76,9 +77,7 @@ class BooleanKnobWidget extends StatelessWidget {
               color: theme.unselectedWidgetColor,
               width: 1.2,
             ),
-            shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
+            shape: const ContinuousRectangleBorder(borderRadius: borderRadius),
             onChanged: (bool? value) =>
                 context.read<KnobsNotifier>().update(label, value),
           ),
@@ -91,7 +90,7 @@ class BooleanKnobWidget extends StatelessWidget {
           Text(label),
           if (description != null)
             Padding(
-              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              padding: defaultDescriptionPadding,
               child: Text(
                 description,
                 style: theme.listTileTheme.subtitleTextStyle,

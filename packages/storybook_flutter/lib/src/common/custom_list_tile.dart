@@ -111,7 +111,7 @@ class CustomListTile extends StatelessWidget {
             minLeadingWidth: minLeadingWidth,
             onFocusChange: onFocusChange,
             iconColor: iconColor,
-            minVerticalPadding: minLeadingWidth,
+            minVerticalPadding: minVerticalPadding,
             splashColor: splashColor,
             subtitleTextStyle: subtitleTextStyle,
             titleTextStyle: titleTextStyle,

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/src/plugins/theme/code_view_syntax_theme.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -451,7 +452,7 @@ class _CurrentStoryCode extends StatelessWidget {
                         child: AnySyntaxHighlighter(
                           snapshot.data ?? '',
                           fontSize: 12,
-                          padding: 16,
+                          padding: defaultPaddingValue,
                           hasCopyButton: true,
                           isSelectableText: isDesktopWeb,
                           reservedWordSets: const {'dart'},

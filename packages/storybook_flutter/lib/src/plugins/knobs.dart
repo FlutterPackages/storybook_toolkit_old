@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -81,7 +82,7 @@ Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
                         child: SafeArea(
                           left: false,
                           child: SizedBox(
-                            width: 250,
+                            width: panelWidth,
                             child: Navigator(
                               onGenerateRoute: (_) => PageRouteBuilder<void>(
                                 pageBuilder: (BuildContext context, _, __) =>

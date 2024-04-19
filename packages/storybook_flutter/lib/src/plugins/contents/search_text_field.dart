@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/story.dart';
 
 class SearchTextField extends StatefulWidget {
@@ -35,29 +36,30 @@ class _SearchTextFieldState extends State<SearchTextField> {
           final ThemeData theme = Theme.of(context);
 
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: defaultPaddingValue,
+              vertical: 16.0,
+            ),
             child: SizedBox(
-              height: 40,
+              height: containerHeight,
               child: TextFormField(
                 controller: _searchController,
                 style: theme.textTheme.bodyMedium,
-                cursorColor: Colors.black87,
-                cursorWidth: 1.2,
-                cursorHeight: 17,
-                cursorRadius: const Radius.circular(32),
+                cursorColor: cursorColor,
+                cursorWidth: cursorWidth,
+                cursorHeight: cursorHeight,
+                cursorRadius: cursorRadius,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.zero,
                   hoverColor: Colors.transparent,
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: theme.primaryColor,
-                      width: 1.25,
+                      width: focusedBorderWidth,
                     ),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: borderRadius,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  border: const OutlineInputBorder(borderRadius: borderRadius),
                   hintText: 'Search...',
                   prefixIcon: const Icon(Icons.search, size: 20),
                   suffixIcon: _searchController.text.isNotEmpty

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/knobs.dart';
@@ -108,14 +109,14 @@ class SliderKnobWidget extends StatelessWidget {
             Text('$label (${formatValue(value)})'),
             if (description != null)
               Padding(
-                padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+                padding: defaultDescriptionPadding,
                 child: Text(
                   description!,
                   style: Theme.of(context).listTileTheme.subtitleTextStyle,
                 ),
               ),
             Padding(
-              padding: const EdgeInsets.only(top: 2.0),
+              padding: sliderPadding,
               child: SliderTheme(
                 data: SliderThemeData(
                   trackShape: _CustomTrackShape(),

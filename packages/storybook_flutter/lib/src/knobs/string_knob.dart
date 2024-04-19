@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
 import 'package:storybook_flutter/src/knobs/knobs.dart';
 import 'package:storybook_flutter/src/plugins/knobs.dart';
@@ -63,33 +64,33 @@ class StringKnobWidget extends StatelessWidget {
     return KnobListTile(
       enabled: enabled,
       nullable: nullable,
-      contentPadding: inputKnobContentPadding,
+      contentPadding: inputKnobTilePadding,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
             style: theme.textTheme.bodyMedium,
-            cursorColor: Colors.black87,
-            cursorWidth: 1.2,
-            cursorHeight: 17,
-            cursorRadius: const Radius.circular(32),
+            cursorColor: cursorColor,
+            cursorWidth: cursorWidth,
+            cursorHeight: cursorHeight,
+            cursorRadius: cursorRadius,
             decoration: InputDecoration(
               labelText: label,
               constraints: BoxConstraints.tight(
-                const Size.fromHeight(40),
+                const Size.fromHeight(containerHeight),
               ),
-              contentPadding: inputKnobInputPadding,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: knobsHorizontalTitleGap,
+              ),
               hoverColor: Colors.transparent,
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: theme.primaryColor,
-                  width: 1.25,
+                  width: focusedBorderWidth,
                 ),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: borderRadius,
               ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+              border: const OutlineInputBorder(borderRadius: borderRadius),
             ),
             textInputAction: TextInputAction.done,
             initialValue: value,
@@ -100,7 +101,7 @@ class StringKnobWidget extends StatelessWidget {
           ),
           if (description != null)
             Padding(
-              padding: const EdgeInsets.only(top: 4.0),
+              padding: inputKnobDescriptionPadding,
               child: Text(
                 description,
                 style: theme.listTileTheme.subtitleTextStyle,

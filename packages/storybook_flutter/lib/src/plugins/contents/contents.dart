@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/common/custom_list_tile.dart';
 import 'package:storybook_flutter/src/plugins/contents/search_text_field.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -43,7 +44,7 @@ Widget _buildWrapper(BuildContext context, Widget? child, Widget? logoWidget) =>
                   ),
                 ),
                 child: SizedBox(
-                  width: 250,
+                  width: panelWidth,
                   child: Navigator(
                     onGenerateRoute: (_) => PageRouteBuilder<void>(
                       pageBuilder: (_, __, ___) => _Contents(logoWidget),
@@ -102,7 +103,10 @@ class _ContentsState extends State<_Contents> {
         data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
         child: ExpansionTile(
           initiallyExpanded: initiallyExpanded,
-          tilePadding: EdgeInsets.only(left: sectionLeftPadding, right: 24.0),
+          tilePadding: EdgeInsets.only(
+            left: sectionLeftPadding,
+            right: defaultPaddingValue,
+          ),
           onExpansionChanged: (bool expanded) => setState(() {}),
           leading: SizedBox(
             width: 40,
@@ -157,7 +161,10 @@ class _ContentsState extends State<_Contents> {
 
     return CustomListTile(
       selected: isSelected,
-      contentPadding: EdgeInsets.only(left: leftPadding, right: 24.0),
+      contentPadding: EdgeInsets.only(
+        left: leftPadding,
+        right: defaultPaddingValue,
+      ),
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
@@ -177,7 +184,7 @@ class _ContentsState extends State<_Contents> {
           Text(story.title),
           if (story.description != null)
             Padding(
-              padding: const EdgeInsets.only(top: 2.0, bottom: 4.0),
+              padding: defaultDescriptionPadding,
               child: Text(
                 story.description!,
                 style: listTileTheme.subtitleTextStyle?.copyWith(
@@ -192,7 +199,7 @@ class _ContentsState extends State<_Contents> {
 
   List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
     const double sectionLeftPadding = 20.0;
-    const double storyLeftPadding = 24.0;
+    const double storyLeftPadding = defaultPaddingValue;
 
     final double leftPadding = (depth - 1) * sectionLeftPadding;
 

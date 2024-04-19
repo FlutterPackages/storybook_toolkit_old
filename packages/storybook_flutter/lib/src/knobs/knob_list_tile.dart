@@ -1,15 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/common/custom_list_tile.dart';
-
-const defaultContentPadding = EdgeInsets.symmetric(horizontal: 24.0);
-const inputKnobInputPadding = EdgeInsets.symmetric(horizontal: 12.0);
-const inputKnobContentPadding = EdgeInsets.only(
-  top: 8.0,
-  bottom: 4.0,
-  left: 24.0,
-  right: 24.0,
-);
 
 class KnobListTile extends StatefulWidget {
   const KnobListTile({
@@ -38,7 +29,6 @@ class KnobListTile extends StatefulWidget {
 class _KnobListTileState extends State<KnobListTile> {
   @override
   Widget build(BuildContext context) {
-    const double horizontalTitleGap = 12.0;
     final onToggled = widget.onToggled != null
         ? () => widget.onToggled!(!widget.enabled)
         : null;
@@ -46,21 +36,18 @@ class _KnobListTileState extends State<KnobListTile> {
     return widget.nullable
         ? CustomListTile(
             isThreeLine: true,
-            horizontalTitleGap: horizontalTitleGap,
-            contentPadding: widget.contentPadding ?? defaultContentPadding,
+            horizontalTitleGap: knobsHorizontalTitleGap,
+            contentPadding: widget.contentPadding ?? defaultTilePadding,
             onTap: onToggled,
             leading: SizedBox(
               width: 32,
               child: Transform.scale(
                 scale: 0.6,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: Switch(
-                    overlayColor: MaterialStateProperty.all(Colors.transparent),
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    value: widget.enabled,
-                    onChanged: widget.onToggled,
-                  ),
+                child: Switch(
+                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  value: widget.enabled,
+                  onChanged: widget.onToggled,
                 ),
               ),
             ),
@@ -83,8 +70,8 @@ class _KnobListTileState extends State<KnobListTile> {
           )
         : CustomListTile(
             isThreeLine: false,
-            horizontalTitleGap: horizontalTitleGap,
-            contentPadding: widget.contentPadding ?? defaultContentPadding,
+            horizontalTitleGap: knobsHorizontalTitleGap,
+            contentPadding: widget.contentPadding ?? defaultTilePadding,
             onTap: onToggled,
             leading: widget.leading,
             title: widget.title,

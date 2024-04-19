@@ -4,7 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 const String _pluginPanelGroupId = 'plugin_panel';
 
@@ -68,7 +69,7 @@ class _PluginPanelState extends State<PluginPanel> {
                 children: [
                   Positioned(
                     height: kIsWeb ? 400 : mobileDialogHeight,
-                    width: 250,
+                    width: panelWidth,
                     child: CompositedTransformFollower(
                       link: widget.layerLink,
                       // Linked to target's bottom left corner to avoid the
@@ -87,10 +88,7 @@ class _PluginPanelState extends State<PluginPanel> {
                           clipBehavior: Clip.antiAlias,
                           shadowColor: Colors.black87,
                           shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(8),
-                              topRight: Radius.circular(8),
-                            ),
+                            borderRadius: BorderRadius.vertical(top: radius),
                           ),
                           insetAnimationDuration: Duration.zero,
                           insetPadding:

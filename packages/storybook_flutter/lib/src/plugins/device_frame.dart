@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/common/custom_list_tile.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
@@ -73,7 +74,7 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
                 child: context.watch<CodeViewNotifier>().value
                     ? focusableChild
                     : Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(defaultPaddingValue),
                         child: DeviceFrame(
                           device: device,
                           isFrameVisible: deviceFrame.isFrameVisible,
@@ -131,12 +132,6 @@ Widget _buildWrapper(
 }
 
 Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
-  const double horizontalTitleGap = 8.0;
-  const EdgeInsetsGeometry descriptionPadding =
-      EdgeInsets.only(top: 2.0, bottom: 4.0);
-  const EdgeInsetsGeometry contentPadding =
-      EdgeInsets.symmetric(horizontal: 16.0);
-
   final currentDevice = context.watch<DeviceFrameDataNotifier>().value;
 
   final ThemeData theme = Theme.of(context);
@@ -153,8 +148,8 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
       }
 
       return CustomListTile(
-        contentPadding: contentPadding,
-        horizontalTitleGap: horizontalTitleGap,
+        contentPadding: deviceFrameTilePadding,
+        horizontalTitleGap: deviceFrameHorizontalTitleGap,
         selected: currentDevice.device == device,
         onTap: () {
           update(
@@ -181,7 +176,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
               overflow: TextOverflow.ellipsis,
             ),
             Padding(
-              padding: descriptionPadding,
+              padding: deviceFrameDescriptionPadding,
               child: Text(
                 '${device.screenSize.width.toInt()}×'
                 '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
@@ -210,7 +205,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
     itemBuilder: (BuildContext context, int index) {
       if (index == 0) {
         return CustomListTile(
-          contentPadding: contentPadding,
+          contentPadding: deviceFrameTilePadding,
           onTap: () {
             update(
               (
@@ -225,7 +220,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             children: [
               const Text('Frame visibility'),
               Padding(
-                padding: descriptionPadding,
+                padding: deviceFrameDescriptionPadding,
                 child: Text(
                   currentDevice.isFrameVisible ? 'visible' : 'hidden',
                   style: listTileTheme.subtitleTextStyle,
@@ -238,7 +233,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
       if (index == 1) {
         return CustomListTile(
-          contentPadding: contentPadding,
+          contentPadding: deviceFrameTilePadding,
           onTap: () {
             final orientation =
                 currentDevice.orientation == Orientation.portrait
@@ -257,7 +252,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             children: [
               const Text('Orientation'),
               Padding(
-                padding: descriptionPadding,
+                padding: deviceFrameDescriptionPadding,
                 child: Text(
                   currentDevice.orientation.name,
                   style: listTileTheme.subtitleTextStyle,
@@ -270,11 +265,9 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
       if (index == 2) {
         return CustomListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: 4.0,
-            horizontal: 16.0,
-          ),
-          horizontalTitleGap: horizontalTitleGap,
+          minVerticalPadding: 12,
+          contentPadding: deviceFrameTilePadding,
+          horizontalTitleGap: deviceFrameHorizontalTitleGap,
           selected: currentDevice.device == null,
           onTap: () => update(
             (
