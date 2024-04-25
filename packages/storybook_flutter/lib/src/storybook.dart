@@ -213,11 +213,7 @@ class _StorybookState extends State<Storybook> {
     }
   }
 
-  void _listener() {
-    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-      _setExpansionTileState();
-    });
-  }
+  void _listener() => Future.microtask(_setExpansionTileState);
 
   @override
   void initState() {
