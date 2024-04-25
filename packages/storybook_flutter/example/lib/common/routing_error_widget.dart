@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:storybook_flutter_example/routing/app_router.dart';
+import 'package:storybook_flutter_example/stories/home_page.dart';
 
 class RoutingErrorWidget extends StatelessWidget {
   const RoutingErrorWidget({super.key});
@@ -16,7 +16,7 @@ class RoutingErrorWidget extends StatelessWidget {
               const Text('Page not found'),
               const SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () => context.go(firstPagePath),
+                onPressed: () => context.go(HomePage.homePagePath),
                 child: const Text('Go back home'),
               ),
             ],

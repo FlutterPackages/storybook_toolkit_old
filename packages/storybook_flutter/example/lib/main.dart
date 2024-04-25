@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:go_router/go_router.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:storybook_flutter_example/common/logo_widget.dart';
 import 'package:storybook_flutter_example/routing/route_aware_stories.dart';
 import 'package:storybook_flutter_example/stories/counter_page.dart';
 import 'package:storybook_flutter_example/stories/scaffold_page.dart';
 
 void main() {
   usePathUrlStrategy();
-  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   runApp(const MyApp());
 }
@@ -18,31 +17,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Storybook(
-        initialStory: 'Routing/First page',
+        initialStory: 'Home',
         plugins: initializePlugins(enableCodeView: true),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
-        logoWidget: const SizedBox(
-          height: 64,
-          child: Padding(
-            padding: EdgeInsets.only(top: 16.0, bottom: 0, left: 16, right: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                FlutterLogo(
-                  size: 50,
-                ),
-                Text(
-                  'Flutter',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromARGB(255, 117, 117, 117),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        logoWidget: const LogoWidget(),
         stories: [
           ...routeAwareStories,
           Story(

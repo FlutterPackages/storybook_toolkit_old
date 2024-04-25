@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 class ThemeModePlugin extends Plugin {
   ThemeModePlugin({
@@ -40,7 +40,6 @@ void _onPressed(BuildContext context, ValueSetter<ThemeMode>? onThemeChanged) {
     case ThemeMode.light:
       context.read<ThemeModeNotifier>().value = ThemeMode.dark;
       onThemeChanged?.call(ThemeMode.dark);
-
     case ThemeMode.dark:
       context.read<ThemeModeNotifier>().value = ThemeMode.system;
       onThemeChanged?.call(ThemeMode.system);
@@ -51,8 +50,14 @@ Widget _buildWrapper(BuildContext _, Widget? child, ThemeMode? initialTheme) =>
     ChangeNotifierProvider<ThemeModeNotifier>(
       create: (_) => ThemeModeNotifier(initialTheme ?? ThemeMode.system),
       child: Builder(
-        builder: (context) {
+        builder: (BuildContext context) {
           final themeMode = context.watch<ThemeModeNotifier>().value;
+
+          final bool isPage = context.select(
+            (StoryNotifier storyNotifier) =>
+                storyNotifier.currentStory?.isPage == true,
+          );
+
           final brightness = themeMode == ThemeMode.system
               ? MediaQuery.platformBrightnessOf(context)
               : themeMode == ThemeMode.light
@@ -61,7 +66,7 @@ Widget _buildWrapper(BuildContext _, Widget? child, ThemeMode? initialTheme) =>
 
           return MediaQuery(
             data: MediaQuery.of(context).copyWith(
-              platformBrightness: brightness,
+              platformBrightness: isPage ? Brightness.light : brightness,
             ),
             child: child ?? const SizedBox.shrink(),
           );

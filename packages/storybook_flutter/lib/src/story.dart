@@ -13,25 +13,36 @@ class Story {
     this.description,
     this.wrapperBuilder,
     this.codeString,
+    this.isPage = false,
   })  : router = null,
-        routePath = null,
+        routePath = '',
         routeWrapperBuilder = null;
 
   const Story.asRoute({
     required this.name,
-    required this.router,
+    required GoRouter this.router,
     required this.routePath,
     this.description,
     this.routeWrapperBuilder,
     this.codeString,
+    this.isPage = false,
   })  : wrapperBuilder = null,
-        builder = null;
+        builder = null,
+        assert(
+          routePath != '',
+          'Route path cannot be empty for route aware story.',
+        );
+
+  /// If this story is a page.
+  /// Plugin and knob panels with respective functionalities are
+  /// hidden and disabled for pages.
+  final bool isPage;
 
   /// Router for route aware story.
   final GoRouter? router;
 
-  /// Route path for route aware story.
-  final String? routePath;
+  /// Route path for route aware story. Route path cannot be empty.
+  final String routePath;
 
   /// Unique name of the story.
   ///
@@ -59,6 +70,9 @@ class Story {
   List<String> get path => name.split(_sectionSeparator);
 
   String get title => name.split(_sectionSeparator).last;
+
+  List<String> get storyPathFolders =>
+      name.split(_sectionSeparator).sublist(0, path.length - 1);
 }
 
 /// Use this notifier to get the current story.
@@ -69,19 +83,34 @@ class StoryNotifier extends ChangeNotifier {
     Map<String, String>? storyRouteMap,
   })  : _stories = stories.toList(),
         _currentStoryName = initial,
+        _getInitialStoryName = initial,
         _storyRouteMap = storyRouteMap ?? {};
 
-  String? get getInitialStoryName => _currentStoryName;
+  // Initial story.
+  final String? _getInitialStoryName;
 
+  String? get getInitialStoryName => _getInitialStoryName;
+
+  // Story route map.
   final Map<String, String> _storyRouteMap;
 
   Map<String, String> get storyRouteMap => _storyRouteMap;
 
-  String? _getStoryRouteName(String? route) => _storyRouteMap[route];
+  String? getStoryRouteName(String? route) => _storyRouteMap[route];
 
   String? getStoryRoutePath(String? name) => _storyRouteMap.entries
       .firstWhereOrNull((entry) => entry.value == name)
       ?.key;
+
+  // Route match.
+  bool? _hasRouteMatch;
+
+  set hasRouteMatch(bool? hasRouteMatch) {
+    _hasRouteMatch = hasRouteMatch;
+    notifyListeners();
+  }
+
+  bool? get hasRouteMatch => _hasRouteMatch;
 
   // Stories.
   List<Story> _stories;
@@ -102,13 +131,12 @@ class StoryNotifier extends ChangeNotifier {
       );
 
   // Story route path.
-  String? _routeStoryPath;
+  String? _storyRoutePath;
 
-  String? get routeStoryPath => _routeStoryPath;
+  String? get storyRoutePath => _storyRoutePath;
 
-  set routeStoryPath(String? path) {
-    _routeStoryPath = _routeStoryPath;
-    _currentStoryName = _getStoryRouteName(_routeStoryPath);
+  set storyRoutePath(String? path) {
+    _storyRoutePath = _storyRoutePath;
     notifyListeners();
   }
 
@@ -133,20 +161,8 @@ class StoryNotifier extends ChangeNotifier {
 
     final Story? story = index != -1 ? _stories[index] : null;
 
-    _routeStoryPath = story?.router?.routeInformationProvider.value.uri.path;
-    _storyRouteName = _getStoryRouteName(_routeStoryPath);
-
-    return story;
-  }
-
-  // After web page refresh, the story is reset, so we need to get the correct
-  // last story via router.
-  Story? get currentStoryRoute {
-    final index = _stories.indexWhere(
-      (s) => s.name == (_storyRouteName ?? _currentStoryName),
-    );
-
-    final Story? story = index != -1 ? _stories[index] : null;
+    _storyRoutePath = story?.router?.routeInformationProvider.value.uri.path;
+    _storyRouteName = getStoryRouteName(_storyRoutePath);
 
     return story;
   }
@@ -158,26 +174,6 @@ class StoryNotifier extends ChangeNotifier {
 
   set searchTerm(String value) {
     _searchTerm = value;
-    notifyListeners();
-  }
-
-  void listenToStoryRouteNotifier(StoryRouteNotifier storyRouterNotifier) {
-    storyRouterNotifier.addListener(() {
-      _currentStoryName =
-          _getStoryRouteName(storyRouterNotifier.currentStoryRoutePath);
-      notifyListeners();
-    });
-  }
-}
-
-/// Notifier to set the current story route path.
-class StoryRouteNotifier extends ChangeNotifier {
-  String _storyRoutePath = '';
-
-  String get currentStoryRoutePath => _storyRoutePath;
-
-  set currentStoryRoutePath(String path) {
-    _storyRoutePath = path;
     notifyListeners();
   }
 }

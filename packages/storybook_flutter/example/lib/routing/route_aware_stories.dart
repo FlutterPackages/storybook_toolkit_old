@@ -1,29 +1,47 @@
 import 'package:flutter/services.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 import 'package:storybook_flutter_example/routing/app_router.dart';
+import 'package:storybook_flutter_example/stories/colors_page.dart';
+import 'package:storybook_flutter_example/stories/first_page.dart';
+import 'package:storybook_flutter_example/stories/home_page.dart';
+import 'package:storybook_flutter_example/stories/scaffold_page.dart';
+import 'package:storybook_flutter_example/stories/second_page.dart';
+import 'package:storybook_flutter_example/stories/third_page.dart';
 
 List<Story> routeAwareStories = [
   Story.asRoute(
+    name: 'Home',
+    routePath: HomePage.homePagePath,
+    router: router,
+    isPage: true,
+  ),
+  Story.asRoute(
+    name: 'Pages/Colors',
+    routePath: ColorsPage.colorsPagePath,
+    router: router,
+    isPage: true,
+  ),
+  Story.asRoute(
     name: 'Routing/First page',
-    routePath: firstPagePath,
+    routePath: FirstPage.firstPagePath,
     router: router,
     description: 'First page description',
     codeString: fetchAsset('first_page.md'),
   ),
   Story.asRoute(
     name: 'Routing/Second page',
-    routePath: secondPagePath,
+    routePath: SecondPage.secondPagePath,
     router: router,
     codeString: fetchAsset('second_page.md'),
   ),
   Story.asRoute(
     name: 'Routing/Nesting/Example Page',
-    routePath: examplePagePath,
+    routePath: ScaffoldPage.examplePagePath,
     router: router,
   ),
   Story.asRoute(
     name: 'Route/Third page',
-    routePath: thirdPagePath,
+    routePath: ThirdPage.thirdPagePath,
     router: router,
     codeString: fetchAsset('third_page.md'),
   ),

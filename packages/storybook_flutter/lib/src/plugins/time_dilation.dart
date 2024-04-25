@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
+import 'package:storybook_flutter/storybook_flutter.dart';
 
 class TimeDilationPlugin extends Plugin {
   TimeDilationPlugin({
@@ -38,8 +38,14 @@ Widget _buildWrapper(BuildContext _, Widget? child) =>
     ChangeNotifierProvider<TimeDilationNotifier>(
       create: (_) => TimeDilationNotifier(isTimeDilated: false),
       child: Builder(
-        builder: (context) {
-          timeDilation = context.watch<TimeDilationNotifier>().value ? 10 : 1;
+        builder: (BuildContext context) {
+          final bool isPage = context.select(
+            (StoryNotifier storyNotifier) =>
+                storyNotifier.currentStory?.isPage == true,
+          );
+
+          timeDilation =
+              context.watch<TimeDilationNotifier>().value && !isPage ? 10 : 1;
 
           return child ?? const SizedBox.shrink();
         },

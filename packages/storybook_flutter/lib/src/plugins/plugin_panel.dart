@@ -140,22 +140,49 @@ class _PluginPanelState extends State<PluginPanel> {
   }
 
   @override
-  Widget build(BuildContext context) => Wrap(
-        runAlignment: WrapAlignment.center,
-        children: widget.plugins
-            .map((plugin) => (plugin, plugin.icon?.call(context)))
-            .whereType<(Plugin, Widget)>()
-            .map(
-              (plugin) => TapRegion(
-                groupId: _pluginPanelGroupId,
-                child: IconButton(
-                  icon: plugin.$2,
-                  onPressed: () => _onPluginButtonPressed(plugin.$1),
-                ),
-              ),
-            )
-            .toList(),
+  Widget build(BuildContext context) {
+    final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+    final bool isPage = storyNotifier.currentStory?.isPage == true;
+    final bool isErrorScreen = !(storyNotifier.hasRouteMatch ?? true);
+
+    final bool isExpandedLayout =
+        context.watch<EffectiveLayout>() == EffectiveLayout.expanded;
+
+    if ((isErrorScreen || isPage) && isExpandedLayout) {
+      return const SizedBox.shrink();
+    } else if ((isErrorScreen || isPage) && !isExpandedLayout) {
+      final Plugin contentsPlugin =
+          widget.plugins.firstWhere((plugin) => plugin.id == PluginId.contents);
+
+      return TapRegion(
+        groupId: _pluginPanelGroupId,
+        child: IconButton(
+          icon: contentsPlugin.icon?.call(context) ?? const SizedBox.shrink(),
+          onPressed: () => _onPluginButtonPressed(contentsPlugin),
+        ),
       );
+    } else {
+      return Wrap(
+        runAlignment: WrapAlignment.center,
+        children: widget.plugins.map((plugin) {
+          final Widget? icon = plugin.icon?.call(context);
+          final bool dialogs = plugin.id == PluginId.contents ||
+              plugin.id == PluginId.deviceFrame ||
+              plugin.id == PluginId.knobs;
+
+          return icon != null
+              ? TapRegion(
+                  groupId: dialogs ? _pluginPanelGroupId : null,
+                  child: IconButton(
+                    icon: icon,
+                    onPressed: () => _onPluginButtonPressed(plugin),
+                  ),
+                )
+              : const SizedBox.shrink();
+        }).toList(),
+      );
+    }
+  }
 }
 
 @immutable

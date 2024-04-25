@@ -9,7 +9,7 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 
 /// Plugin that adds content as expandable list of stories.
 ///
-/// If `sidePanel` is true, the stories are shown in a left side panel,
+/// If `sidePanel` is true, the stories are shown in the left side panel,
 /// otherwise as a popup.
 class ContentsPlugin extends Plugin {
   ContentsPlugin({Widget? logoWidget})
@@ -80,64 +80,74 @@ class _ContentsState extends State<_Contents> {
     required double sectionLeftPadding,
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
-    final String? routeStoryPath = storyNotifier.routeStoryPath;
 
-    bool storyNameContainsFolder = false;
-    if (routeStoryPath != null && routeStoryPath.isNotEmpty) {
-      storyNameContainsFolder = storyNotifier.storyRouteMap.entries
-              .firstWhereOrNull((entry) => entry.key.contains(routeStoryPath))
-              ?.value
-              .contains(title) ??
-          false;
-    } else {
-      storyNameContainsFolder =
-          storyNotifier.getInitialStoryName?.contains(title) ?? false;
+    final ExpansionTileStateNotifier tilesState =
+        context.watch<ExpansionTileStateNotifier>();
+
+    final ValueKey<String> tileKey = ValueKey(
+      '${storyNotifier.currentStoryName}${storyNotifier.hasRouteMatch}',
+    );
+
+    final bool tileIsExpanded = tilesState.isExpanded(title) ?? false;
+
+    // When the initial story is non route story, the hasRouteMatch is null.
+    // The hasRouteMatch value is assigned once there is navigation activity.
+    bool isInitialNonRouteStoryFolder = false;
+    if (storyNotifier.hasRouteMatch == null &&
+        tilesState.isExpanded(title) == null) {
+      isInitialNonRouteStoryFolder =
+          storyNotifier.getInitialStoryName?.contains(title) == true;
+      if (isInitialNonRouteStoryFolder) {
+        tilesState.setExpanded(title, expanded: true);
+      }
     }
 
-    final bool initiallyExpanded =
-        storyNotifier.searchTerm.isNotEmpty || storyNameContainsFolder;
+    final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
+        tileIsExpanded ||
+        isInitialNonRouteStoryFolder;
 
-    return Material(
-      color: Colors.transparent,
-      child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
-        child: ExpansionTile(
-          initiallyExpanded: initiallyExpanded,
-          tilePadding: EdgeInsets.only(
-            left: sectionLeftPadding,
-            right: defaultPaddingValue,
-          ),
-          onExpansionChanged: (bool expanded) => setState(() {}),
-          leading: SizedBox(
-            width: 40,
-            height: 24,
-            child: Row(
-              children: [
-                Builder(
-                  builder: (BuildContext context) => AnimatedRotation(
-                    duration: const Duration(milliseconds: 200),
-                    turns: ExpansionTileController.of(context).isExpanded
-                        ? 0.25
-                        : 0,
-                    child: const Icon(
-                      Icons.arrow_right_rounded,
-                      size: 24,
-                      color: Colors.black26,
-                    ),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
+      child: ExpansionTile(
+        key: tileKey,
+        maintainState: true,
+        tilePadding: EdgeInsets.only(
+          left: sectionLeftPadding,
+          right: defaultPaddingValue,
+        ),
+        initiallyExpanded: initiallyExpanded,
+        onExpansionChanged: (bool isExpanded) {
+          tilesState.setExpanded(title, expanded: isExpanded);
+          setState(() {});
+        },
+        leading: SizedBox(
+          width: 40,
+          height: 24,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Builder(
+                builder: (BuildContext context) => AnimatedRotation(
+                  duration: const Duration(milliseconds: 200),
+                  turns: tileIsExpanded ? 0.25 : 0,
+                  child: const Icon(
+                    Icons.arrow_right_rounded,
+                    size: 24,
+                    color: Colors.black26,
                   ),
                 ),
-                Icon(
-                  Icons.folder,
-                  size: 16,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ],
-            ),
+              ),
+              Icon(
+                Icons.folder,
+                size: 16,
+                color: Theme.of(context).primaryColor,
+              ),
+            ],
           ),
-          trailing: const SizedBox.shrink(),
-          title: Text(title),
-          children: children,
         ),
+        title: Text(title),
+        trailing: const SizedBox.shrink(),
+        children: children,
       ),
     );
   }
@@ -147,15 +157,17 @@ class _ContentsState extends State<_Contents> {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
     final GoRouter? router = story.router;
 
+    final Story? currentSelectedStory = storyNotifier.currentStory;
+
+    final bool isRouteAwareStory = router != null && story.routePath.isNotEmpty;
+
     final String? storyTileRoutePath =
         storyNotifier.getStoryRoutePath(story.name);
-    final Story? currentSelectedStory = storyNotifier.currentStory;
-    final bool isRouteAwareStory = router != null && story.routePath != null;
 
     final bool isSelected = isRouteAwareStory
         ? (story.name == storyNotifier.storyRouteName ||
-                (storyNotifier.routeStoryPath == '/' &&
-                    story.name == storyNotifier.getInitialStoryName)) &&
+                (storyNotifier.storyRoutePath == '/' &&
+                    story.name == storyNotifier.currentStoryName)) &&
             currentSelectedStory?.router != null
         : story == currentSelectedStory;
 
@@ -168,15 +180,22 @@ class _ContentsState extends State<_Contents> {
       onTap: () {
         storyNotifier.currentStoryName = story.name;
         context.read<OverlayController?>()?.remove();
+
         router?.go(storyTileRoutePath!);
       },
-      leading: const SizedBox(
+      leading: SizedBox(
         height: 16,
         width: 16,
-        child: Icon(
-          Icons.widgets_outlined,
-          size: 14,
-        ),
+        child: story.isPage
+            ? const Icon(
+                Icons.description,
+                size: 14,
+                color: Colors.orangeAccent,
+              )
+            : const Icon(
+                Icons.widgets_outlined,
+                size: 14,
+              ),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,16 +218,15 @@ class _ContentsState extends State<_Contents> {
 
   List<Widget> _buildListChildren(List<Story> stories, {int depth = 1}) {
     const double sectionLeftPadding = 20.0;
-    const double storyLeftPadding = defaultPaddingValue;
-
     final double leftPadding = (depth - 1) * sectionLeftPadding;
+    final double storyLeftPadding = leftPadding + defaultPaddingValue;
 
     final Map<String, List<Story>> grouped = stories.groupListsBy(
       (story) => story.path.length == depth ? '' : story.path[depth - 1],
     );
 
     final List<Widget> sectionStories = (grouped[''] ?? [])
-        .map((story) => _buildStoryTile(story, leftPadding + storyLeftPadding))
+        .map((story) => _buildStoryTile(story, storyLeftPadding))
         .toList();
 
     return stories.length == sectionStories.length
@@ -234,7 +252,13 @@ class _ContentsState extends State<_Contents> {
     final bool isSidePanel = context.watch<OverlayController?>() == null;
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    final List<Widget> children = _buildListChildren(storyNotifier.stories);
+    final List<Widget> pages = _buildListChildren(
+      storyNotifier.stories.where((element) => element.isPage).toList(),
+    );
+
+    final List<Widget> stories = _buildListChildren(
+      storyNotifier.stories.where((element) => !element.isPage).toList(),
+    );
 
     return SafeArea(
       top: isSidePanel,
@@ -247,7 +271,9 @@ class _ContentsState extends State<_Contents> {
           const SearchTextField(),
           Expanded(
             key: ValueKey(storyNotifier.searchTerm),
-            child: children.isEmpty && storyNotifier.searchTerm.isNotEmpty
+            child: pages.isEmpty &&
+                    stories.isEmpty &&
+                    storyNotifier.searchTerm.isNotEmpty
                 ? const Center(child: Text('Nothing found'))
                 : ListView(
                     primary: false,
@@ -256,11 +282,28 @@ class _ContentsState extends State<_Contents> {
                       bottom: isSidePanel ? 16.0 : 0.0,
                       top: 8.0,
                     ),
-                    children: children,
+                    children: [
+                      ...pages,
+                      ...stories,
+                    ],
                   ),
           ),
         ],
       ),
     );
+  }
+}
+
+class ExpansionTileStateNotifier extends ChangeNotifier {
+  Map<String, bool> _tileStates = {};
+
+  bool? isExpanded(String tileKey) => _tileStates[tileKey];
+
+  void setExpanded(String tileKey, {required bool expanded}) {
+    _tileStates[tileKey] = expanded;
+  }
+
+  set setExpansionTileStateMap(Map<String, bool> tileStateMap) {
+    _tileStates = tileStateMap;
   }
 }

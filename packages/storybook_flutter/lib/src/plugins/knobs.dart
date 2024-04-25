@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/common/constants.dart';
 import 'package:storybook_flutter/src/plugins/code_view.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
 
@@ -24,21 +23,20 @@ Widget? _buildIcon(BuildContext context) =>
     };
 
 Widget _buildPanel(BuildContext context) {
-  final knobs = context.watch<KnobsNotifier>();
-
-  final List<Knob<dynamic>> items =
-      context.watch<CodeViewNotifier>().value ? [] : knobs.all();
-
-  final currentStory = context.select<StoryNotifier, Story?>(
-    (it) => it.currentStory,
-  );
-
+  final KnobsNotifier knobs = context.watch<KnobsNotifier>();
+  final bool isCodeView = context.watch<CodeViewNotifier>().value;
   final bool isSidePanel = context.watch<OverlayController?>() == null;
-
   final String? currentStoryName = context.read<StoryNotifier>().storyRouteName;
 
+  final List<Knob<dynamic>> items = isCodeView ? [] : knobs.all();
+
+  final Story? currentStory = context
+      .select((StoryNotifier storyNotifier) => storyNotifier.currentStory);
+
   return items.isEmpty
-      ? const Center(child: Text('No knobs'))
+      ? isCodeView
+          ? const SizedBox()
+          : const Center(child: Text('No knobs'))
       : ListView.separated(
           key: ValueKey(currentStoryName ?? currentStory?.name ?? ''),
           primary: false,
@@ -58,46 +56,56 @@ Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
           create: (context) => KnobsNotifier(context.read<StoryNotifier>()),
         ),
       ],
-      builder: (context, _) => switch (context.watch<EffectiveLayout>()) {
-        EffectiveLayout.compact => child!,
-        EffectiveLayout.expanded => Directionality(
-            textDirection: TextDirection.ltr,
-            child: Row(
-              children: [
-                Expanded(child: child ?? const SizedBox.shrink()),
-                TapRegion(
-                  onTapOutside: (PointerDownEvent _) {
-                    context
-                        .read<SelectKnobDropdownStateManager>()
-                        .popDropdown();
-                  },
-                  child: RepaintBoundary(
-                    child: Material(
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            left: BorderSide(color: Colors.black12),
-                          ),
-                        ),
-                        child: SafeArea(
-                          left: false,
-                          child: SizedBox(
-                            width: panelWidth,
-                            child: Navigator(
-                              onGenerateRoute: (_) => PageRouteBuilder<void>(
-                                pageBuilder: (BuildContext context, _, __) =>
-                                    _buildPanel(context),
+      builder: (BuildContext context, Widget? _) {
+        final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+        final bool isPage = storyNotifier.currentStory?.isPage == true;
+        final bool isErrorScreen = !(storyNotifier.hasRouteMatch ?? true);
+
+        return isPage || isErrorScreen
+            ? child!
+            : switch (context.watch<EffectiveLayout>()) {
+                EffectiveLayout.compact => child!,
+                EffectiveLayout.expanded => Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: Row(
+                      children: [
+                        Expanded(child: child ?? const SizedBox.shrink()),
+                        TapRegion(
+                          onTapOutside: (PointerDownEvent _) {
+                            context
+                                .read<SelectKnobDropdownStateManager>()
+                                .popDropdown();
+                          },
+                          child: RepaintBoundary(
+                            child: Material(
+                              child: DecoratedBox(
+                                decoration: const BoxDecoration(
+                                  border: Border(
+                                    left: BorderSide(color: Colors.black12),
+                                  ),
+                                ),
+                                child: SafeArea(
+                                  left: false,
+                                  child: SizedBox(
+                                    width: 250,
+                                    child: Navigator(
+                                      onGenerateRoute: (_) =>
+                                          PageRouteBuilder<void>(
+                                        pageBuilder:
+                                            (BuildContext context, _, __) =>
+                                                _buildPanel(context),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
+              };
       },
     );
 

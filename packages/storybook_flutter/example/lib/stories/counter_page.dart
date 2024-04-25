@@ -33,6 +33,7 @@ class _CounterPageState extends State<CounterPage> {
     );
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(titleKnob),
         actions: [

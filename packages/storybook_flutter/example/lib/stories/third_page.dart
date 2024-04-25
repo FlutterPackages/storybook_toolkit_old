@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_example/routing/app_router.dart';
+import 'package:storybook_flutter_example/stories/second_page.dart';
 
 class ThirdPage extends StatelessWidget {
   const ThirdPage({super.key});
+
+  static String thirdPagePath = '/route/third_page';
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class ThirdPage extends StatelessWidget {
     );
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: backgroundColorKnob,
         title: Text(titleKnob),
@@ -50,7 +53,7 @@ class ThirdPage extends StatelessWidget {
               borderRadiusKnob != null ? borderRadiusKnob.toDouble() : 8,
             ),
           ),
-          onPressed: () => context.go(secondPagePath),
+          onPressed: () => context.go(SecondPage.secondPagePath),
           child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [

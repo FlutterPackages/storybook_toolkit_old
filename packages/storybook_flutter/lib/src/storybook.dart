@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_flutter/src/common/constants.dart';
@@ -126,6 +127,9 @@ class Storybook extends StatefulWidget {
   final List<Plugin> plugins;
 
   /// All available stories.
+  ///
+  /// It is not recommended to mix route aware and default stories
+  /// due to unexpected behavior in web.
   final List<Story> stories;
 
   /// Optional initial story.
@@ -158,10 +162,62 @@ class Storybook extends StatefulWidget {
 
 class _StorybookState extends State<Storybook> {
   late final StoryNotifier _storyNotifier;
-  late final StoryRouteNotifier _storyRouteNotifier;
+  late final ExpansionTileStateNotifier _expansionTileState;
 
   final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
   final LayerLink _layerLink = LayerLink();
+
+  GoRouter? router;
+
+  void _initExpansionTileStateMap() {
+    final foldersList = widget.stories
+        .where((story) => story.router != null)
+        .expand((story) => story.storyPathFolders)
+        .toSet()
+        .toList();
+
+    final Map<String, bool> expansionTileStateMap = {
+      for (final folder in foldersList) folder: false,
+    };
+
+    _expansionTileState.setExpansionTileStateMap = expansionTileStateMap;
+  }
+
+  void _setExpansionTileState() {
+    final String routePathMatch = router!.routeInformationParser.configuration
+        .findMatch(router!.routerDelegate.currentConfiguration.uri.path)
+        .fullPath;
+
+    _storyNotifier.hasRouteMatch = routePathMatch.isNotEmpty;
+
+    if (routePathMatch.isNotEmpty) {
+      final String? routeNameMatch = _storyNotifier.storyRouteMap.entries
+          .firstWhereOrNull((route) => route.key == routePathMatch)
+          ?.value;
+
+      if (routeNameMatch != null) {
+        final List<String> parts = routeNameMatch.split('/');
+
+        if (parts.length > 1) {
+          final List<String> tileKeys = parts.sublist(0, parts.length - 1);
+
+          for (final key in tileKeys) {
+            _expansionTileState.setExpanded(key, expanded: true);
+          }
+        }
+      }
+
+      _storyNotifier
+        ..storyRoutePath = routePathMatch
+        ..currentStoryName = routeNameMatch;
+    }
+  }
+
+  void _listener() {
+    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
+      _setExpansionTileState();
+    });
+  }
 
   @override
   void initState() {
@@ -171,11 +227,13 @@ class _StorybookState extends State<Storybook> {
 
     final routeMap = Map.fromEntries(
       widget.stories
-          .where((story) => story.router != null)
-          .map((story) => MapEntry(story.routePath!, story.name)),
-    );
+          .where((story) => story.router != null && story.routePath.isNotEmpty)
+          .map((story) {
+        router ??= story.router;
 
-    _storyRouteNotifier = StoryRouteNotifier();
+        return MapEntry(story.routePath, story.name);
+      }),
+    );
 
     _storyNotifier = StoryNotifier(
       widget.stories,
@@ -183,26 +241,21 @@ class _StorybookState extends State<Storybook> {
       initial: widget.initialStory,
     );
 
-    if (routeMap.isNotEmpty) {
-      final Story story =
-          widget.stories.firstWhere((element) => element.router != null);
+    _expansionTileState = ExpansionTileStateNotifier();
 
-      story.router!.routerDelegate.addListener(() {
-        _storyRouteNotifier.currentStoryRoutePath =
-            story.router!.routerDelegate.currentConfiguration.uri.path;
-      });
+    if (router != null) {
+      _initExpansionTileStateMap();
+      router!.routerDelegate.addListener(_listener);
     }
-
-    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-      _storyNotifier.listenToStoryRouteNotifier(_storyRouteNotifier);
-    });
   }
 
   @override
   void dispose() {
     _storyNotifier.dispose();
-    _storyRouteNotifier.dispose();
+    _expansionTileState.dispose();
     Storybook.storyFocusNode?.dispose();
+
+    router?.routerDelegate.removeListener(_listener);
 
     super.dispose();
   }
@@ -230,9 +283,7 @@ class _StorybookState extends State<Storybook> {
               children: [
                 Provider.value(value: widget.plugins),
                 ChangeNotifierProvider.value(value: _storyNotifier),
-                ChangeNotifierProvider.value(
-                  value: _storyRouteNotifier,
-                ),
+                ChangeNotifierProvider.value(value: _expansionTileState),
                 ...widget.plugins
                     .map((plugin) => plugin.wrapperBuilder)
                     .whereType<TransitionBuilder>()
@@ -316,18 +367,23 @@ class CurrentStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final story = context.watch<StoryNotifier>().currentStory;
+    final Story? currentStory = context.watch<StoryNotifier>().currentStory;
 
-    if (story == null) {
+    if (currentStory == null) {
       return const Directionality(
         textDirection: TextDirection.ltr,
         child: Material(
           child: Center(
-            child: Text('Something went wrong. Page not found.'),
+            child: Text('Select a Story'),
           ),
         ),
       );
     }
+
+    final bool showCodeSnippet = context.watch<CodeViewNotifier>().value;
+    final TextDirection effectiveTextDirection = currentStory.isPage
+        ? TextDirection.ltr
+        : context.watch<TextDirectionNotifier>().value;
 
     final plugins = context.watch<List<Plugin>>();
     final pluginBuilders = plugins
@@ -338,9 +394,9 @@ class CurrentStory extends StatelessWidget {
 
     Widget child;
 
-    if (story.router != null) {
+    if (currentStory.router != null) {
       final RouteWrapperBuilder effectiveRouteWrapperBuilder =
-          story.routeWrapperBuilder ??
+          currentStory.routeWrapperBuilder ??
               routeWrapperBuilder ??
               RouteWrapperBuilder();
 
@@ -350,15 +406,15 @@ class CurrentStory extends StatelessWidget {
         darkTheme: effectiveRouteWrapperBuilder.darkTheme,
         debugShowCheckedModeBanner:
             effectiveRouteWrapperBuilder.debugShowCheckedModeBanner,
-        routerConfig: story.router,
+        routerConfig: currentStory.router,
         builder: (BuildContext context, Widget? child) =>
             effectiveRouteWrapperBuilder.wrapperBuilder(
           context,
           Directionality(
-            textDirection: context.watch<TextDirectionNotifier>().value,
+            textDirection: effectiveTextDirection,
             child: FocusScope(
               node: Storybook.storyFocusNode,
-              child: context.watch<CodeViewNotifier>().value
+              child: showCodeSnippet && !currentStory.isPage
                   ? Stack(
                       children: [
                         child ?? const SizedBox.shrink(),
@@ -375,22 +431,25 @@ class CurrentStory extends StatelessWidget {
       );
     } else {
       final Widget Function(BuildContext, Widget?) effectiveWrapperBuilder =
-          story.wrapperBuilder ?? wrapperBuilder;
+          currentStory.wrapperBuilder ?? wrapperBuilder;
 
       child = FocusScope(
         node: Storybook.storyFocusNode,
         child: effectiveWrapperBuilder(
           context,
-          context.watch<CodeViewNotifier>().value
+          showCodeSnippet && !currentStory.isPage
               ? const _CurrentStoryCode()
-              : Builder(builder: story.builder!),
+              : Directionality(
+                  textDirection: effectiveTextDirection,
+                  child: Builder(builder: currentStory.builder!),
+                ),
         ),
       );
     }
 
     return KeyedSubtree(
-      key: ValueKey(story.name),
-      child: pluginBuilders.isEmpty
+      key: ValueKey(currentStory.name),
+      child: pluginBuilders.isEmpty || currentStory.isPage
           ? child
           : Nested(children: pluginBuilders, child: child),
     );
@@ -421,56 +480,59 @@ class _CurrentStoryCode extends StatelessWidget {
     final TextStyle? textStyle =
         Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70);
 
-    return ColoredBox(
-      color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
-      child: SafeArea(
-        bottom: false,
-        left: false,
-        right: false,
-        child: Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (context) => FutureBuilder<String?>(
-                future:
-                    context.read<StoryNotifier>().currentStoryRoute?.codeString,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: ColoredBox(
+        color: panelBackgroundColor ?? ThemeData.dark().scaffoldBackgroundColor,
+        child: SafeArea(
+          bottom: false,
+          left: false,
+          right: false,
+          child: Overlay(
+            initialEntries: [
+              OverlayEntry(
+                builder: (context) => FutureBuilder<String?>(
+                  future:
+                      context.watch<StoryNotifier>().currentStory?.codeString,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'Houston, we have a problem with showing the code :(',
+                          style: textStyle,
+                        ),
+                      );
+                    } else if (snapshot.hasData) {
+                      return ScrollConfiguration(
+                        behavior: scrollBehaviour,
+                        child: SingleChildScrollView(
+                          child: AnySyntaxHighlighter(
+                            snapshot.data ?? '',
+                            fontSize: 12,
+                            padding: defaultPaddingValue,
+                            hasCopyButton: true,
+                            isSelectableText: isDesktopWeb,
+                            reservedWordSets: const {'dart'},
+                            theme: CustomSyntaxHighlighterTheme.customTheme(),
+                          ),
+                        ),
+                      );
+                    }
                     return Center(
                       child: Text(
-                        'Houston, we have a problem with showing the code :(',
+                        'No code provided',
                         style: textStyle,
                       ),
                     );
-                  } else if (snapshot.hasData) {
-                    return ScrollConfiguration(
-                      behavior: scrollBehaviour,
-                      child: SingleChildScrollView(
-                        child: AnySyntaxHighlighter(
-                          snapshot.data ?? '',
-                          fontSize: 12,
-                          padding: defaultPaddingValue,
-                          hasCopyButton: true,
-                          isSelectableText: isDesktopWeb,
-                          reservedWordSets: const {'dart'},
-                          theme: CustomSyntaxHighlighterTheme.customTheme(),
-                        ),
-                      ),
-                    );
-                  }
-                  return Center(
-                    child: Text(
-                      'No code provided',
-                      style: textStyle,
-                    ),
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

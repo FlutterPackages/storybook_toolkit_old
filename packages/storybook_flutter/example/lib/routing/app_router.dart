@@ -1,55 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:storybook_flutter_example/routing/routing_error_widget.dart';
+import 'package:storybook_flutter_example/common/routing_error_widget.dart';
+import 'package:storybook_flutter_example/stories/colors_page.dart';
 import 'package:storybook_flutter_example/stories/first_page.dart';
+import 'package:storybook_flutter_example/stories/home_page.dart';
 import 'package:storybook_flutter_example/stories/scaffold_page.dart';
 import 'package:storybook_flutter_example/stories/second_page.dart';
 import 'package:storybook_flutter_example/stories/third_page.dart';
 
-const String routingDirectory = '/routing';
 const String routeDirectory = '/route';
+const String routingDirectory = '/routing';
 const String nestingSubDirectory = '/routing/nesting';
-
-const String firstPagePath = '/routing/first_page';
-const String secondPagePath = '/routing/second_page';
-const String examplePagePath = '/routing/nesting/example_page';
-const String thirdPagePath = '/route/third_page';
 
 GoRouter router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: firstPagePath,
+  initialLocation: HomePage.homePagePath,
   errorBuilder: (BuildContext context, GoRouterState state) =>
       const RoutingErrorWidget(),
   redirect: (context, state) {
     switch (state.uri.path) {
       case routingDirectory:
-        return firstPagePath;
+        return FirstPage.firstPagePath;
       case routeDirectory:
-        return thirdPagePath;
+        return ThirdPage.thirdPagePath;
       case nestingSubDirectory:
-        return examplePagePath;
+        return ScaffoldPage.examplePagePath;
       default:
         return null;
     }
   },
   routes: <RouteBase>[
+    // Pages
     GoRoute(
-      path: firstPagePath,
+      path: HomePage.homePagePath,
+      pageBuilder: (BuildContext _, GoRouterState __) =>
+          const NoTransitionPage(child: HomePage()),
+    ),
+    GoRoute(
+      path: ColorsPage.colorsPagePath,
+      pageBuilder: (BuildContext _, GoRouterState __) =>
+          const NoTransitionPage(child: ColorsPage()),
+    ),
+
+    // Stories
+    GoRoute(
+      path: FirstPage.firstPagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: FirstPage()),
     ),
     GoRoute(
-      path: secondPagePath,
+      path: SecondPage.secondPagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: SecondPage()),
     ),
     GoRoute(
-      path: examplePagePath,
+      path: ScaffoldPage.examplePagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: ScaffoldPage()),
     ),
     GoRoute(
-      path: thirdPagePath,
+      path: ThirdPage.thirdPagePath,
       pageBuilder: (BuildContext _, GoRouterState __) =>
           const NoTransitionPage(child: ThirdPage()),
     ),

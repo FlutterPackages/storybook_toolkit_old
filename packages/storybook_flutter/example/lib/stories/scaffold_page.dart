@@ -4,6 +4,8 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 class ScaffoldPage extends StatelessWidget {
   const ScaffoldPage({super.key});
 
+  static String examplePagePath = '/routing/nesting/example_page';
+
   @override
   Widget build(BuildContext context) {
     final titleKnob = context.knobs.text(
@@ -50,6 +52,7 @@ class ScaffoldPage extends StatelessWidget {
     );
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(titleKnob),
         elevation: elevationKnob,
