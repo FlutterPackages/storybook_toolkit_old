@@ -289,64 +289,80 @@ class _StorybookState extends State<Storybook> {
                     .whereType<TransitionBuilder>()
                     .map((builder) => SingleChildBuilder(builder: builder)),
               ],
-              child: widget.showPanel
-                  ? Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Column(
+              child: Builder(
+                builder: (BuildContext context) {
+                  final bool isSidePanel =
+                      context.watch<OverlayController?>() != null;
+
+                  final bool isPage = context.select(
+                    (StoryNotifier value) => value.currentStory?.isPage == true,
+                  );
+                  final bool isError = context.select(
+                    (StoryNotifier value) => value.hasRouteMatch == false,
+                  );
+
+                  final bool showBrandingWidget =
+                      widget.brandingWidget != null && !isPage && !isError;
+
+                  return widget.showPanel
+                      ? Stack(
+                          alignment: Alignment.topCenter,
                           children: [
-                            Expanded(child: currentStory),
-                            RepaintBoundary(
-                              child: Material(
-                                child: SafeArea(
-                                  top: false,
-                                  left: context.watch<OverlayController?>() !=
-                                      null,
-                                  right: context.watch<OverlayController?>() !=
-                                      null,
-                                  child: CompositedTransformTarget(
-                                    link: _layerLink,
-                                    child: Directionality(
-                                      textDirection: TextDirection.ltr,
-                                      child: Container(
-                                        width: double.infinity,
-                                        decoration: const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              color: Colors.black12,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: PluginPanel(
-                                                plugins: widget.plugins,
-                                                overlayKey: _overlayKey,
-                                                layerLink: _layerLink,
+                            Column(
+                              children: [
+                                Expanded(child: currentStory),
+                                RepaintBoundary(
+                                  child: Material(
+                                    child: SafeArea(
+                                      top: false,
+                                      left: isSidePanel,
+                                      right: isSidePanel,
+                                      child: CompositedTransformTarget(
+                                        link: _layerLink,
+                                        child: Directionality(
+                                          textDirection: TextDirection.ltr,
+                                          child: Container(
+                                            width: double.infinity,
+                                            decoration: const BoxDecoration(
+                                              border: Border(
+                                                top: BorderSide(
+                                                  color: Colors.black12,
+                                                ),
                                               ),
                                             ),
-                                            widget.brandingWidget ??
-                                                const SizedBox.shrink(),
-                                          ],
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: PluginPanel(
+                                                    plugins: widget.plugins,
+                                                    overlayKey: _overlayKey,
+                                                    layerLink: _layerLink,
+                                                  ),
+                                                ),
+                                                if (showBrandingWidget)
+                                                  widget.brandingWidget!,
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
+                              ],
+                            ),
+                            Directionality(
+                              textDirection: TextDirection.ltr,
+                              child: Overlay(key: _overlayKey),
                             ),
                           ],
-                        ),
-                        Directionality(
-                          textDirection: TextDirection.ltr,
-                          child: Overlay(key: _overlayKey),
-                        ),
-                      ],
-                    )
-                  : currentStory,
+                        )
+                      : currentStory;
+                },
+              ),
             ),
           ),
         ),
@@ -367,7 +383,8 @@ class CurrentStory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Story? currentStory = context.watch<StoryNotifier>().currentStory;
+    final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+    final Story? currentStory = storyNotifier.currentStory;
 
     if (currentStory == null) {
       return const Directionality(
@@ -380,14 +397,15 @@ class CurrentStory extends StatelessWidget {
       );
     }
 
+    final bool isError = storyNotifier.hasRouteMatch == false;
     final bool showCodeSnippet = context.watch<CodeViewNotifier>().value;
     final TextDirection effectiveTextDirection = currentStory.isPage
         ? TextDirection.ltr
         : context.watch<TextDirectionNotifier>().value;
 
     final plugins = context.watch<List<Plugin>>();
-    final pluginBuilders = plugins
-        .map((p) => p.storyBuilder)
+    final pluginStoryBuilders = plugins
+        .map((Plugin plugin) => plugin.storyBuilder)
         .whereType<TransitionBuilder>()
         .map((builder) => SingleChildBuilder(builder: builder))
         .toList();
@@ -449,9 +467,9 @@ class CurrentStory extends StatelessWidget {
 
     return KeyedSubtree(
       key: ValueKey(currentStory.name),
-      child: pluginBuilders.isEmpty || currentStory.isPage
+      child: pluginStoryBuilders.isEmpty || currentStory.isPage || isError
           ? child
-          : Nested(children: pluginBuilders, child: child),
+          : Nested(children: pluginStoryBuilders, child: child),
     );
   }
 }

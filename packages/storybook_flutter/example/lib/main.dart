@@ -21,6 +21,13 @@ class MyApp extends StatelessWidget {
         plugins: initializePlugins(enableCodeView: true),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         logoWidget: const LogoWidget(),
+        brandingWidget: const Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text('Flutter'),
+          ),
+        ),
         stories: [
           ...routeAwareStories,
           Story(
