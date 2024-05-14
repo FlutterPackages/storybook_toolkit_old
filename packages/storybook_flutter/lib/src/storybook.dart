@@ -16,8 +16,14 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 class _ThemeWrapperBuilder {
   _ThemeWrapperBuilder();
 
-  static Widget themeBuilder(BuildContext context, Widget child) => Theme(
+  static Widget themeBuilder(
+    BuildContext context,
+    Color? canvasColor,
+    Widget child,
+  ) =>
+      Theme(
         data: ThemeData(
+          canvasColor: canvasColor,
           splashFactory: NoSplash.splashFactory,
           focusColor: Theme.of(context).focusColor.withAlpha(18),
           expansionTileTheme: const ExpansionTileThemeData(
@@ -105,6 +111,7 @@ class Storybook extends StatefulWidget {
     this.initialStory,
     this.wrapperBuilder = materialWrapper,
     this.routeWrapperBuilder,
+    this.canvasColor,
     this.showPanel = true,
     this.enableLayout = true,
     this.brandingWidget,
@@ -123,14 +130,14 @@ class Storybook extends StatefulWidget {
         ]),
         stories = UnmodifiableListView(stories);
 
-  /// All enabled plugins.
-  final List<Plugin> plugins;
-
   /// All available stories.
   ///
   /// It is not recommended to mix route aware and default stories
   /// due to unexpected behavior in web.
   final List<Story> stories;
+
+  /// All enabled plugins.
+  final List<Plugin> plugins;
 
   /// Optional initial story.
   final String? initialStory;
@@ -140,6 +147,10 @@ class Storybook extends StatefulWidget {
 
   /// Each routed story will be wrapped into a widget returned by this builder.
   final RouteWrapperBuilder? routeWrapperBuilder;
+
+  /// Canvas color of the Storybook. Story color can be changed inside
+  /// the wrapperBuilder and routeWrapperBuilder.
+  final Color? canvasColor;
 
   /// Whether to show the plugin panel at the bottom.
   final bool showPanel;
@@ -265,6 +276,7 @@ class _StorybookState extends State<Storybook> {
 
     return _ThemeWrapperBuilder.themeBuilder(
       context,
+      widget.canvasColor,
       TapRegionSurface(
         child: MediaQuery.fromView(
           view: View.of(context),
