@@ -48,15 +48,19 @@ Widget? _buildIcon(
 Widget _buildStoryWrapper(BuildContext context, Widget? child) {
   final deviceFrame = context.watch<DeviceFrameDataNotifier>().value;
   final DeviceInfo? device = deviceFrame.device;
+  final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
+  final bool isPage = storyNotifier.currentStory?.isPage == true;
+  final bool hasError = storyNotifier.hasRouteMatch == false;
 
   final focusableChild = TapRegion(
     onTapOutside: (PointerDownEvent _) {
       FocusManager.instance.primaryFocus?.unfocus();
     },
     onTapInside: (PointerDownEvent _) {
-      if (Storybook.storyFocusNode != null &&
-          !Storybook.storyFocusNode!.hasFocus) {
-        Storybook.storyFocusNode!.requestFocus();
+      if (Storybook.storyFocusNode != null) {
+        !Storybook.storyFocusNode!.hasFocus
+            ? Storybook.storyFocusNode!.requestFocus()
+            : FocusManager.instance.primaryFocus?.unfocus();
       }
     },
     child: child ?? const SizedBox.shrink(),
@@ -64,7 +68,7 @@ Widget _buildStoryWrapper(BuildContext context, Widget? child) {
 
   return Directionality(
     textDirection: TextDirection.ltr,
-    child: device == null
+    child: device == null || isPage || hasError
         ? focusableChild
         : SizedBox(
             width: double.infinity,

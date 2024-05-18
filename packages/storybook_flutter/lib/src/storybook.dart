@@ -405,8 +405,8 @@ class CurrentStory extends StatelessWidget {
       );
     }
 
-    final bool isError = storyNotifier.hasRouteMatch == false;
     final bool showCodeSnippet = context.watch<CodeViewNotifier>().value;
+
     final TextDirection effectiveTextDirection = currentStory.isPage
         ? TextDirection.ltr
         : context.watch<TextDirectionNotifier>().value;
@@ -459,23 +459,23 @@ class CurrentStory extends StatelessWidget {
       final Widget Function(BuildContext, Widget?) effectiveWrapperBuilder =
           currentStory.wrapperBuilder ?? wrapperBuilder;
 
-      child = FocusScope(
-        node: Storybook.storyFocusNode,
-        child: effectiveWrapperBuilder(
-          context,
-          showCodeSnippet && !currentStory.isPage
-              ? const _CurrentStoryCode()
-              : Directionality(
+      child = effectiveWrapperBuilder(
+        context,
+        showCodeSnippet && !currentStory.isPage
+            ? const _CurrentStoryCode()
+            : FocusScope(
+                node: Storybook.storyFocusNode,
+                child: Directionality(
                   textDirection: effectiveTextDirection,
                   child: Builder(builder: currentStory.builder!),
                 ),
-        ),
+              ),
       );
     }
 
     return KeyedSubtree(
       key: ValueKey(currentStory.name),
-      child: pluginStoryBuilders.isEmpty || currentStory.isPage || isError
+      child: pluginStoryBuilders.isEmpty
           ? child
           : Nested(children: pluginStoryBuilders, child: child),
     );
