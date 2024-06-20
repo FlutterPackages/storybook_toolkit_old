@@ -13,10 +13,8 @@ dependencies:
   flutter_test:
     sdk: flutter
   meta: ^1.9.1
-  storybook_flutter: ^0.14.0
-
-dev_dependencies:
-  mews_pedantic: ^0.16.0
+  storybook_flutter:
+    path: "../storybook_flutter"
 
 flutter:
   uses-material-design: true
