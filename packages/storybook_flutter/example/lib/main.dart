@@ -19,12 +19,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => Storybook(
         initialStory: 'Home',
         plugins: initializePlugins(
-          enableCodeView: true,
+          enableCodeView: false,
           initialDeviceFrameData: (
             isFrameVisible: true,
             device: Devices.ios.iPhone12ProMax,
             orientation: Orientation.portrait
           ),
+          enableDirectionality: false,
         ),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         logoWidget: const LogoWidget(),
