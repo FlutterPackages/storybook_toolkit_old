@@ -67,8 +67,7 @@ class RouteWrapperBuilder {
   final bool debugShowCheckedModeBanner;
   final Widget Function(BuildContext, Widget?) wrapperBuilder;
 
-  static Widget defaultWrapperBuilder(BuildContext context, Widget? child) =>
-      Scaffold(
+  static Widget defaultWrapperBuilder(BuildContext context, Widget? child) => Scaffold(
         body: Center(
           child: child ?? const SizedBox.shrink(),
         ),
@@ -202,9 +201,8 @@ class _StorybookState extends State<Storybook> {
     _storyNotifier.hasRouteMatch = routePathMatch.isNotEmpty;
 
     if (routePathMatch.isNotEmpty) {
-      final String? routeNameMatch = _storyNotifier.storyRouteMap.entries
-          .firstWhereOrNull((route) => route.key == routePathMatch)
-          ?.value;
+      final String? routeNameMatch =
+          _storyNotifier.storyRouteMap.entries.firstWhereOrNull((route) => route.key == routePathMatch)?.value;
 
       if (routeNameMatch != null) {
         final List<String> parts = routeNameMatch.split('/');
@@ -233,9 +231,7 @@ class _StorybookState extends State<Storybook> {
     Storybook.storyFocusNode = FocusScopeNode();
 
     final routeMap = Map.fromEntries(
-      widget.stories
-          .where((story) => story.router != null && story.routePath.isNotEmpty)
-          .map((story) {
+      widget.stories.where((story) => story.router != null && story.routePath.isNotEmpty).map((story) {
         router ??= story.router;
 
         return MapEntry(story.routePath, story.name);
@@ -299,8 +295,7 @@ class _StorybookState extends State<Storybook> {
               ],
               child: Builder(
                 builder: (BuildContext context) {
-                  final bool isSidePanel =
-                      context.watch<OverlayController?>() != null;
+                  final bool isSidePanel = context.watch<OverlayController?>() != null;
 
                   final bool isPage = context.select(
                     (StoryNotifier value) => value.currentStory?.isPage == true,
@@ -309,8 +304,7 @@ class _StorybookState extends State<Storybook> {
                     (StoryNotifier value) => value.hasRouteMatch == false,
                   );
 
-                  final bool showBrandingWidget =
-                      widget.brandingWidget != null && !isPage && !isError;
+                  final bool showBrandingWidget = widget.brandingWidget != null && !isPage && !isError;
 
                   return widget.showPanel
                       ? Stack(
@@ -342,16 +336,14 @@ class _StorybookState extends State<Storybook> {
                                               alignment: Alignment.center,
                                               children: [
                                                 Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
+                                                  alignment: Alignment.centerLeft,
                                                   child: PluginPanel(
                                                     plugins: widget.plugins,
                                                     overlayKey: _overlayKey,
                                                     layerLink: _layerLink,
                                                   ),
                                                 ),
-                                                if (showBrandingWidget)
-                                                  widget.brandingWidget!,
+                                                if (showBrandingWidget) widget.brandingWidget!,
                                               ],
                                             ),
                                           ),
@@ -428,19 +420,15 @@ class CurrentStory extends StatelessWidget {
 
     if (currentStory.router != null) {
       final RouteWrapperBuilder effectiveRouteWrapperBuilder =
-          currentStory.routeWrapperBuilder ??
-              routeWrapperBuilder ??
-              RouteWrapperBuilder();
+          currentStory.routeWrapperBuilder ?? routeWrapperBuilder ?? RouteWrapperBuilder();
 
       child = MaterialApp.router(
         title: effectiveRouteWrapperBuilder.title,
         theme: effectiveRouteWrapperBuilder.theme,
         darkTheme: effectiveRouteWrapperBuilder.darkTheme,
-        debugShowCheckedModeBanner:
-            effectiveRouteWrapperBuilder.debugShowCheckedModeBanner,
+        debugShowCheckedModeBanner: effectiveRouteWrapperBuilder.debugShowCheckedModeBanner,
         routerConfig: currentStory.router,
-        builder: (BuildContext context, Widget? child) =>
-            effectiveRouteWrapperBuilder.wrapperBuilder(
+        builder: (BuildContext context, Widget? child) => effectiveRouteWrapperBuilder.wrapperBuilder(
           context,
           Directionality(
             textDirection: getEffectiveTextDirection(),
@@ -451,8 +439,7 @@ class CurrentStory extends StatelessWidget {
                       children: [
                         child ?? const SizedBox.shrink(),
                         _CurrentStoryCode(
-                          panelBackgroundColor: effectiveRouteWrapperBuilder
-                              .darkTheme.scaffoldBackgroundColor,
+                          panelBackgroundColor: effectiveRouteWrapperBuilder.darkTheme.scaffoldBackgroundColor,
                         ),
                       ],
                     )
@@ -481,9 +468,7 @@ class CurrentStory extends StatelessWidget {
 
     return KeyedSubtree(
       key: ValueKey(currentStory.name),
-      child: pluginStoryBuilders.isEmpty
-          ? child
-          : Nested(children: pluginStoryBuilders, child: child),
+      child: pluginStoryBuilders.isEmpty ? child : Nested(children: pluginStoryBuilders, child: child),
     );
   }
 }
@@ -495,8 +480,7 @@ class _CurrentStoryCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollBehavior scrollBehaviour =
-        ScrollConfiguration.of(context).copyWith(
+    final ScrollBehavior scrollBehaviour = ScrollConfiguration.of(context).copyWith(
       scrollbars: false,
       dragDevices: {
         PointerDeviceKind.touch,
@@ -505,12 +489,9 @@ class _CurrentStoryCode extends StatelessWidget {
     );
 
     final bool isDesktopWeb = kIsWeb &&
-        !(kIsWeb &&
-            (defaultTargetPlatform == TargetPlatform.iOS ||
-                defaultTargetPlatform == TargetPlatform.android));
+        !(kIsWeb && (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android));
 
-    final TextStyle? textStyle =
-        Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70);
+    final TextStyle? textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white70);
 
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -524,8 +505,7 @@ class _CurrentStoryCode extends StatelessWidget {
             initialEntries: [
               OverlayEntry(
                 builder: (context) => FutureBuilder<String?>(
-                  future:
-                      context.watch<StoryNotifier>().currentStory?.codeString,
+                  future: context.watch<StoryNotifier>().currentStory?.codeString,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
