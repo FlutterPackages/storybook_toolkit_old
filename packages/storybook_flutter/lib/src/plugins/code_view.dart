@@ -15,9 +15,7 @@ class CodeViewPlugin extends Plugin {
 }
 
 Widget _buildIcon(BuildContext context) => Icon(
-      context.watch<CodeViewNotifier>().value
-          ? Icons.remove_red_eye_outlined
-          : Icons.code,
+      context.watch<CodeViewNotifier>().value ? Icons.remove_red_eye_outlined : Icons.code,
     );
 
 void _onPressed(BuildContext context, ValueSetter<bool>? onShowCodeView) {
@@ -31,8 +29,7 @@ void _onPressed(BuildContext context, ValueSetter<bool>? onShowCodeView) {
   }
 }
 
-Widget _buildWrapper(BuildContext context, Widget? child) =>
-    ChangeNotifierProvider<CodeViewNotifier>(
+Widget _buildWrapper(BuildContext context, Widget? child) => ChangeNotifierProvider<CodeViewNotifier>(
       create: (_) => CodeViewNotifier(showCodeView: false),
       child: Builder(
         builder: (context) => child ?? const SizedBox.shrink(),

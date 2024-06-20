@@ -100,8 +100,7 @@ class SliderKnobWidget extends StatelessWidget {
   Widget build(BuildContext context) => KnobListTile(
         nullable: nullable,
         enabled: enabled,
-        onToggled: (bool enabled) =>
-            context.read<KnobsNotifier>().update(label, enabled ? value : null),
+        onToggled: (bool enabled) => context.read<KnobsNotifier>().update(label, enabled ? value : null),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -121,13 +120,11 @@ class SliderKnobWidget extends StatelessWidget {
                 data: SliderThemeData(
                   trackShape: _CustomTrackShape(),
                   trackHeight: 2.0,
-                  thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 8.0),
+                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8.0),
                 ),
                 child: Slider(
                   value: value,
-                  onChanged: (double value) =>
-                      context.read<KnobsNotifier>().update(label, value),
+                  onChanged: (double value) => context.read<KnobsNotifier>().update(label, value),
                   max: max,
                   min: min,
                   divisions: divisions,
@@ -151,8 +148,7 @@ class _CustomTrackShape extends RoundedRectSliderTrackShape {
   }) {
     final double? trackHeight = sliderTheme.trackHeight;
     final double trackLeft = offset.dx + 10.0;
-    final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final double trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
     final double trackWidth = parentBox.size.width - 18.0;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }

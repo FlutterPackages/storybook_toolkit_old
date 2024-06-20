@@ -29,8 +29,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      ValueListenableBuilder<TextEditingValue>(
+  Widget build(BuildContext context) => ValueListenableBuilder<TextEditingValue>(
         valueListenable: _searchController,
         builder: (BuildContext context, TextEditingValue value, Widget? _) {
           final ThemeData theme = Theme.of(context);

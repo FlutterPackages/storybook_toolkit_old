@@ -29,9 +29,7 @@ class KnobListTile extends StatefulWidget {
 class _KnobListTileState extends State<KnobListTile> {
   @override
   Widget build(BuildContext context) {
-    final onToggled = widget.onToggled != null
-        ? () => widget.onToggled!(!widget.enabled)
-        : null;
+    final onToggled = widget.onToggled != null ? () => widget.onToggled!(!widget.enabled) : null;
 
     return widget.nullable
         ? CustomListTile(

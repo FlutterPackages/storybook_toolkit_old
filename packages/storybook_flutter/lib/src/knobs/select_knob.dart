@@ -102,9 +102,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
       nullable: nullable,
       enabled: enabled,
       contentPadding: inputKnobTilePadding,
-      onToggled: (bool enabled) => context
-          .read<KnobsNotifier>()
-          .update<T?>(label, enabled ? value : null),
+      onToggled: (bool enabled) => context.read<KnobsNotifier>().update<T?>(label, enabled ? value : null),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -133,8 +131,7 @@ class SelectKnobWidget<T> extends StatelessWidget {
               onTap: () {
                 FocusScope.of(context).focusedChild?.unfocus();
 
-                context.read<SelectKnobDropdownStateManager>().context =
-                    context;
+                context.read<SelectKnobDropdownStateManager>().context = context;
               },
               onChanged: (Option<T>? option) {
                 if (option != null) {
@@ -164,21 +161,15 @@ class SelectKnobWidget<T> extends StatelessWidget {
                           children: [
                             Text(
                               option.label,
-                              style:
-                                  theme.listTileTheme.titleTextStyle?.copyWith(
-                                color: value == option.value
-                                    ? theme.listTileTheme.selectedColor
-                                    : null,
+                              style: theme.listTileTheme.titleTextStyle?.copyWith(
+                                color: value == option.value ? theme.listTileTheme.selectedColor : null,
                               ),
                             ),
                             if (option.description != null)
                               Text(
                                 option.description!,
-                                style: theme.listTileTheme.subtitleTextStyle
-                                    ?.copyWith(
-                                  color: value == option.value
-                                      ? theme.listTileTheme.selectedColor
-                                      : null,
+                                style: theme.listTileTheme.subtitleTextStyle?.copyWith(
+                                  color: value == option.value ? theme.listTileTheme.selectedColor : null,
                                 ),
                               ),
                           ],

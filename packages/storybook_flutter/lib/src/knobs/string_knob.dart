@@ -94,8 +94,7 @@ class StringKnobWidget extends StatelessWidget {
             ),
             textInputAction: TextInputAction.done,
             initialValue: value,
-            onChanged: (String value) =>
-                context.read<KnobsNotifier>().update(label, value),
+            onChanged: (String value) => context.read<KnobsNotifier>().update(label, value),
           ),
           if (description != null)
             Padding(

@@ -50,20 +50,15 @@ class _PluginPanelState extends State<PluginPanel> {
               final double viewPadding = mediaQuery.viewPadding.bottom;
               final double screenHeight = mediaQuery.size.height;
               final double keyboardHeight = mediaQuery.viewInsets.bottom;
-              final double panelHeight =
-                  widget.layerLink.leaderSize?.height ?? 0;
+              final double panelHeight = widget.layerLink.leaderSize?.height ?? 0;
 
               // Compensates the System UI bottom padding on mobile devices
               // when the keyboard is shown/hidden to avoid the Dialog jumping.
               final double bottomSafeArea = viewPadding - screenBottomPadding;
               // To smoothly adjust the Dialog height based on the keyboard's dimensions.
-              final double dialogBottomPadding =
-                  max(0, panelHeight - keyboardHeight);
+              final double dialogBottomPadding = max(0, panelHeight - keyboardHeight);
               final double mobileDialogHeight =
-                  (orientation == Orientation.portrait
-                          ? screenHeight * 0.5
-                          : screenHeight * 0.9) +
-                      bottomSafeArea;
+                  (orientation == Orientation.portrait ? screenHeight * 0.5 : screenHeight * 0.9) + bottomSafeArea;
 
               return Stack(
                 children: [
@@ -91,8 +86,7 @@ class _PluginPanelState extends State<PluginPanel> {
                             borderRadius: BorderRadius.vertical(top: radius),
                           ),
                           insetAnimationDuration: Duration.zero,
-                          insetPadding:
-                              EdgeInsets.only(bottom: dialogBottomPadding),
+                          insetPadding: EdgeInsets.only(bottom: dialogBottomPadding),
                           child: Navigator(
                             onGenerateRoute: (_) => MaterialPageRoute<void>(
                               builder: (context) => PointerInterceptor(
@@ -120,8 +114,7 @@ class _PluginPanelState extends State<PluginPanel> {
     if (panelBuilder == null) return;
 
     void insertOverlay() {
-      final overlay =
-          PluginOverlay(plugin: plugin, entry: _createEntry(panelBuilder));
+      final overlay = PluginOverlay(plugin: plugin, entry: _createEntry(panelBuilder));
       _overlay = overlay;
       widget.overlayKey.currentState?.insert(overlay.entry);
     }
@@ -145,14 +138,12 @@ class _PluginPanelState extends State<PluginPanel> {
     final bool isPage = storyNotifier.currentStory?.isPage == true;
     final bool isErrorScreen = !(storyNotifier.hasRouteMatch ?? true);
 
-    final bool isExpandedLayout =
-        context.watch<EffectiveLayout>() == EffectiveLayout.expanded;
+    final bool isExpandedLayout = context.watch<EffectiveLayout>() == EffectiveLayout.expanded;
 
     if ((isErrorScreen || isPage) && isExpandedLayout) {
       return const SizedBox.shrink();
     } else if ((isErrorScreen || isPage) && !isExpandedLayout) {
-      final Plugin contentsPlugin =
-          widget.plugins.firstWhere((plugin) => plugin.id == PluginId.contents);
+      final Plugin contentsPlugin = widget.plugins.firstWhere((plugin) => plugin.id == PluginId.contents);
 
       return TapRegion(
         groupId: _pluginPanelGroupId,
@@ -166,9 +157,8 @@ class _PluginPanelState extends State<PluginPanel> {
         runAlignment: WrapAlignment.center,
         children: widget.plugins.map((plugin) {
           final Widget? icon = plugin.icon?.call(context);
-          final bool dialogs = plugin.id == PluginId.contents ||
-              plugin.id == PluginId.deviceFrame ||
-              plugin.id == PluginId.knobs;
+          final bool dialogs =
+              plugin.id == PluginId.contents || plugin.id == PluginId.deviceFrame || plugin.id == PluginId.knobs;
 
           return icon != null
               ? TapRegion(

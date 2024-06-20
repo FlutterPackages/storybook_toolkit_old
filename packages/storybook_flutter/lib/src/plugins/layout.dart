@@ -29,8 +29,7 @@ class LayoutPlugin extends Plugin {
         );
 }
 
-Widget _buildIcon(BuildContext context) =>
-    switch (context.watch<LayoutProvider>().value) {
+Widget _buildIcon(BuildContext context) => switch (context.watch<LayoutProvider>().value) {
       Layout.auto => const Icon(Icons.view_carousel),
       Layout.compact => const Icon(Icons.view_agenda),
       Layout.expanded => const Icon(Icons.width_normal),
@@ -66,8 +65,7 @@ class _EffectiveLayoutBuilder extends StatefulWidget {
   final Widget? child;
 
   @override
-  State<_EffectiveLayoutBuilder> createState() =>
-      _EffectiveLayoutBuilderState();
+  State<_EffectiveLayoutBuilder> createState() => _EffectiveLayoutBuilderState();
 }
 
 class _EffectiveLayoutBuilderState extends State<_EffectiveLayoutBuilder> {
@@ -78,9 +76,7 @@ class _EffectiveLayoutBuilderState extends State<_EffectiveLayoutBuilder> {
     super.didChangeDependencies();
     final width = MediaQuery.sizeOf(context).width;
     _layout = switch (context.watch<LayoutProvider>().value) {
-      Layout.auto => width < widget.autoLayoutThreshold
-          ? EffectiveLayout.compact
-          : EffectiveLayout.expanded,
+      Layout.auto => width < widget.autoLayoutThreshold ? EffectiveLayout.compact : EffectiveLayout.expanded,
       Layout.compact => EffectiveLayout.compact,
       Layout.expanded => EffectiveLayout.expanded,
     };

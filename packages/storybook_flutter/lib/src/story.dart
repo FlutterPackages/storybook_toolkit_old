@@ -71,8 +71,7 @@ class Story {
 
   String get title => name.split(_sectionSeparator).last;
 
-  List<String> get storyPathFolders =>
-      name.split(_sectionSeparator).sublist(0, path.length - 1);
+  List<String> get storyPathFolders => name.split(_sectionSeparator).sublist(0, path.length - 1);
 }
 
 /// Use this notifier to get the current story.
@@ -98,9 +97,8 @@ class StoryNotifier extends ChangeNotifier {
 
   String? getStoryRouteName(String? route) => _storyRouteMap[route];
 
-  String? getStoryRoutePath(String? name) => _storyRouteMap.entries
-      .firstWhereOrNull((entry) => entry.value == name)
-      ?.key;
+  String? getStoryRoutePath(String? name) =>
+      _storyRouteMap.entries.firstWhereOrNull((entry) => entry.value == name)?.key;
 
   // Route match.
   bool? _hasRouteMatch;
@@ -124,9 +122,7 @@ class StoryNotifier extends ChangeNotifier {
         _searchTerm.isEmpty
             ? _stories
             : _stories.where(
-                (story) => story.title
-                    .toLowerCase()
-                    .contains(_searchTerm.toLowerCase()),
+                (story) => story.title.toLowerCase().contains(_searchTerm.toLowerCase()),
               ),
       );
 
@@ -156,8 +152,7 @@ class StoryNotifier extends ChangeNotifier {
   }
 
   Story? get currentStory {
-    final index =
-        _stories.indexWhere((story) => story.name == _currentStoryName);
+    final index = _stories.indexWhere((story) => story.name == _currentStoryName);
 
     final Story? story = index != -1 ? _stories[index] : null;
 

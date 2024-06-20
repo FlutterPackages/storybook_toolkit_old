@@ -54,8 +54,7 @@ Widget _buildWrapper(BuildContext _, Widget? child, ThemeMode? initialTheme) =>
           final themeMode = context.watch<ThemeModeNotifier>().value;
 
           final bool isPage = context.select(
-            (StoryNotifier storyNotifier) =>
-                storyNotifier.currentStory?.isPage == true,
+            (StoryNotifier storyNotifier) => storyNotifier.currentStory?.isPage == true,
           );
 
           final brightness = themeMode == ThemeMode.system

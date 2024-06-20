@@ -16,15 +16,12 @@ class ContentsPlugin extends Plugin {
       : super(
           id: PluginId.contents,
           icon: _buildIcon,
-          panelBuilder: (BuildContext context) =>
-              _buildPanel(context, logoWidget),
-          wrapperBuilder: (BuildContext context, Widget? child) =>
-              _buildWrapper(context, child, logoWidget),
+          panelBuilder: (BuildContext context) => _buildPanel(context, logoWidget),
+          wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, logoWidget),
         );
 }
 
-Widget? _buildIcon(BuildContext context) =>
-    switch (context.watch<EffectiveLayout>()) {
+Widget? _buildIcon(BuildContext context) => switch (context.watch<EffectiveLayout>()) {
       EffectiveLayout.compact => const Icon(Icons.list),
       EffectiveLayout.expanded => null,
     };
@@ -81,8 +78,7 @@ class _ContentsState extends State<_Contents> {
   }) {
     final StoryNotifier storyNotifier = context.watch<StoryNotifier>();
 
-    final ExpansionTileStateNotifier tilesState =
-        context.watch<ExpansionTileStateNotifier>();
+    final ExpansionTileStateNotifier tilesState = context.watch<ExpansionTileStateNotifier>();
 
     final ValueKey<String> tileKey = ValueKey(
       '${storyNotifier.currentStoryName}${storyNotifier.hasRouteMatch}',
@@ -93,18 +89,15 @@ class _ContentsState extends State<_Contents> {
     // When the initial story is non route story, the hasRouteMatch is null.
     // The hasRouteMatch value is assigned once there is navigation activity.
     bool isInitialNonRouteStoryFolder = false;
-    if (storyNotifier.hasRouteMatch == null &&
-        tilesState.isExpanded(title) == null) {
-      isInitialNonRouteStoryFolder =
-          storyNotifier.getInitialStoryName?.contains(title) == true;
+    if (storyNotifier.hasRouteMatch == null && tilesState.isExpanded(title) == null) {
+      isInitialNonRouteStoryFolder = storyNotifier.getInitialStoryName?.contains(title) == true;
       if (isInitialNonRouteStoryFolder) {
         tilesState.setExpanded(title, expanded: true);
       }
     }
 
-    final bool initiallyExpanded = storyNotifier.searchTerm.isNotEmpty ||
-        tileIsExpanded ||
-        isInitialNonRouteStoryFolder;
+    final bool initiallyExpanded =
+        storyNotifier.searchTerm.isNotEmpty || tileIsExpanded || isInitialNonRouteStoryFolder;
 
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(padding: EdgeInsets.zero),
@@ -161,13 +154,11 @@ class _ContentsState extends State<_Contents> {
 
     final bool isRouteAwareStory = router != null && story.routePath.isNotEmpty;
 
-    final String? storyTileRoutePath =
-        storyNotifier.getStoryRoutePath(story.name);
+    final String? storyTileRoutePath = storyNotifier.getStoryRoutePath(story.name);
 
     final bool isSelected = isRouteAwareStory
         ? (story.name == storyNotifier.storyRouteName ||
-                (storyNotifier.storyRoutePath == '/' &&
-                    story.name == storyNotifier.currentStoryName)) &&
+                (storyNotifier.storyRoutePath == '/' && story.name == storyNotifier.currentStoryName)) &&
             currentSelectedStory?.router != null
         : story == currentSelectedStory;
 
@@ -225,9 +216,8 @@ class _ContentsState extends State<_Contents> {
       (story) => story.path.length == depth ? '' : story.path[depth - 1],
     );
 
-    final List<Widget> sectionStories = (grouped[''] ?? [])
-        .map((story) => _buildStoryTile(story, storyLeftPadding))
-        .toList();
+    final List<Widget> sectionStories =
+        (grouped[''] ?? []).map((story) => _buildStoryTile(story, storyLeftPadding)).toList();
 
     return stories.length == sectionStories.length
         ? sectionStories
@@ -271,9 +261,7 @@ class _ContentsState extends State<_Contents> {
           const SearchTextField(),
           Expanded(
             key: ValueKey(storyNotifier.searchTerm),
-            child: pages.isEmpty &&
-                    stories.isEmpty &&
-                    storyNotifier.searchTerm.isNotEmpty
+            child: pages.isEmpty && stories.isEmpty && storyNotifier.searchTerm.isNotEmpty
                 ? const Center(child: Text('Nothing found'))
                 : ListView(
                     primary: false,

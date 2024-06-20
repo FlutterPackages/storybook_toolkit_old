@@ -2,8 +2,7 @@ import 'package:any_syntax_highlighter/themes/any_syntax_highlighter_theme.dart'
 import 'package:flutter/material.dart';
 
 class CustomSyntaxHighlighterTheme {
-  static AnySyntaxHighlighterTheme customTheme() =>
-      const AnySyntaxHighlighterTheme(
+  static AnySyntaxHighlighterTheme customTheme() => const AnySyntaxHighlighterTheme(
         classStyle: TextStyle(
           color: Color(0xffffffff),
         ),

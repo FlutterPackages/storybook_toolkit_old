@@ -21,10 +21,8 @@ const double deviceFrameHorizontalTitleGap = 8.0;
 
 // ListTile padding
 const double defaultPaddingValue = 24.0;
-const EdgeInsets defaultTilePadding =
-    EdgeInsets.symmetric(horizontal: defaultPaddingValue);
-const EdgeInsets deviceFrameTilePadding =
-    EdgeInsets.symmetric(horizontal: 16.0);
+const EdgeInsets defaultTilePadding = EdgeInsets.symmetric(horizontal: defaultPaddingValue);
+const EdgeInsets deviceFrameTilePadding = EdgeInsets.symmetric(horizontal: 16.0);
 const EdgeInsets inputKnobTilePadding = EdgeInsets.only(
   top: 8.0,
   bottom: 4.0,
@@ -33,10 +31,8 @@ const EdgeInsets inputKnobTilePadding = EdgeInsets.only(
 );
 
 // ListTile description padding
-const EdgeInsets defaultDescriptionPadding =
-    EdgeInsets.only(top: 2.0, bottom: 4.0);
-const EdgeInsets deviceFrameDescriptionPadding =
-    EdgeInsets.symmetric(vertical: 2.0);
+const EdgeInsets defaultDescriptionPadding = EdgeInsets.only(top: 2.0, bottom: 4.0);
+const EdgeInsets deviceFrameDescriptionPadding = EdgeInsets.symmetric(vertical: 2.0);
 const EdgeInsets inputKnobDescriptionPadding = EdgeInsets.only(top: 4.0);
 
 // Padding

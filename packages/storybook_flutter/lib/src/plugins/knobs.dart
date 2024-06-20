@@ -16,8 +16,7 @@ class KnobsPlugin extends Plugin {
         );
 }
 
-Widget? _buildIcon(BuildContext context) =>
-    switch (context.watch<EffectiveLayout>()) {
+Widget? _buildIcon(BuildContext context) => switch (context.watch<EffectiveLayout>()) {
       EffectiveLayout.compact => const Icon(Icons.settings),
       EffectiveLayout.expanded => null,
     };
@@ -30,8 +29,7 @@ Widget _buildPanel(BuildContext context) {
 
   final List<Knob<dynamic>> items = isCodeView ? [] : knobs.all();
 
-  final Story? currentStory = context
-      .select((StoryNotifier storyNotifier) => storyNotifier.currentStory);
+  final Story? currentStory = context.select((StoryNotifier storyNotifier) => storyNotifier.currentStory);
 
   return items.isEmpty
       ? isCodeView
@@ -72,9 +70,7 @@ Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
                         Expanded(child: child ?? const SizedBox.shrink()),
                         TapRegion(
                           onTapOutside: (PointerDownEvent _) {
-                            context
-                                .read<SelectKnobDropdownStateManager>()
-                                .popDropdown();
+                            context.read<SelectKnobDropdownStateManager>().popDropdown();
                           },
                           child: RepaintBoundary(
                             child: Material(
@@ -89,11 +85,8 @@ Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
                                   child: SizedBox(
                                     width: 250,
                                     child: Navigator(
-                                      onGenerateRoute: (_) =>
-                                          PageRouteBuilder<void>(
-                                        pageBuilder:
-                                            (BuildContext context, _, __) =>
-                                                _buildPanel(context),
+                                      onGenerateRoute: (_) => PageRouteBuilder<void>(
+                                        pageBuilder: (BuildContext context, _, __) => _buildPanel(context),
                                       ),
                                     ),
                                   ),

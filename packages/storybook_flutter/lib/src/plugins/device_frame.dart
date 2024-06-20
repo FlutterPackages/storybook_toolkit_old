@@ -20,10 +20,8 @@ class DeviceFramePlugin extends Plugin {
             enableExpandedLayoutDeviceFrame,
           ),
           storyBuilder: _buildStoryWrapper,
-          wrapperBuilder: (BuildContext context, Widget? child) =>
-              _buildWrapper(context, child, initial: initialData),
-          panelBuilder: (BuildContext context) =>
-              _buildPanel(context, deviceInfoList),
+          wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, initial: initialData),
+          panelBuilder: (BuildContext context) => _buildPanel(context, deviceInfoList),
         );
 }
 
@@ -34,15 +32,11 @@ Widget? _buildIcon(
 ) {
   final EffectiveLayout effectiveLayout = context.watch<EffectiveLayout>();
 
-  final bool showIconForCompactLayout =
-      effectiveLayout == EffectiveLayout.compact && enableCompactDeviceFrame;
+  final bool showIconForCompactLayout = effectiveLayout == EffectiveLayout.compact && enableCompactDeviceFrame;
 
-  final bool showIconForExpandedLayout =
-      effectiveLayout == EffectiveLayout.expanded && enableExpandedDeviceFrame;
+  final bool showIconForExpandedLayout = effectiveLayout == EffectiveLayout.expanded && enableExpandedDeviceFrame;
 
-  return showIconForCompactLayout || showIconForExpandedLayout
-      ? const Icon(Icons.phone_android)
-      : null;
+  return showIconForCompactLayout || showIconForExpandedLayout ? const Icon(Icons.phone_android) : null;
 }
 
 Widget _buildStoryWrapper(BuildContext context, Widget? child) {
@@ -121,9 +115,7 @@ Widget _buildWrapper(
           create: (BuildContext _) => DeviceFrameDataNotifier(
             (
               isFrameVisible: initial.isFrameVisible,
-              device: effectiveLayout == EffectiveLayout.compact
-                  ? null
-                  : initial.device,
+              device: effectiveLayout == EffectiveLayout.compact ? null : initial.device,
               orientation: initial.orientation,
             ),
           ),
@@ -141,8 +133,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
   final ThemeData theme = Theme.of(context);
   final ListTileThemeData listTileTheme = theme.listTileTheme;
 
-  void update(DeviceFrameData data) =>
-      context.read<DeviceFrameDataNotifier>().value = data;
+  void update(DeviceFrameData data) => context.read<DeviceFrameDataNotifier>().value = data;
 
   final devices = (deviceInfoList ?? Devices.all).map(
     (DeviceInfo device) {
@@ -185,17 +176,13 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
                 '${device.screenSize.width.toInt()}×'
                 '${device.screenSize.height.toInt()} (${device.identifier.platform.name})',
                 style: listTileTheme.subtitleTextStyle?.copyWith(
-                  color: currentDevice.device == device
-                      ? listTileTheme.selectedColor
-                      : null,
+                  color: currentDevice.device == device ? listTileTheme.selectedColor : null,
                 ),
               ),
             ),
           ],
         ),
-        trailing: currentDevice.device == device
-            ? const Icon(Icons.check, size: 16)
-            : null,
+        trailing: currentDevice.device == device ? const Icon(Icons.check, size: 16) : null,
       );
     },
   ).toList();
@@ -203,9 +190,8 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
   return ListView.separated(
     primary: false,
     padding: EdgeInsets.zero,
-    separatorBuilder: (BuildContext context, index) => index == 1
-        ? Divider(height: 8, color: theme.dividerColor)
-        : const SizedBox(),
+    separatorBuilder: (BuildContext context, index) =>
+        index == 1 ? Divider(height: 8, color: theme.dividerColor) : const SizedBox(),
     itemBuilder: (BuildContext context, int index) {
       if (index == 0) {
         return CustomListTile(
@@ -240,9 +226,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
           contentPadding: deviceFrameTilePadding,
           onTap: () {
             final orientation =
-                currentDevice.orientation == Orientation.portrait
-                    ? Orientation.landscape
-                    : Orientation.portrait;
+                currentDevice.orientation == Orientation.portrait ? Orientation.landscape : Orientation.portrait;
             update(
               (
                 orientation: orientation,
@@ -285,9 +269,7 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
             radius: 16,
             child: Icon(Icons.phonelink_off, size: 16),
           ),
-          trailing: currentDevice.device == null
-              ? const Icon(Icons.check, size: 16)
-              : null,
+          trailing: currentDevice.device == null ? const Icon(Icons.check, size: 16) : null,
         );
       }
 
@@ -302,23 +284,15 @@ extension on DeviceType {
   IconData icon(TargetPlatform platform) {
     switch (this) {
       case DeviceType.phone:
-        return platform == TargetPlatform.android
-            ? Icons.phone_android
-            : Icons.phone_iphone;
+        return platform == TargetPlatform.android ? Icons.phone_android : Icons.phone_iphone;
       case DeviceType.tablet:
-        return platform == TargetPlatform.android
-            ? Icons.tablet_android
-            : Icons.tablet_mac;
+        return platform == TargetPlatform.android ? Icons.tablet_android : Icons.tablet_mac;
       case DeviceType.desktop:
-        return platform == TargetPlatform.macOS
-            ? Icons.desktop_mac
-            : Icons.desktop_windows;
+        return platform == TargetPlatform.macOS ? Icons.desktop_mac : Icons.desktop_windows;
       case DeviceType.tv:
         return Icons.tv;
       case DeviceType.laptop:
-        return platform == TargetPlatform.macOS
-            ? Icons.laptop_mac
-            : Icons.laptop_windows;
+        return platform == TargetPlatform.macOS ? Icons.laptop_mac : Icons.laptop_windows;
       case DeviceType.unknown:
         return Icons.device_unknown;
     }

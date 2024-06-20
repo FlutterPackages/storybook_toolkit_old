@@ -15,8 +15,7 @@ const String nestingSubDirectory = '/routing/nesting';
 GoRouter router = GoRouter(
   debugLogDiagnostics: true,
   initialLocation: HomePage.homePagePath,
-  errorBuilder: (BuildContext context, GoRouterState state) =>
-      const RoutingErrorWidget(),
+  errorBuilder: (BuildContext context, GoRouterState state) => const RoutingErrorWidget(),
   redirect: (context, state) {
     switch (state.uri.path) {
       case routingDirectory:
@@ -33,35 +32,29 @@ GoRouter router = GoRouter(
     // Pages
     GoRoute(
       path: HomePage.homePagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: HomePage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: HomePage()),
     ),
     GoRoute(
       path: ColorsPage.colorsPagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: ColorsPage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: ColorsPage()),
     ),
 
     // Stories
     GoRoute(
       path: FirstPage.firstPagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: FirstPage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: FirstPage()),
     ),
     GoRoute(
       path: SecondPage.secondPagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: SecondPage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: SecondPage()),
     ),
     GoRoute(
       path: ScaffoldPage.examplePagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: ScaffoldPage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: ScaffoldPage()),
     ),
     GoRoute(
       path: ThirdPage.thirdPagePath,
-      pageBuilder: (BuildContext _, GoRouterState __) =>
-          const NoTransitionPage(child: ThirdPage()),
+      pageBuilder: (BuildContext _, GoRouterState __) => const NoTransitionPage(child: ThirdPage()),
     ),
   ],
 );

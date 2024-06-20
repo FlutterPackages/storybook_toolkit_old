@@ -34,18 +34,15 @@ void _onPressed(
   }
 }
 
-Widget _buildWrapper(BuildContext _, Widget? child) =>
-    ChangeNotifierProvider<TimeDilationNotifier>(
+Widget _buildWrapper(BuildContext _, Widget? child) => ChangeNotifierProvider<TimeDilationNotifier>(
       create: (_) => TimeDilationNotifier(isTimeDilated: false),
       child: Builder(
         builder: (BuildContext context) {
           final bool isPage = context.select(
-            (StoryNotifier storyNotifier) =>
-                storyNotifier.currentStory?.isPage == true,
+            (StoryNotifier storyNotifier) => storyNotifier.currentStory?.isPage == true,
           );
 
-          timeDilation =
-              context.watch<TimeDilationNotifier>().value && !isPage ? 10 : 1;
+          timeDilation = context.watch<TimeDilationNotifier>().value && !isPage ? 10 : 1;
 
           return child ?? const SizedBox.shrink();
         },

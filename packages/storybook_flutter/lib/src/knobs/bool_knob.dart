@@ -64,8 +64,7 @@ class BooleanKnobWidget extends StatelessWidget {
     return KnobListTile(
       enabled: value,
       nullable: nullable,
-      onToggled: (bool value) =>
-          context.read<KnobsNotifier>().update(label, value),
+      onToggled: (bool value) => context.read<KnobsNotifier>().update(label, value),
       leading: SizedBox(
         width: 16,
         child: Transform.scale(
@@ -78,8 +77,7 @@ class BooleanKnobWidget extends StatelessWidget {
               width: 1.2,
             ),
             shape: const ContinuousRectangleBorder(borderRadius: borderRadius),
-            onChanged: (bool? value) =>
-                context.read<KnobsNotifier>().update(label, value),
+            onChanged: (bool? value) => context.read<KnobsNotifier>().update(label, value),
           ),
         ),
       ),
