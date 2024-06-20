@@ -21,8 +21,7 @@ Future<void> loadAppFonts() async {
 
   for (final Map<String, dynamic> font in fontManifest) {
     final fontLoader = FontLoader(derivedFontFamily(font));
-    for (final Map<String, dynamic> fontType
-        in List.from(font['fonts'] as Iterable<dynamic>)) {
+    for (final Map<String, dynamic> fontType in List.from(font['fonts'] as Iterable<dynamic>)) {
       fontLoader.addFont(rootBundle.load(fontType['asset'] as String));
     }
     await fontLoader.load();
@@ -57,8 +56,7 @@ String derivedFontFamily(Map<String, dynamic> fontDefinition) {
       return fontFamilyName;
     }
   } else {
-    for (final Map<String, dynamic> fontType
-        in List.from(fontDefinition['fonts'] as Iterable<dynamic>)) {
+    for (final Map<String, dynamic> fontType in List.from(fontDefinition['fonts'] as Iterable<dynamic>)) {
       final String? asset = fontType['asset'] as String?;
       if (asset != null && asset.startsWith('packages')) {
         final packageName = asset.split('/')[1];

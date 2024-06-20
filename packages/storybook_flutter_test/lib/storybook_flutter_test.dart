@@ -21,8 +21,7 @@ Future<void> testStorybook(
 }) async {
   await loadAppFonts();
 
-  for (final story
-      in storybook.stories.where((s) => filterStories?.call(s) ?? true)) {
+  for (final story in storybook.stories.where((s) => filterStories?.call(s) ?? true)) {
     _testStory(
       storybook,
       story.name,
@@ -48,8 +47,7 @@ void _testStory(
     testWidgets(story, tags: ['golden', 'storybook'], (tester) async {
       debugDisableShadows = false;
       final (:device, :orientation, :isFrameVisible) = info;
-      final size = (isFrameVisible ? device.frameSize : device.screenSize) *
-          device.pixelRatio;
+      final size = (isFrameVisible ? device.frameSize : device.screenSize) * device.pixelRatio;
 
       tester.view
         ..padding = FakeViewPadding.zero
