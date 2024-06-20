@@ -2,3 +2,7 @@
 .vscode/
 .idea/
 .fvm/
+
+.flutter-plugins
+.flutter-plugins-dependencies
+
