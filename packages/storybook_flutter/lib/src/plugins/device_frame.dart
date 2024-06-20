@@ -146,10 +146,10 @@ Widget _buildPanel(BuildContext context, List<DeviceInfo>? deviceInfoList) {
 
   final devices = (deviceInfoList ?? Devices.all).map(
     (DeviceInfo device) {
-      // // Skip this device because it has a misaligned frame.
-      // if (device.identifier == Devices.ios.iPhone14Pro.identifier) {
-      //   return const SizedBox.shrink();
-      // }
+      // Skip this device because it has a misaligned frame.
+      if (device.identifier == Devices.ios.iPhone14Pro.identifier) {
+        return const SizedBox.shrink();
+      }
 
       return CustomListTile(
         contentPadding: deviceFrameTilePadding,
