@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
             orientation: Orientation.portrait
           ),
           enableDirectionality: false,
+          enableTimeDilation: false,
         ),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         logoWidget: const LogoWidget(),
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text('Flutter'),
+            child: Text('Storybook'),
           ),
         ),
         stories: [
