@@ -1,3 +1,17 @@
+## latest
+
+> Note: This release has breaking changes.
+
+- **FEAT**: add CodeViewPlugin.
+- **FEAT**: add DirectionalityPlugin.
+- **FEAT**: add TimeDilationPlugin.
+- **BREAKING** **FEAT**: rewrite golden tests generator.
+- **REFACTOR**: move tests functions into storybook_flutter.
+- **BREAKING** **FEAT**: update navigation tree.
+- **FEAT**: add pages.
+- **FEAT**: add branding logo.
+- **FIX**: update device frames.
+
 ## 0.14.0
 
 > Note: This release has breaking changes.
