@@ -7,12 +7,12 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 ///
 /// If `sidePanel` is true, the knobs will be displayed in the right side panel.
 class KnobsPlugin extends Plugin {
-  const KnobsPlugin()
+  KnobsPlugin({bool showPanel = true})
       : super(
           id: PluginId.knobs,
           icon: _buildIcon,
           panelBuilder: _buildPanel,
-          wrapperBuilder: _buildWrapper,
+          wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, showPanel),
         );
 }
 
@@ -45,7 +45,7 @@ Widget _buildPanel(BuildContext context) {
         );
 }
 
-Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
+Widget _buildWrapper(BuildContext context, Widget? child, bool showPanel) => MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (_) => SelectKnobDropdownStateManager(),
@@ -59,7 +59,7 @@ Widget _buildWrapper(BuildContext context, Widget? child) => MultiProvider(
         final bool isPage = storyNotifier.currentStory?.isPage == true;
         final bool isErrorScreen = !(storyNotifier.hasRouteMatch ?? true);
 
-        return isPage || isErrorScreen
+        return isPage || isErrorScreen || !showPanel
             ? child!
             : switch (context.watch<EffectiveLayout>()) {
                 EffectiveLayout.compact => child!,

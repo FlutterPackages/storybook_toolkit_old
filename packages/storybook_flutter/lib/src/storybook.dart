@@ -111,7 +111,7 @@ class Storybook extends StatefulWidget {
     this.wrapperBuilder = materialWrapper,
     this.routeWrapperBuilder,
     this.canvasColor,
-    this.showPanel = true,
+    bool showPanel = true,
     this.enableLayout = true,
     this.brandingWidget,
     this.logoWidget,
@@ -123,11 +123,12 @@ class Storybook extends StatefulWidget {
             autoLayoutThreshold,
             enableLayout: enableLayout,
           ),
-          ContentsPlugin(logoWidget: logoWidget),
+          ContentsPlugin(logoWidget: logoWidget, showPanel: showPanel),
           ...plugins ?? _defaultPlugins,
-          const KnobsPlugin(),
+          KnobsPlugin(showPanel: showPanel),
         ]),
-        stories = UnmodifiableListView(stories);
+        stories = UnmodifiableListView(stories),
+        showPanel = showPanel;
 
   /// All available stories.
   ///

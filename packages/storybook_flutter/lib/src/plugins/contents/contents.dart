@@ -12,12 +12,12 @@ import 'package:storybook_flutter/storybook_flutter.dart';
 /// If `sidePanel` is true, the stories are shown in the left side panel,
 /// otherwise as a popup.
 class ContentsPlugin extends Plugin {
-  ContentsPlugin({Widget? logoWidget})
+  ContentsPlugin({Widget? logoWidget, bool showPanel = true})
       : super(
           id: PluginId.contents,
           icon: _buildIcon,
           panelBuilder: (BuildContext context) => _buildPanel(context, logoWidget),
-          wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, logoWidget),
+          wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, logoWidget, showPanel),
         );
 }
 
@@ -28,36 +28,38 @@ Widget? _buildIcon(BuildContext context) => switch (context.watch<EffectiveLayou
 
 Widget _buildPanel(BuildContext _, Widget? logoWidget) => _Contents(logoWidget);
 
-Widget _buildWrapper(BuildContext context, Widget? child, Widget? logoWidget) =>
+Widget _buildWrapper(BuildContext context, Widget? child, Widget? logoWidget, bool showPanel) =>
     switch (context.watch<EffectiveLayout>()) {
       EffectiveLayout.compact => child ?? const SizedBox.shrink(),
-      EffectiveLayout.expanded => Row(
-          children: [
-            Material(
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  border: Border(
-                    right: BorderSide(color: Colors.black12),
-                  ),
-                ),
-                child: SizedBox(
-                  width: panelWidth,
-                  child: Navigator(
-                    onGenerateRoute: (_) => PageRouteBuilder<void>(
-                      pageBuilder: (_, __, ___) => _Contents(logoWidget),
+      EffectiveLayout.expanded => showPanel
+          ? Row(
+              children: [
+                Material(
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        right: BorderSide(color: Colors.black12),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: panelWidth,
+                      child: Navigator(
+                        onGenerateRoute: (_) => PageRouteBuilder<void>(
+                          pageBuilder: (_, __, ___) => _Contents(logoWidget),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Expanded(
-              child: ClipRect(
-                clipBehavior: Clip.hardEdge,
-                child: child,
-              ),
-            ),
-          ],
-        ),
+                Expanded(
+                  child: ClipRect(
+                    clipBehavior: Clip.hardEdge,
+                    child: child,
+                  ),
+                ),
+              ],
+            )
+          : child ?? const SizedBox.shrink(),
     };
 
 class _Contents extends StatefulWidget {
