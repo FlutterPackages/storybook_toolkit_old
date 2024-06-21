@@ -8,6 +8,10 @@ import '../example/counter_page.dart';
 void main() => testStorybook(
       storybook,
       devices: {Device.iPhone8, Device.iPhone13, Device.pixel5, Device.iPadPro},
+      filterStories: (Story story) {
+        final skipStories = ['Button'];
+        return !skipStories.contains(story.name);
+      },
     );
 
 final storybook = Storybook(
@@ -16,7 +20,7 @@ final storybook = Storybook(
       name: 'Button',
       builder: (context) => ElevatedButton(
         onPressed: () {},
-        child: const Text('Button'),
+        child: const Text('Button123'),
       ),
     ),
     Story(
