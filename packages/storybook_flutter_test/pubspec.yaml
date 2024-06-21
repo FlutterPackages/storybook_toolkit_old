@@ -13,12 +13,14 @@ dependencies:
   flutter_test:
     sdk: flutter
   meta: ^1.9.1
+  adaptive_test: 0.5.0
   storybook_flutter:
     path: "../storybook_flutter"
+
 
 flutter:
   uses-material-design: true
   fonts:
     - family: Roboto
       fonts:
-        - asset: packages/storybook_flutter_test/fonts/Roboto-Regular.ttf
+        - asset: fonts/Roboto-Regular.ttf
