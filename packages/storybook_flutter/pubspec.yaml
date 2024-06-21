@@ -17,6 +17,8 @@ dependencies:
   pointer_interceptor: ^0.9.3+7
   provider: ">=6.0.0 <7.0.0"
   recase: ^4.1.0
+  adaptive_test:
+    git: https://github.com/FlutterPackages/adaptive_test.git
   device_frame:
     git:
       url: https://github.com/bradrushworth/flutter_device_preview.git
