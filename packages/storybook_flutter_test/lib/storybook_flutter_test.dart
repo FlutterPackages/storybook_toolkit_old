@@ -1,90 +1,62 @@
 import 'dart:async';
 
+import 'package:adaptive_test/adaptive_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_test/src/font_loader.dart';
-
-typedef Layout = ({
-  DeviceInfo device,
-  Orientation orientation,
-  bool isFrameVisible,
-});
+import 'package:storybook_flutter_test/devices.dart';
 
 @isTest
 Future<void> testStorybook(
   Storybook storybook, {
-  List<Layout>? layouts,
+  Set<Device> devices = const {Device.pixel5, Device.iPhone8, Device.iPhone13},
   bool Function(Story story)? filterStories,
-  FutureOr<void> Function(WidgetTester tester, Story story)? pump,
 }) async {
-  await loadAppFonts();
+  AdaptiveTestConfiguration.instance
+    ..setDeviceVariants({
+      for (Device device in devices)
+        WindowConfigData(
+          device.name,
+          size: device.size,
+          pixelDensity: device.pixelDensity,
+          targetPlatform: device.targetPlatform,
+          borderRadius: device.borderRadius,
+          safeAreaPadding: device.safeAreaPadding,
+          keyboardSize: device.keyboardSize,
+          homeIndicator: device.homeIndicator,
+          notchSize: device.notchSize,
+          punchHole: device.punchHole,
+        ),
+    });
+  await loadFonts();
+  setupFileComparatorWithThreshold();
 
   for (final story in storybook.stories.where((s) => filterStories?.call(s) ?? true)) {
-    _testStory(
-      storybook,
-      story.name,
-      layouts: layouts,
-      pump: (tester) => pump?.call(tester, story),
-    );
-  }
-}
-
-@isTest
-void _testStory(
-  Storybook storybook,
-  String story, {
-  List<Layout>? layouts,
-  required FutureOr<void> Function(WidgetTester tester) pump,
-}) {
-  final Layout defaultLayout = (
-    device: Devices.ios.iPhone13,
-    orientation: Orientation.portrait,
-    isFrameVisible: false,
-  );
-  for (final info in layouts ?? [defaultLayout]) {
-    testWidgets(story, tags: ['golden', 'storybook'], (tester) async {
-      debugDisableShadows = false;
-      final (:device, :orientation, :isFrameVisible) = info;
-      final size = (isFrameVisible ? device.frameSize : device.screenSize) * device.pixelRatio;
-
-      tester.view
-        ..padding = FakeViewPadding.zero
-        ..viewInsets = FakeViewPadding.zero
-        ..viewPadding = FakeViewPadding.zero
-        ..physicalSize = switch (orientation) {
-          Orientation.portrait => size,
-          Orientation.landscape => size.flipped,
-        };
-
-      await tester.pumpWidget(
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: DeviceFrame(
-            device: device,
-            isFrameVisible: isFrameVisible,
-            orientation: orientation,
-            screen: Storybook(
-              initialStory: story,
-              showPanel: false,
-              wrapperBuilder: storybook.wrapperBuilder,
-              stories: storybook.stories,
+    testAdaptiveWidgets(
+      'Run ${story.name} test',
+      (tester, variant) async {
+        await tester.pumpWidget(
+          AdaptiveWrapper(
+            windowConfig: variant,
+            tester: tester,
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Storybook(
+                initialStory: story.name,
+                showPanel: false,
+                wrapperBuilder: storybook.wrapperBuilder,
+                stories: storybook.stories,
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await pump(tester);
-
-      await expectLater(
-        find.byType(Storybook),
-        matchesGoldenFile(
-          'storybook_goldens/$story/${device.name.replaceAll('"', '')}.png',
-        ),
-      );
-
-      debugDisableShadows = true;
-    });
+        //await tester.expectGolden(variant);
+        //await tester.tap(find.byKey(ValueKey("TestField")));
+        //await tester.pump();
+        await tester.expectGolden<dynamic>(variant, pathBuilder: () => "goldens/${story.name}/${variant.name}.png");
+      },
+    );
   }
 }

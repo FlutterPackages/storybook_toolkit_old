@@ -13,7 +13,8 @@ dependencies:
   flutter_test:
     sdk: flutter
   meta: ^1.9.1
-  adaptive_test: 0.5.0
+  adaptive_test:
+    git: https://github.com/FlutterPackages/adaptive_test.git
   alchemist: 0.7.0
   storybook_flutter:
     path: "../storybook_flutter"
