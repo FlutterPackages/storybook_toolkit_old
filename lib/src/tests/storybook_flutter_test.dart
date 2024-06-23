@@ -56,6 +56,7 @@ Future<void> testStorybook(
         //await tester.pump();
         await tester.expectGolden<dynamic>(variant, pathBuilder: () => "goldens/${story.name}/${variant.name}.png");
       },
+      tags: ['storybook'],
     );
   }
 }
