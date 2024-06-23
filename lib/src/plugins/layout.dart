@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
 
 enum Layout { compact, expanded, auto }
 

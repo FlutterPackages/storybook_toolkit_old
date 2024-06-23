@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/plugins/plugin.dart';
+import 'package:flutter_storybook/src/plugins/plugin.dart';
 
 class DirectionalityPlugin extends Plugin {
   DirectionalityPlugin({

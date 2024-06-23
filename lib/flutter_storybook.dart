@@ -9,6 +9,6 @@ export 'src/plugins/directionality.dart';
 export 'src/plugins/plugin.dart';
 export 'src/plugins/plugin_panel.dart';
 export 'src/tests/devices.dart';
-export 'src/tests/storybook_flutter_test.dart';
+export 'src/tests/storybook_tester.dart';
 export 'src/story.dart';
 export 'src/storybook.dart';

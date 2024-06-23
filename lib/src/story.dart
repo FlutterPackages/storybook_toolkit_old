@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:storybook_flutter/src/storybook.dart';
+import 'package:flutter_storybook/src/storybook.dart';
 
 const _sectionSeparator = '/';
 

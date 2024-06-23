@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/common/constants.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:flutter_storybook/src/common/constants.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
 
 const String _pluginPanelGroupId = 'plugin_panel';
 

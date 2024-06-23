@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:storybook_flutter/src/common/constants.dart';
-import 'package:storybook_flutter/src/common/custom_list_tile.dart';
+import 'package:flutter_storybook/src/common/constants.dart';
+import 'package:flutter_storybook/src/common/custom_list_tile.dart';
 
 class KnobListTile extends StatefulWidget {
   const KnobListTile({

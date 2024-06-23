@@ -1,12 +1,12 @@
 import 'package:flutter/services.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_example/routing/app_router.dart';
-import 'package:storybook_flutter_example/stories/colors_page.dart';
-import 'package:storybook_flutter_example/stories/first_page.dart';
-import 'package:storybook_flutter_example/stories/home_page.dart';
-import 'package:storybook_flutter_example/stories/scaffold_page.dart';
-import 'package:storybook_flutter_example/stories/second_page.dart';
-import 'package:storybook_flutter_example/stories/third_page.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:flutter_storybook_example/routing/app_router.dart';
+import 'package:flutter_storybook_example/stories/colors_page.dart';
+import 'package:flutter_storybook_example/stories/first_page.dart';
+import 'package:flutter_storybook_example/stories/home_page.dart';
+import 'package:flutter_storybook_example/stories/scaffold_page.dart';
+import 'package:flutter_storybook_example/stories/second_page.dart';
+import 'package:flutter_storybook_example/stories/third_page.dart';
 
 List<Story> routeAwareStories = [
   Story.asRoute(

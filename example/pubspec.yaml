@@ -1,4 +1,4 @@
-name: storybook_flutter_example
+name: flutter_storybook_example
 description: A new Flutter project.
 version: 1.0.0+1
 publish_to: none
@@ -12,7 +12,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   go_router: ^12.1.1
-  storybook_flutter:
+  flutter_storybook:
     path: ..
 
 dev_dependencies:

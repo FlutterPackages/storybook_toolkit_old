@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/common/constants.dart';
-import 'package:storybook_flutter/src/knobs/knob_list_tile.dart';
-import 'package:storybook_flutter/src/knobs/knobs.dart';
-import 'package:storybook_flutter/src/plugins/knobs.dart';
+import 'package:flutter_storybook/src/common/constants.dart';
+import 'package:flutter_storybook/src/knobs/knob_list_tile.dart';
+import 'package:flutter_storybook/src/knobs/knobs.dart';
+import 'package:flutter_storybook/src/plugins/knobs.dart';
 
 /// {@template bool_knob_value}
 /// A knob value that allows the user to toggle a boolean value.

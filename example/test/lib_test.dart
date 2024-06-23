@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_example/stories/counter_page.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:flutter_storybook_example/stories/counter_page.dart';
 
 void main() => testStorybook(
       storybook,

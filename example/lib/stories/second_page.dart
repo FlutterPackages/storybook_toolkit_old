@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
-import 'package:storybook_flutter_example/stories/first_page.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:flutter_storybook_example/stories/first_page.dart';
 
 class SecondPage extends StatelessWidget {
   const SecondPage({super.key});

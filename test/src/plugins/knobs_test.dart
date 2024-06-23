@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
 
 void main() {
   Future<T> prepareStorybook<T extends Widget>(

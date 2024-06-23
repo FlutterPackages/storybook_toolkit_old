@@ -1,8 +1,6 @@
-# Storybook Flutter
+# Flutter Storybook
 
 A cross-platform storybook for showcasing widgets. It should work at all platforms supported by Flutter.
-
-- [Demo version](https://ookami-kb.github.io/storybook_flutter/)
 
 ![](screenshots/preview.png)
 

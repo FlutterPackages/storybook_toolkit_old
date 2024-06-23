@@ -1,4 +1,4 @@
-## latest
+## 1.0.0
 
 > Note: This release has breaking changes.
 
@@ -56,7 +56,7 @@
 
 ## 0.11.2
 
- - **FEAT**: Allow configuration of device infos (#84).
+ - **FEAT**: Allow configuration of device info (#84).
 
 ## 0.11.1
 

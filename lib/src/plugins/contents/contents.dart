@@ -2,10 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:storybook_flutter/src/common/constants.dart';
-import 'package:storybook_flutter/src/common/custom_list_tile.dart';
-import 'package:storybook_flutter/src/plugins/contents/search_text_field.dart';
-import 'package:storybook_flutter/storybook_flutter.dart';
+import 'package:flutter_storybook/src/common/constants.dart';
+import 'package:flutter_storybook/src/common/custom_list_tile.dart';
+import 'package:flutter_storybook/src/plugins/contents/search_text_field.dart';
+import 'package:flutter_storybook/flutter_storybook.dart';
 
 /// Plugin that adds content as expandable list of stories.
 ///
