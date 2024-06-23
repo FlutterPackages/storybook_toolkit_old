@@ -24,12 +24,24 @@ class ScaffoldPage extends StatelessWidget {
 
     final backgroundColorKnob = context.knobs.nullable.options(
       label: 'AppBar color',
-      initial: Colors.blue,
+      initial: Colors.deepPurple,
       description: 'Background color for Scaffold Page app bar.',
       options: const [
         Option(
           label: 'Blue',
           value: Colors.blue,
+        ),
+        Option(
+          label: 'Purple',
+          value: Colors.purple,
+        ),
+        Option(
+          label: 'Purple Dark',
+          value: Colors.deepPurple,
+        ),
+        Option(
+          label: 'Purple Deep',
+          value: Colors.deepPurpleAccent,
         ),
         Option(
           label: 'Indigo Accent',
@@ -54,7 +66,12 @@ class ScaffoldPage extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(titleKnob),
+        title: Text(
+          titleKnob,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.75),
+          ),
+        ),
         elevation: elevationKnob,
         backgroundColor: backgroundColorKnob,
       ),
@@ -65,7 +82,7 @@ class ScaffoldPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(
             itemCountKnob,
-            (int _) => const Text('Hello World!'),
+            (int _) => const Text('Hello World!', style: TextStyle(fontSize: 18),),
           ),
         ),
       ),
