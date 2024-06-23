@@ -98,6 +98,13 @@ Storybook support golden tests:
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 
+## Special thanks
+
+I want to thank previous developers for their work:
+- [Kirill Bubochkin](https://github.com/ookami-kb): Creator and first maintainer of [storybook_flutter](https://github.com/ookami-kb/storybook_flutter)
+- [Yolo Group](https://github.com/coingaming): Developers from Estonia for their improvements in [storybook_flutter](https://github.com/coingaming/storybook_flutter)
+ 
+
 ## Maintainer
 
 👤 **Martin Jablečník**
@@ -115,12 +122,3 @@ Give a ⭐️ if this project helped you!
   <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
 </a>
 
-
-## Special thanks
-
-This project is fork of [https://github.com/coingaming/storybook_flutter](https://github.com/coingaming/storybook_flutter)
-and it is fork of [https://github.com/ookami-kb/storybook_flutter](https://github.com/ookami-kb/storybook_flutter)
-
-So I want to thank previous developers for their work:
-- [Kirill Bubochkin](https://github.com/ookami-kb): Creator and first maintainer of [https://github.com/ookami-kb/storybook_flutter](https://github.com/ookami-kb/storybook_flutter)
-- [Yolo Group](https://github.com/coingaming) Developers from Estonia for their improvements in [https://github.com/coingaming/storybook_flutter](https://github.com/coingaming/storybook_flutter)
