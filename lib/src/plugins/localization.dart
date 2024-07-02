@@ -17,7 +17,20 @@ class LocalizationPlugin extends Plugin {
 
 Widget _buildIcon(BuildContext context, LocalizationData state) {
   return GestureDetector(
-    child: Icon(Icons.language),
+    child: Wrap(
+      children: [
+        Icon(Icons.language),
+        SizedBox(width: 3),
+        Text(
+          context.watch<LocalizationNotifier>().value.currentLocale.languageCode.toUpperCase(),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            height: 1.3,
+          ),
+        ),
+      ],
+    ),
     onTap: () async {
       final String value = await PopupDialog().choose(
         context: context,
