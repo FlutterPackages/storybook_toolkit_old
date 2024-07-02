@@ -10,7 +10,7 @@ class LocalizationPlugin extends Plugin {
     required LocalizationData initialData,
   }) : super(
           id: PluginId.localization,
-          icon: (context) => _buildIcon(context, initialData),
+          icon: (context) => initialData.supportedLocales.values.length > 1 ? _buildIcon(context, initialData) : null,
           wrapperBuilder: (BuildContext context, Widget? child) => _buildWrapper(context, child, initialData),
         );
 }
@@ -37,9 +37,7 @@ Widget _buildIcon(BuildContext context, LocalizationData state) {
 Widget _buildWrapper(BuildContext context, Widget? child, LocalizationData localizationState) =>
     ChangeNotifierProvider<LocalizationNotifier>(
       create: (_) => LocalizationNotifier(state: localizationState),
-      child: Builder(
-        builder: (context) => child ?? const SizedBox.shrink(),
-      ),
+      child: child ?? const SizedBox.shrink(),
     );
 
 class LocalizationNotifier extends ValueNotifier<LocalizationData> {
