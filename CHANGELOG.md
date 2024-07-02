@@ -5,6 +5,7 @@
 - **FEAT**: add CodeViewPlugin.
 - **FEAT**: add DirectionalityPlugin.
 - **FEAT**: add TimeDilationPlugin.
+- **FEAT**: add LocalizationPlugin.
 - **BREAKING** **FEAT**: rewrite golden tests generator.
 - **REFACTOR**: move tests functions into storybook_flutter.
 - **BREAKING** **FEAT**: update navigation tree.

@@ -75,30 +75,42 @@ class RouteWrapperBuilder {
 }
 
 /// Use this wrapper to wrap each story into a [MaterialApp] widget.
-Widget materialWrapper(BuildContext context, Widget? child) => MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      debugShowCheckedModeBanner: false,
-      home: Directionality(
-        textDirection: Directionality.of(context),
-        child: Scaffold(
-          body: Center(
-            child: child ?? const SizedBox.shrink(),
-          ),
+Widget materialWrapper(BuildContext context, Widget? child) {
+  final LocalizationData localization = context.watch<LocalizationNotifier>().value;
+  return MaterialApp(
+    theme: ThemeData.light(),
+    darkTheme: ThemeData.dark(),
+    debugShowCheckedModeBanner: false,
+    supportedLocales: localization.supportedLocales,
+    localizationsDelegates: localization.delegates,
+    locale: localization.currentLocale,
+    home: Directionality(
+      textDirection: Directionality.of(context),
+      child: Scaffold(
+        body: Center(
+          child: child ?? const SizedBox.shrink(),
         ),
       ),
-    );
+    ),
+  );
+}
 
 /// Use this wrapper to wrap each story into a [CupertinoApp] widget.
-Widget cupertinoWrapper(BuildContext context, Widget? child) => CupertinoApp(
-      debugShowCheckedModeBanner: false,
-      home: Directionality(
-        textDirection: Directionality.of(context),
-        child: CupertinoPageScaffold(
-          child: Center(child: child),
-        ),
+Widget cupertinoWrapper(BuildContext context, Widget? child) {
+  final LocalizationData localization = context.watch<LocalizationNotifier>().value;
+  return CupertinoApp(
+    debugShowCheckedModeBanner: false,
+    supportedLocales: localization.supportedLocales,
+    localizationsDelegates: localization.delegates,
+    locale: localization.currentLocale,
+    home: Directionality(
+      textDirection: Directionality.of(context),
+      child: CupertinoPageScaffold(
+        child: Center(child: child),
       ),
-    );
+    ),
+  );
+}
 
 final _defaultPlugins = initializePlugins();
 
@@ -274,8 +286,8 @@ class _StorybookState extends State<Storybook> {
     return _ThemeWrapperBuilder.themeBuilder(
       context,
       widget.canvasColor,
-      TapRegionSurface(
-        child: MediaQuery.fromView(
+      MaterialApp(
+        home: MediaQuery.fromView(
           view: View.of(context),
           child: Localizations(
             delegates: const [

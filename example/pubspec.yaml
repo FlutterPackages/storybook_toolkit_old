@@ -14,6 +14,9 @@ dependencies:
   go_router: ^12.1.1
   flutter_storybook:
     path: ..
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -32,6 +35,7 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  generate: true
   assets:
     - assets/code_snippets/
   fonts:

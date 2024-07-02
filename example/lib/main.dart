@@ -5,6 +5,7 @@ import 'package:flutter_storybook_example/common/logo_widget.dart';
 import 'package:flutter_storybook_example/routing/route_aware_stories.dart';
 import 'package:flutter_storybook_example/stories/counter_page.dart';
 import 'package:flutter_storybook_example/stories/scaffold_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -27,6 +28,11 @@ class MyApp extends StatelessWidget {
           ),
           enableDirectionality: false,
           enableTimeDilation: false,
+          localizationData: LocalizationData(
+            supportedLocales: AppLocalizations.supportedLocales,
+            delegates: AppLocalizations.localizationsDelegates,
+            currentLocale: AppLocalizations.supportedLocales.first,
+          ),
         ),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         logoWidget: const LogoWidget(),

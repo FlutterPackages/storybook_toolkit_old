@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScaffoldPage extends StatelessWidget {
   const ScaffoldPage({super.key});
@@ -82,7 +83,10 @@ class ScaffoldPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: List.generate(
             itemCountKnob,
-            (int _) => const Text('Hello World!', style: TextStyle(fontSize: 18),),
+            (int _) => Text(
+              AppLocalizations.of(context)!.helloWorld,
+              style: TextStyle(fontSize: 18),
+            ),
           ),
         ),
       ),

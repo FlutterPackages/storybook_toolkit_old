@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_storybook/src/plugins/code_view.dart';
 import 'package:flutter_storybook/src/plugins/device_frame.dart';
 import 'package:flutter_storybook/src/plugins/directionality.dart';
+import 'package:flutter_storybook/src/plugins/localization.dart';
 import 'package:flutter_storybook/src/plugins/theme_mode.dart';
 import 'package:flutter_storybook/src/plugins/time_dilation.dart';
 
@@ -19,6 +20,7 @@ List<Plugin> initializePlugins({
   bool enableTimeDilation = true,
   bool enableDirectionality = true,
   bool enableCodeView = false,
+  LocalizationData? localizationData,
   DeviceFrameData initialDeviceFrameData = defaultDeviceFrameData,
 }) =>
     [
@@ -32,6 +34,7 @@ List<Plugin> initializePlugins({
       if (enableTimeDilation) TimeDilationPlugin(),
       if (enableDirectionality) DirectionalityPlugin(),
       CodeViewPlugin(enableCodeView: enableCodeView),
+      LocalizationPlugin(initialData: localizationData ?? LocalizationData.initDefault()),
     ];
 
 typedef OnPluginButtonPressed = void Function(BuildContext context);
@@ -40,6 +43,7 @@ typedef NullableWidgetBuilder = Widget? Function(BuildContext context);
 enum PluginId {
   contents,
   codeView,
+  localization,
   directionality,
   deviceFrame,
   knobs,
