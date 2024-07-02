@@ -35,6 +35,9 @@ class MyApp extends StatelessWidget {
             },
             delegates: AppLocalizations.localizationsDelegates,
             currentLocale: AppLocalizations.supportedLocales.first,
+            onChangeLocale: (locale) {
+              print("Local was changed to: $locale");
+            }
           ),
         ),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),

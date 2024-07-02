@@ -41,8 +41,10 @@ Widget _buildIcon(BuildContext context, LocalizationData state) {
             PopupOption(label: locale.key, value: locale.value.languageCode),
         ],
       );
-      context.read<LocalizationNotifier>().value =
-          context.read<LocalizationNotifier>().value.update(Locale.fromSubtags(languageCode: value.toString()));
+
+      final newLocale = Locale.fromSubtags(languageCode: value.toString());
+      context.read<LocalizationNotifier>().value = context.read<LocalizationNotifier>().value.update(newLocale);
+      state.onChangeLocale?.call(newLocale);
     },
   );
 }
@@ -62,11 +64,13 @@ class LocalizationData {
     required this.currentLocale,
     required this.supportedLocales,
     required this.delegates,
+    this.onChangeLocale,
   });
 
   final Locale currentLocale;
   final Map<String, Locale> supportedLocales;
   final List<LocalizationsDelegate<dynamic>> delegates;
+  final void Function(Locale)? onChangeLocale;
 
   factory LocalizationData.initDefault() {
     return LocalizationData(
