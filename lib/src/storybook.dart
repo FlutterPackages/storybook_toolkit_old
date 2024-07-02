@@ -81,7 +81,7 @@ Widget materialWrapper(BuildContext context, Widget? child) {
     theme: ThemeData.light(),
     darkTheme: ThemeData.dark(),
     debugShowCheckedModeBanner: false,
-    supportedLocales: localization.supportedLocales,
+    supportedLocales: localization.supportedLocales.values,
     localizationsDelegates: localization.delegates,
     locale: localization.currentLocale,
     home: Directionality(
@@ -100,7 +100,7 @@ Widget cupertinoWrapper(BuildContext context, Widget? child) {
   final LocalizationData localization = context.watch<LocalizationNotifier>().value;
   return CupertinoApp(
     debugShowCheckedModeBanner: false,
-    supportedLocales: localization.supportedLocales,
+    supportedLocales: localization.supportedLocales.values,
     localizationsDelegates: localization.delegates,
     locale: localization.currentLocale,
     home: Directionality(

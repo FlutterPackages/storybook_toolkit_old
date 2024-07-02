@@ -29,7 +29,10 @@ class MyApp extends StatelessWidget {
           enableDirectionality: false,
           enableTimeDilation: false,
           localizationData: LocalizationData(
-            supportedLocales: AppLocalizations.supportedLocales,
+            supportedLocales: {
+              "Czech": Locale('cs', 'CZ'),
+              "English": Locale('en', 'US'),
+            },
             delegates: AppLocalizations.localizationsDelegates,
             currentLocale: AppLocalizations.supportedLocales.first,
           ),
