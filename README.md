@@ -46,7 +46,7 @@ latest case, make sure to use the `child` widget that will contain the story.
 Almost all the functionality is provided by plugins. Even contents and
 knobs are plugins (although they are first-party plugins).
 
-Plugins documentation is TBD, but you can take a look at the existing first-party plugins: 
+Here is list of all our plugins:
 - ContentsPlugin
 - DeviceFramePlugin
 - KnobsPlugin
@@ -54,6 +54,7 @@ Plugins documentation is TBD, but you can take a look at the existing first-part
 - CodeViewPlugin
 - TimeDilationPlugin
 - DirectionalityPlugin
+- LocalizationPlugin
  
 
 ## Golden tests
