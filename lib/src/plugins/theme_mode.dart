@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 
 class ThemeModePlugin extends Plugin {
   ThemeModePlugin({

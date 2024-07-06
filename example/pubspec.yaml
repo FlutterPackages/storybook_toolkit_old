@@ -1,4 +1,4 @@
-name: flutter_storybook_example
+name: storybook_toolkit_example
 description: A new Flutter project.
 version: 1.0.0+1
 publish_to: none
@@ -12,7 +12,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   go_router: ^12.1.1
-  flutter_storybook:
+  storybook_toolkit:
     path: ..
   flutter_localizations:
     sdk: flutter

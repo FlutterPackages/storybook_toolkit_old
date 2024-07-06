@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_storybook/src/common/constants.dart';
-import 'package:flutter_storybook/src/common/custom_list_tile.dart';
-import 'package:flutter_storybook/src/plugins/code_view.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/src/common/constants.dart';
+import 'package:storybook_toolkit/src/common/custom_list_tile.dart';
+import 'package:storybook_toolkit/src/plugins/code_view.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 
 /// Plugin that allows wrapping each story into a device frame.
 class DeviceFramePlugin extends Plugin {

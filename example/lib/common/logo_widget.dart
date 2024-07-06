@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_storybook_example/routing/app_router.dart';
-import 'package:flutter_storybook_example/stories/home_page.dart';
+import 'package:storybook_toolkit_example/routing/app_router.dart';
+import 'package:storybook_toolkit_example/stories/home_page.dart';
 
 class LogoWidget extends StatelessWidget {
   const LogoWidget({super.key});

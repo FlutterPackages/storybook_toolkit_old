@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_storybook/src/common/constants.dart';
-import 'package:flutter_storybook/src/knobs/knob_list_tile.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/src/common/constants.dart';
+import 'package:storybook_toolkit/src/knobs/knob_list_tile.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 
 /// {@template select_knob}
 /// A knob that allows the user to select an option from a list of options.

@@ -1,10 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_storybook/src/plugins/code_view.dart';
-import 'package:flutter_storybook/src/plugins/device_frame.dart';
-import 'package:flutter_storybook/src/plugins/directionality.dart';
-import 'package:flutter_storybook/src/plugins/localization.dart';
-import 'package:flutter_storybook/src/plugins/theme_mode.dart';
-import 'package:flutter_storybook/src/plugins/time_dilation.dart';
+import 'package:storybook_toolkit/src/plugins/code_view.dart';
+import 'package:storybook_toolkit/src/plugins/device_frame.dart';
+import 'package:storybook_toolkit/src/plugins/directionality.dart';
+import 'package:storybook_toolkit/src/plugins/localization.dart';
+import 'package:storybook_toolkit/src/plugins/theme_mode.dart';
+import 'package:storybook_toolkit/src/plugins/time_dilation.dart';
 
 export 'contents/contents.dart';
 export 'device_frame.dart';

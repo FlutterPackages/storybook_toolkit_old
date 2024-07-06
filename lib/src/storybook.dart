@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_storybook/src/common/constants.dart';
-import 'package:flutter_storybook/src/plugins/code_view.dart';
-import 'package:flutter_storybook/src/plugins/theme/code_view_syntax_theme.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/src/common/constants.dart';
+import 'package:storybook_toolkit/src/plugins/code_view.dart';
+import 'package:storybook_toolkit/src/plugins/theme/code_view_syntax_theme.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 
 class _ThemeWrapperBuilder {
   _ThemeWrapperBuilder();

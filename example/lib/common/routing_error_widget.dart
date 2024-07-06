@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_storybook_example/stories/home_page.dart';
+import 'package:storybook_toolkit_example/stories/home_page.dart';
 
 class RoutingErrorWidget extends StatelessWidget {
   const RoutingErrorWidget({super.key});

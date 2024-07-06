@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
-import 'package:flutter_storybook_example/routing/app_router.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
+import 'package:storybook_toolkit_example/routing/app_router.dart';
 
 class FirstPage extends StatelessWidget {
   const FirstPage({super.key});

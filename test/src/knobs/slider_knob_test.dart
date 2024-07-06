@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_storybook/src/knobs/knob_list_tile.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/src/knobs/knob_list_tile.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 
 class MockKnobsNotifier extends Mock implements KnobsNotifier {}
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_storybook/flutter_storybook.dart';
+import 'package:storybook_toolkit/storybook_toolkit.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScaffoldPage extends StatelessWidget {
