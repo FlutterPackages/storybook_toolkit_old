@@ -1,6 +1,6 @@
-# Flutter Storybook
+# Storybook Toolkit
 
-A cross-platform storybook for showcasing widgets. It should work at all platforms supported by Flutter.
+Toolkit for showcase all your widgets. Work at all platforms supported by Flutter.
 
 ![](screenshots/preview.png)
 
@@ -30,6 +30,16 @@ class MyApp extends StatelessWidget {
 }
 ```
 
+## Features
+
+- Showcase of all your components.
+- Development your widgets, components and screens in isolated workspaces.
+- Simulate frames of multiple devices with [device_frame_plus](https://pub.dev/packages/device_frame_plus) package.
+- Update your custom variables with knobs.
+- Change between multiple languages.
+- Change auto, dark and light themes.
+- Generate golden tests for your components.
+- Possibility to add more features via plugins.
 
 ## Customization
 
@@ -101,7 +111,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Special thanks
 
-I want to thank previous developers for their work:
+This project is fork of storybook_flutter. I want to thank previous developers for their work:
 - [Kirill Bubochkin](https://github.com/ookami-kb): Creator and first maintainer of [storybook_flutter](https://github.com/ookami-kb/storybook_flutter)
 - [Yolo Group](https://github.com/coingaming): Developers from Estonia for their improvements in [storybook_flutter](https://github.com/coingaming/storybook_flutter)
  
