@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:adaptive_test/adaptive_test.dart';
+import 'package:adaptive_golden_test/adaptive_golden_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';

@@ -1,4 +1,4 @@
-import 'package:adaptive_test/adaptive_test.dart';
+import 'package:adaptive_golden_test/adaptive_golden_test.dart';
 import 'package:flutter/material.dart';
 
 enum Device {

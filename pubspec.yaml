@@ -17,12 +17,8 @@ dependencies:
   provider: ">=6.0.0 <7.0.0"
   recase: ^4.1.0
   vader_popup: ^0.1.1
-  adaptive_test:
-    git: https://github.com/FlutterPackages/adaptive_test.git
-  device_frame:
-    git:
-      url: https://github.com/FlutterPackages/flutter_device_preview.git
-      path: device_frame
+  adaptive_golden_test: ^0.5.1
+  device_frame_plus: ^1.2.1
 
 dev_dependencies:
   flutter_test:
