@@ -1,3 +1,7 @@
+## Unreleased
+- **FIX**: add loadDuration into Story for fix golden tests
+
+
 ## 1.0.0
 
 > Note: This release has breaking changes.

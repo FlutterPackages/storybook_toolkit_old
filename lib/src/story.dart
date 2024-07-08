@@ -13,6 +13,7 @@ class Story {
     this.description,
     this.wrapperBuilder,
     this.codeString,
+    this.loadDuration,
     this.isPage = false,
   })  : router = null,
         routePath = '',
@@ -25,6 +26,7 @@ class Story {
     this.description,
     this.routeWrapperBuilder,
     this.codeString,
+    this.loadDuration,
     this.isPage = false,
   })  : wrapperBuilder = null,
         builder = null,
@@ -57,6 +59,11 @@ class Story {
 
   /// Code string to show for the story.
   final Future<String>? codeString;
+
+  /// Duration of time for waiting then content is loaded.
+  ///
+  /// It is useful for golden tests generating.
+  final Duration? loadDuration;
 
   /// Wrapper builder for story.
   final TransitionBuilder? wrapperBuilder;
