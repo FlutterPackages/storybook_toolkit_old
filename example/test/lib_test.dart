@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:storybook_toolkit/storybook_toolkit.dart';
 import 'package:storybook_toolkit_example/stories/counter_page.dart';
+import 'package:storybook_toolkit_tester/storybook_toolkit_tester.dart';
 
 void main() => testStorybook(
       storybook,

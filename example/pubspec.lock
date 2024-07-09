@@ -409,6 +409,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  storybook_toolkit_tester:
+    dependency: "direct dev"
+    description:
+      path: "../../storybook_toolkit_tester"
+      relative: true
+    source: path
+    version: "0.0.1"
   stream_channel:
     dependency: transitive
     description:

@@ -70,10 +70,15 @@ Here is list of all our plugins:
 ## Golden tests
 
 Storybook support golden tests:
+1. Import `storybook_toolkit_tester` package:
+  ```yaml
+  dev_dependencies:
+    storybook_toolkit_tester: ^1.0.0 
+  ```
 
-1. Create test file, e.g. `storybook_test.dart`.
+2. Create test file, e.g. `storybook_test.dart`.
 
-2. Add the following content there:
+3. Add the following content there:
 
    ```dart
    void main() => testStorybook(
@@ -102,7 +107,7 @@ Storybook support golden tests:
    );
    ```
 
-3. Generate golden images by running: `flutter test --update-goldens --tags=storybook`.
+5. Generate golden images by running: `flutter test --update-goldens --tags=storybook`.
 
 
 ## Contributing

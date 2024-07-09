@@ -1,0 +1,7 @@
+# melos_managed_dependency_overrides: device_frame_plus,vader_popup
+dependency_overrides:
+  storybook_toolkit_tester:
+    path: ../../storybook_toolkit_tester
+
+  storybook_toolkit:
+    path: ../../storybook_toolkit

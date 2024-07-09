@@ -12,8 +12,7 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   go_router: ^12.1.1
-  storybook_toolkit:
-    path: ..
+  storybook_toolkit: ^1.0.0
   flutter_localizations:
     sdk: flutter
   intl: any
@@ -22,6 +21,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mews_pedantic: ^0.20.0
+  storybook_toolkit_tester:
+    path: ../../storybook_toolkit_tester
 
 flutter:
   uses-material-design: true

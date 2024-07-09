@@ -19,9 +19,7 @@ dependencies:
   provider: ">=6.0.0 <7.0.0"
   recase: ^4.1.0
   vader_popup: ^0.1.1
-  adaptive_golden_test: ^0.5.1
   device_frame_plus: ^1.2.1
-  meta: ^1.12.0
 
 dev_dependencies:
   golden_toolkit: ^0.9.0
