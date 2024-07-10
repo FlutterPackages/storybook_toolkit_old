@@ -1,6 +1,6 @@
-## Unreleased
+## 1.0.1
 - **FIX**: add loadDuration into Story for fix golden tests
-
+- **FIX**: move tester into separated storybook_toolkit_tester package
 
 ## 1.0.0
 
