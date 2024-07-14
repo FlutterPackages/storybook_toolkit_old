@@ -21,8 +21,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   mews_pedantic: ^0.20.0
-  storybook_toolkit_tester:
-    path: ../../storybook_toolkit_tester
+  storybook_toolkit_tester: ^1.0.0
 
 flutter:
   uses-material-design: true

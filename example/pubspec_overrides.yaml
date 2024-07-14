@@ -5,3 +5,6 @@ dependency_overrides:
 
   storybook_toolkit:
     path: ../../storybook_toolkit
+
+  adaptive_golden_test:
+    path: ../../adaptive_golden_test
