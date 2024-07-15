@@ -287,6 +287,7 @@ class _StorybookState extends State<Storybook> {
       context,
       widget.canvasColor,
       MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: MediaQuery.fromView(
           view: View.of(context),
           child: Localizations(
