@@ -1,3 +1,7 @@
+## 1.0.2
+- **FIX**: remove debug label from storybook
+- **FIX**: update golden tests in example
+ 
 ## 1.0.1
 - **FIX**: add loadDuration into Story for fix golden tests
 - **FIX**: move tester into separated storybook_toolkit_tester package
