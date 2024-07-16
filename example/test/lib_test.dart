@@ -15,10 +15,23 @@ void main() => testStorybook(
 final storybook = Storybook(
   stories: [
     Story(
-      name: 'Button',
+      name: 'Buttons/SimpleButton/Default',
       builder: (context) => ElevatedButton(
         onPressed: () {},
-        child: const Text('Button'),
+        child: const Text('Default Button'),
+      ),
+    ),
+    Story(
+      name: 'Buttons/SimpleButton/Customized',
+      builder: (context) => ElevatedButton(
+        onPressed: () {},
+        child: const Text(
+          'Customized Button',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     ),
     Story(
