@@ -5,6 +5,8 @@ import 'package:storybook_toolkit/src/storybook.dart';
 
 const _sectionSeparator = '/';
 
+typedef PathContext = ({String rootPath, String path, String file});
+
 @immutable
 class Story {
   const Story({
@@ -82,7 +84,7 @@ class Story {
   final WidgetBuilder? builder;
 
   /// Golden test path builder.
-  final String Function(({String rootPath, String path, String file}))? goldenPathBuilder;
+  final String Function(PathContext)? goldenPathBuilder;
 
   List<String> get path => name.split(_sectionSeparator);
 
