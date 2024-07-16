@@ -16,6 +16,7 @@ class Story {
     this.loadDuration,
     this.isPage = false,
     this.goldenPathBuilder,
+    this.tags = const [],
   })  : router = null,
         routePath = '',
         routeWrapperBuilder = null;
@@ -30,6 +31,7 @@ class Story {
     this.loadDuration,
     this.isPage = false,
     this.goldenPathBuilder,
+    this.tags = const [],
   })  : wrapperBuilder = null,
         builder = null,
         assert(
@@ -47,6 +49,9 @@ class Story {
 
   /// Route path for route aware story. Route path cannot be empty.
   final String routePath;
+
+  /// Tags for tests
+  final List<String> tags;
 
   /// Unique name of the story.
   ///

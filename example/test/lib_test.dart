@@ -16,6 +16,7 @@ final storybook = Storybook(
   stories: [
     Story(
       name: 'Buttons/SimpleButton/Default',
+      tags: ['buttons'],
       builder: (context) => ElevatedButton(
         onPressed: () {},
         child: const Text('Default Button'),
@@ -23,6 +24,7 @@ final storybook = Storybook(
     ),
     Story(
       name: 'Buttons/SimpleButton/Customized',
+      tags: ['buttons'],
       builder: (context) => ElevatedButton(
         onPressed: () {},
         child: const Text(
@@ -37,11 +39,13 @@ final storybook = Storybook(
     Story(
       name: 'Pages/Counter',
       builder: (context) => const CounterPage(),
-      goldenPathBuilder: (c) => "${c.rootPath}/subfolder1/${c.path}/subfolder2/${c.file}"
+      goldenPathBuilder: (c) => "${c.rootPath}/subfolder1/${c.path}/subfolder2/${c.file}",
+      tags: ['pages'],
     ),
     Story(
       name: 'CounterPage',
       builder: (context) => const CounterPage(),
+      tags: ['pages'],
     ),
   ],
   showPanel: true,
