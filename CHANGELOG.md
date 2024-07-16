@@ -1,3 +1,6 @@
+## 1.1.0
+- **FEATURE**: add goldenPathBuilder into Story
+ 
 ## 1.0.2
 - **FIX**: remove debug label from storybook
 - **FIX**: update golden tests in example

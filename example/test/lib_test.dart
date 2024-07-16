@@ -35,6 +35,11 @@ final storybook = Storybook(
       ),
     ),
     Story(
+      name: 'Pages/Counter',
+      builder: (context) => const CounterPage(),
+      goldenPathBuilder: (c) => "${c.rootPath}/subfolder1/${c.path}/subfolder2/${c.file}"
+    ),
+    Story(
       name: 'CounterPage',
       builder: (context) => const CounterPage(),
     ),

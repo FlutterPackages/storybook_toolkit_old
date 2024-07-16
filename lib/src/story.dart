@@ -15,6 +15,7 @@ class Story {
     this.codeString,
     this.loadDuration,
     this.isPage = false,
+    this.goldenPathBuilder,
   })  : router = null,
         routePath = '',
         routeWrapperBuilder = null;
@@ -28,6 +29,7 @@ class Story {
     this.codeString,
     this.loadDuration,
     this.isPage = false,
+    this.goldenPathBuilder,
   })  : wrapperBuilder = null,
         builder = null,
         assert(
@@ -73,6 +75,9 @@ class Story {
 
   /// Story builder.
   final WidgetBuilder? builder;
+
+  /// Golden test path builder.
+  final String Function(({String rootPath, String path, String file}))? goldenPathBuilder;
 
   List<String> get path => name.split(_sectionSeparator);
 
