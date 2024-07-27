@@ -50,13 +50,13 @@ You can override this behavior by providing either `wrapperBuilder` to the
 (`materialWrapper`/`cupertinoWrapper`) or provide a fully custom wrapper. In the
 latest case, make sure to use the `child` widget that will contain the story.
 
-
 ## Plugins
 
 Almost all the functionality is provided by plugins. Even contents and
 knobs are plugins (although they are first-party plugins).
 
 Here is list of all our plugins:
+
 - ContentsPlugin
 - DeviceFramePlugin
 - KnobsPlugin
@@ -65,12 +65,13 @@ Here is list of all our plugins:
 - TimeDilationPlugin
 - DirectionalityPlugin
 - LocalizationPlugin
- 
 
 ## Golden tests
 
 Storybook support golden tests:
+
 1. Import `storybook_toolkit_tester` package:
+
   ```yaml
   dev_dependencies:
     storybook_toolkit_tester: ^1.1.0 
@@ -83,7 +84,7 @@ Storybook support golden tests:
    ```dart
    void main() => testStorybook(
      storybook,
-     devices: {Device.iPhone8, Device.iPhone13, Device.pixel5, Device.iPadPro},
+     devices: { Devices.ios.iPhoneSE, Devices.android.pixel4, Devices.ios.iPadAir4 },
      filterStories: (Story story) {
        final skipStories = [];
        return !skipStories.contains(story.name);
@@ -109,17 +110,16 @@ Storybook support golden tests:
 
 5. Generate golden images by running: `flutter test --update-goldens --tags=storybook`.
 
-
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Special thanks
 
 This project is fork of storybook_flutter. I want to thank previous developers for their work:
+
 - [Kirill Bubochkin](https://github.com/ookami-kb): Creator and first maintainer of [storybook_flutter](https://github.com/ookami-kb/storybook_flutter)
 - [Yolo Group](https://github.com/coingaming): Developers from Estonia for their improvements in [storybook_flutter](https://github.com/coingaming/storybook_flutter)
- 
 
 ## Maintainer
 
@@ -128,7 +128,6 @@ This project is fork of storybook_flutter. I want to thank previous developers f
 * Website: [martin-jablecnik.cz](https://www.martin-jablecnik.cz)
 * Github: [@mjablecnik](https://github.com/mjablecnik)
 * Blog: [dev.to/mjablecnik](https://dev.to/mjablecnik)
-
 
 ## Show your support
 
