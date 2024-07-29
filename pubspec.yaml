@@ -1,7 +1,7 @@
 name: storybook_toolkit
 description: A storybook for Flutter widgets. Live preview of isolated widgets for faster development and showcase.
 repository: https://github.com/mjablecnik/storybook_toolkit
-version: 1.1.0
+version: 1.2.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -18,7 +18,7 @@ dependencies:
   pointer_interceptor: ^0.9.3+7
   provider: ">=6.0.0 <7.0.0"
   recase: ^4.1.0
-  vader_popup: ^0.1.1
+  vader_popup: ^0.1.2
   device_frame_plus: ^1.2.1
 
 dev_dependencies:

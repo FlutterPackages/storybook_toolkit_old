@@ -407,7 +407,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.1.0"
+    version: "1.2.0"
   storybook_toolkit_tester:
     dependency: "direct dev"
     description:
@@ -461,7 +461,7 @@ packages:
       path: "../../vader_popup"
       relative: true
     source: path
-    version: "0.1.1"
+    version: "0.1.2"
   vector_math:
     dependency: transitive
     description:
