@@ -8,3 +8,6 @@ dependency_overrides:
 
   adaptive_golden_test:
     path: ../../adaptive_golden_test
+
+  vader_popup:
+    path: ../../vader_popup

@@ -10,6 +10,7 @@ import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_toolkit/src/common/constants.dart';
 import 'package:storybook_toolkit/src/plugins/code_view.dart';
+import 'package:storybook_toolkit/src/plugins/text_sizer.dart';
 import 'package:storybook_toolkit/src/plugins/theme/code_view_syntax_theme.dart';
 import 'package:storybook_toolkit/storybook_toolkit.dart';
 
@@ -74,6 +75,21 @@ class RouteWrapperBuilder {
       );
 }
 
+Widget defaultMediaQueryBuilder(BuildContext context, Widget? child) {
+  try {
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: TextScaler.linear(
+          context.watch<TextSizerNotifier>().value,
+        ),
+      ),
+      child: child ?? const SizedBox.shrink(),
+    );
+  } catch (e) {
+    return child ?? const SizedBox.shrink();
+  }
+}
+
 /// Use this wrapper to wrap each story into a [MaterialApp] widget.
 Widget materialWrapper(BuildContext context, Widget? child) {
   final LocalizationData localization = context.watch<LocalizationNotifier>().value;
@@ -84,6 +100,7 @@ Widget materialWrapper(BuildContext context, Widget? child) {
     supportedLocales: localization.supportedLocales.values,
     localizationsDelegates: localization.delegates,
     locale: localization.currentLocale,
+    builder: defaultMediaQueryBuilder,
     home: Directionality(
       textDirection: Directionality.of(context),
       child: Scaffold(
@@ -103,6 +120,7 @@ Widget cupertinoWrapper(BuildContext context, Widget? child) {
     supportedLocales: localization.supportedLocales.values,
     localizationsDelegates: localization.delegates,
     locale: localization.currentLocale,
+    builder: defaultMediaQueryBuilder,
     home: Directionality(
       textDirection: Directionality.of(context),
       child: CupertinoPageScaffold(

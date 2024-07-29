@@ -456,12 +456,11 @@ packages:
     source: hosted
     version: "1.3.2"
   vader_popup:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: vader_popup
-      sha256: "46bfa2c86918226bd5a1fd04676b0f25d46e4d0bf89ab29d2fc94573c95eceec"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../vader_popup"
+      relative: true
+    source: path
     version: "0.1.1"
   vector_math:
     dependency: transitive

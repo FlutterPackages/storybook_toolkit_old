@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
           ),
           enableDirectionality: false,
           enableTimeDilation: false,
+          enableTextSizer: true,
           localizationData: LocalizationData(
             supportedLocales: {
               "Czech": Locale('cs', 'CZ'),
@@ -42,13 +43,13 @@ class MyApp extends StatelessWidget {
         ),
         routeWrapperBuilder: RouteWrapperBuilder(title: 'Storybook'),
         logoWidget: const LogoWidget(),
-        brandingWidget: const Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text('Storybook'),
-          ),
-        ),
+        //brandingWidget: const Align(
+        //  alignment: Alignment.centerRight,
+        //  child: Padding(
+        //    padding: EdgeInsets.symmetric(horizontal: 8.0),
+        //    child: Text('Storybook'),
+        //  ),
+        //),
         stories: [
           ...routeAwareStories,
           Story(

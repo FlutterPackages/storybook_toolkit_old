@@ -1,4 +1,5 @@
 ## Unreleased
+- **FEAT**: add TextSizer plugin
 
 ## 1.1.0
 - **FEAT**: add goldenPathBuilder into Story

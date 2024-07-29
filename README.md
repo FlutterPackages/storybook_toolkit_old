@@ -37,6 +37,7 @@ class MyApp extends StatelessWidget {
 - Simulate frames of multiple devices with [device_frame_plus](https://pub.dev/packages/device_frame_plus) package.
 - Update your custom variables with knobs.
 - Change between multiple languages.
+- Change text scales.
 - Change auto, dark and light themes.
 - Generate golden tests for your components.
 - Possibility to add more features via plugins.
@@ -62,6 +63,7 @@ Here is list of all our plugins:
 - KnobsPlugin
 - ThemeModePlugin
 - CodeViewPlugin
+- TextSizerPlugin
 - TimeDilationPlugin
 - DirectionalityPlugin
 - LocalizationPlugin

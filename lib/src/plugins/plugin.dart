@@ -3,6 +3,7 @@ import 'package:storybook_toolkit/src/plugins/code_view.dart';
 import 'package:storybook_toolkit/src/plugins/device_frame.dart';
 import 'package:storybook_toolkit/src/plugins/directionality.dart';
 import 'package:storybook_toolkit/src/plugins/localization.dart';
+import 'package:storybook_toolkit/src/plugins/text_sizer.dart';
 import 'package:storybook_toolkit/src/plugins/theme_mode.dart';
 import 'package:storybook_toolkit/src/plugins/time_dilation.dart';
 
@@ -20,6 +21,7 @@ List<Plugin> initializePlugins({
   bool enableTimeDilation = true,
   bool enableDirectionality = true,
   bool enableCodeView = false,
+  bool enableTextSizer = true,
   LocalizationData? localizationData,
   DeviceFrameData initialDeviceFrameData = defaultDeviceFrameData,
 }) =>
@@ -33,6 +35,7 @@ List<Plugin> initializePlugins({
         ),
       if (enableTimeDilation) TimeDilationPlugin(),
       if (enableDirectionality) DirectionalityPlugin(),
+      if (enableTextSizer) TextSizerPlugin(),
       CodeViewPlugin(enableCodeView: enableCodeView),
       LocalizationPlugin(initialData: localizationData ?? LocalizationData.initDefault()),
     ];
@@ -46,6 +49,7 @@ enum PluginId {
   localization,
   directionality,
   deviceFrame,
+  textSizer,
   knobs,
   layout,
   themeMode,
