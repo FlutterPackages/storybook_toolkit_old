@@ -1,3 +1,6 @@
+## Unreleased
+- **CHORE**: remove unused dependencies
+
 ## 1.2.0
 - **FEAT**: add TextSizer plugin
 
