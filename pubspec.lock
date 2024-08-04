@@ -123,10 +123,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: c5fa45fa502ee880839e3b2152d987c44abae26d064a2376d4aad434cf0f7b15
+      sha256: d380de0355788c5c784fe9f81b43fc833b903991c25ecc4e2a416a67faefa722
       url: "https://pub.dev"
     source: hosted
-    version: "12.1.3"
+    version: "14.2.2"
   golden_toolkit:
     dependency: "direct dev"
     description:
@@ -323,10 +323,34 @@ packages:
     dependency: "direct main"
     description:
       name: pointer_interceptor
-      sha256: adf7a637f97c077041d36801b43be08559fd4322d2127b3f20bb7be1b9eebc22
+      sha256: d0a8e660d1204eaec5bd34b34cc92174690e076d2e4f893d9d68c486a13b07c4
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+7"
+    version: "0.10.1+1"
+  pointer_interceptor_ios:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_ios
+      sha256: a6906772b3205b42c44614fcea28f818b1e5fdad73a4ca742a7bd49818d9c917
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1"
+  pointer_interceptor_platform_interface:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_platform_interface
+      sha256: "0597b0560e14354baeb23f8375cd612e8bd4841bf8306ecb71fcd0bb78552506"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.0+1"
+  pointer_interceptor_web:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_web
+      sha256: "7a7087782110f8c1827170660b09f8aa893e0e9a61431dbbe2ac3fc482e8c044"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.2+1"
   provider:
     dependency: "direct main"
     description:
