@@ -5,10 +5,11 @@ import 'package:storybook_toolkit/src/plugins/plugin.dart';
 
 class InspectorPlugin extends Plugin {
   InspectorPlugin({
+    bool enableInspector = true,
     ValueSetter<TextDirection>? onTextDirectionChanged,
   }) : super(
           id: PluginId.inspector,
-          icon: _buildIcon,
+          icon: (context) => enableInspector ? _buildIcon(context) : null,
           wrapperBuilder: _buildWrapper,
         );
 }
@@ -20,12 +21,7 @@ Widget _buildIcon(BuildContext context) => GestureDetector(
 
 Widget _buildWrapper(BuildContext _, Widget? child) => ChangeNotifierProvider<InspectorNotifier>(
       create: (_) => InspectorNotifier(false),
-      child: Builder(
-        builder: (context) => Inspector(
-          isEnabled: context.watch<InspectorNotifier>().value,
-          child: child ?? const SizedBox.shrink(),
-        ),
-      ),
+      child: child,
     );
 
 class InspectorNotifier extends ValueNotifier<bool> {

@@ -40,7 +40,7 @@ List<Plugin> initializePlugins({
       if (enableTextSizer) TextSizerPlugin(),
       CodeViewPlugin(enableCodeView: enableCodeView),
       LocalizationPlugin(initialData: localizationData ?? LocalizationData.initDefault()),
-      if (enableInspector) InspectorPlugin(),
+      InspectorPlugin(enableInspector: enableInspector),
     ];
 
 typedef OnPluginButtonPressed = void Function(BuildContext context);

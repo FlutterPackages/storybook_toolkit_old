@@ -6,10 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:inspector/inspector.dart';
 import 'package:nested/nested.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_toolkit/src/common/constants.dart';
 import 'package:storybook_toolkit/src/plugins/code_view.dart';
+import 'package:storybook_toolkit/src/plugins/inspector.dart';
 import 'package:storybook_toolkit/src/plugins/text_sizer.dart';
 import 'package:storybook_toolkit/src/plugins/theme/code_view_syntax_theme.dart';
 import 'package:storybook_toolkit/storybook_toolkit.dart';
@@ -345,7 +347,12 @@ class _StorybookState extends State<Storybook> {
                             children: [
                               Column(
                                 children: [
-                                  Expanded(child: currentStory),
+                                  Expanded(
+                                    child: Inspector(
+                                      isEnabled: context.watch<InspectorNotifier>().value,
+                                      child: currentStory,
+                                    ),
+                                  ),
                                   RepaintBoundary(
                                     child: Material(
                                       child: SafeArea(
