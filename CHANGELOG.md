@@ -1,5 +1,6 @@
 ## Unreleased
 - **CHORE**: remove unused dependencies
+- **FEAT**: add Inspector plugin
 
 ## 1.2.0
 - **FEAT**: add TextSizer plugin

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:storybook_toolkit/src/plugins/code_view.dart';
 import 'package:storybook_toolkit/src/plugins/device_frame.dart';
 import 'package:storybook_toolkit/src/plugins/directionality.dart';
+import 'package:storybook_toolkit/src/plugins/inspector.dart';
 import 'package:storybook_toolkit/src/plugins/localization.dart';
 import 'package:storybook_toolkit/src/plugins/text_sizer.dart';
 import 'package:storybook_toolkit/src/plugins/theme_mode.dart';
@@ -22,6 +23,7 @@ List<Plugin> initializePlugins({
   bool enableDirectionality = true,
   bool enableCodeView = false,
   bool enableTextSizer = true,
+  bool enableInspector = true,
   LocalizationData? localizationData,
   DeviceFrameData initialDeviceFrameData = defaultDeviceFrameData,
 }) =>
@@ -38,6 +40,7 @@ List<Plugin> initializePlugins({
       if (enableTextSizer) TextSizerPlugin(),
       CodeViewPlugin(enableCodeView: enableCodeView),
       LocalizationPlugin(initialData: localizationData ?? LocalizationData.initDefault()),
+      if (enableInspector) InspectorPlugin(),
     ];
 
 typedef OnPluginButtonPressed = void Function(BuildContext context);
@@ -50,6 +53,7 @@ enum PluginId {
   directionality,
   deviceFrame,
   textSizer,
+  inspector,
   knobs,
   layout,
   themeMode,
