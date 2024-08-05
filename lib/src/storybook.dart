@@ -308,100 +308,103 @@ class _StorybookState extends State<Storybook> {
       widget.canvasColor,
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MediaQuery.fromView(
-          view: View.of(context),
-          child: Localizations(
-            delegates: const [
-              DefaultMaterialLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-              DefaultWidgetsLocalizations.delegate,
-            ],
-            locale: const Locale('en', 'US'),
-            child: Nested(
-              children: [
-                Provider.value(value: widget.plugins),
-                ChangeNotifierProvider.value(value: _storyNotifier),
-                ChangeNotifierProvider.value(value: _expansionTileState),
-                ...widget.plugins
-                    .map((plugin) => plugin.wrapperBuilder)
-                    .whereType<TransitionBuilder>()
-                    .map((builder) => SingleChildBuilder(builder: builder)),
+        home: PopScope(
+          canPop: false,
+          child: MediaQuery.fromView(
+            view: View.of(context),
+            child: Localizations(
+              delegates: const [
+                DefaultMaterialLocalizations.delegate,
+                DefaultCupertinoLocalizations.delegate,
+                DefaultWidgetsLocalizations.delegate,
               ],
-              child: Scaffold(
-                body: Builder(
-                  builder: (BuildContext context) {
-                    final bool isSidePanel = context.watch<OverlayController?>() != null;
+              locale: const Locale('en', 'US'),
+              child: Nested(
+                children: [
+                  Provider.value(value: widget.plugins),
+                  ChangeNotifierProvider.value(value: _storyNotifier),
+                  ChangeNotifierProvider.value(value: _expansionTileState),
+                  ...widget.plugins
+                      .map((plugin) => plugin.wrapperBuilder)
+                      .whereType<TransitionBuilder>()
+                      .map((builder) => SingleChildBuilder(builder: builder)),
+                ],
+                child: Scaffold(
+                  body: Builder(
+                    builder: (BuildContext context) {
+                      final bool isSidePanel = context.watch<OverlayController?>() != null;
 
-                    final bool isPage = context.select(
-                      (StoryNotifier value) => value.currentStory?.isPage == true,
-                    );
-                    final bool isError = context.select(
-                      (StoryNotifier value) => value.hasRouteMatch == false,
-                    );
+                      final bool isPage = context.select(
+                        (StoryNotifier value) => value.currentStory?.isPage == true,
+                      );
+                      final bool isError = context.select(
+                        (StoryNotifier value) => value.hasRouteMatch == false,
+                      );
 
-                    final bool showBrandingWidget = widget.brandingWidget != null && !isPage && !isError;
+                      final bool showBrandingWidget = widget.brandingWidget != null && !isPage && !isError;
 
-                    return widget.showPanel
-                        ? Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                              Column(
-                                children: [
-                                  Expanded(
-                                    child: Inspector(
-                                      isEnabled: context.watch<InspectorNotifier>().value,
-                                      child: currentStory,
+                      return widget.showPanel
+                          ? Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                Column(
+                                  children: [
+                                    Expanded(
+                                      child: Inspector(
+                                        isEnabled: context.watch<InspectorNotifier>().value,
+                                        child: currentStory,
+                                      ),
                                     ),
-                                  ),
-                                  RepaintBoundary(
-                                    child: Material(
-                                      child: SafeArea(
-                                        top: false,
-                                        left: isSidePanel,
-                                        right: isSidePanel,
-                                        child: CompositedTransformTarget(
-                                          link: _layerLink,
-                                          child: Directionality(
-                                            textDirection: TextDirection.ltr,
-                                            child: Container(
-                                              width: double.infinity,
-                                              decoration: const BoxDecoration(
-                                                border: Border(
-                                                  top: BorderSide(
-                                                    color: Colors.black12,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: PluginPanel(
-                                                      plugins: widget.plugins,
-                                                      overlayKey: _overlayKey,
-                                                      layerLink: _layerLink,
+                                    RepaintBoundary(
+                                      child: Material(
+                                        child: SafeArea(
+                                          top: false,
+                                          left: isSidePanel,
+                                          right: isSidePanel,
+                                          child: CompositedTransformTarget(
+                                            link: _layerLink,
+                                            child: Directionality(
+                                              textDirection: TextDirection.ltr,
+                                              child: Container(
+                                                width: double.infinity,
+                                                decoration: const BoxDecoration(
+                                                  border: Border(
+                                                    top: BorderSide(
+                                                      color: Colors.black12,
                                                     ),
                                                   ),
-                                                  if (showBrandingWidget) widget.brandingWidget!,
-                                                ],
+                                                ),
+                                                child: Stack(
+                                                  alignment: Alignment.center,
+                                                  children: [
+                                                    Align(
+                                                      alignment: Alignment.centerLeft,
+                                                      child: PluginPanel(
+                                                        plugins: widget.plugins,
+                                                        overlayKey: _overlayKey,
+                                                        layerLink: _layerLink,
+                                                      ),
+                                                    ),
+                                                    if (showBrandingWidget) widget.brandingWidget!,
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Directionality(
-                                textDirection: TextDirection.ltr,
-                                child: Overlay(key: _overlayKey),
-                              ),
-                            ],
-                          )
-                        : currentStory;
-                  },
+                                  ],
+                                ),
+                                Directionality(
+                                  textDirection: TextDirection.ltr,
+                                  child: Overlay(key: _overlayKey),
+                                ),
+                              ],
+                            )
+                          : currentStory;
+                    },
+                  ),
                 ),
               ),
             ),

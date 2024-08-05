@@ -1,6 +1,7 @@
 ## Unreleased
 - **FEAT**: add Inspector plugin
 - **CHORE**: remove unused dependencies
+- **FIX**: prevent accidental application shutdown via a hardware button 
 
 ## 1.2.0
 - **FEAT**: add TextSizer plugin
