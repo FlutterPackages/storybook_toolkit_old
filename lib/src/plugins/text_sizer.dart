@@ -40,8 +40,7 @@ Widget _buildIcon(BuildContext context) => GestureDetector(
       ),
     );
 
-Widget _buildWrapper(BuildContext context, Widget? child) =>
-    ChangeNotifierProvider<TextSizerNotifier>(
+Widget _buildWrapper(BuildContext context, Widget? child) => ChangeNotifierProvider<TextSizerNotifier>(
       create: (_) => TextSizerNotifier(1.0),
       child: child ?? const SizedBox.shrink(),
     );
