@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:inspector/inspector.dart';
 import 'package:provider/provider.dart';
 import 'package:storybook_toolkit/src/plugins/plugin.dart';
 

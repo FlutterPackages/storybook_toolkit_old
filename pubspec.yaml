@@ -18,13 +18,15 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  any_syntax_highlighter: ^0.0.13
   go_router: ^14.2.2
   inspector: ^2.1.0
   pointer_interceptor: ^0.10.1+1
+  any_syntax_highlighter: ^0.0.13
   provider: ">=6.0.0 <7.0.0"
   vader_popup: ^0.1.2
   device_frame_plus: ^1.2.1
+  collection: ^1.18.0
+  nested: ^1.0.0
 
 dev_dependencies:
   golden_toolkit: ^0.9.0

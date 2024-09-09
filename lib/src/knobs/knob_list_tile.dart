@@ -42,7 +42,7 @@ class _KnobListTileState extends State<KnobListTile> {
               child: Transform.scale(
                 scale: 0.6,
                 child: Switch(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
+                  overlayColor: WidgetStateProperty.all(Colors.transparent),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   value: widget.enabled,
                   onChanged: widget.onToggled,

@@ -70,7 +70,7 @@ class BooleanKnobWidget extends StatelessWidget {
         child: Transform.scale(
           scale: 0.9,
           child: Checkbox(
-            overlayColor: MaterialStateProperty.all(Colors.transparent),
+            overlayColor: WidgetStateProperty.all(Colors.transparent),
             value: enabled ? value : null,
             side: BorderSide(
               color: theme.unselectedWidgetColor,
