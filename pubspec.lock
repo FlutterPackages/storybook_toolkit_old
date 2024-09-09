@@ -71,7 +71,7 @@ packages:
       path: "../device_frame_plus"
       relative: true
     source: path
-    version: "1.2.2"
+    version: "1.2.2+1"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -434,7 +434,7 @@ packages:
       path: "../vader_popup"
       relative: true
     source: path
-    version: "0.1.2"
+    version: "0.1.2+1"
   vector_math:
     dependency: transitive
     description:

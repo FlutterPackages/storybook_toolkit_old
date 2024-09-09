@@ -1,4 +1,4 @@
-## Unreleased
+## 1.3.0
 - **FEAT**: add Inspector plugin
 - **CHORE**: remove unused dependencies
 - **FIX**: prevent accidental application shutdown via a hardware button 

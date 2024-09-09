@@ -7,7 +7,7 @@ packages:
       path: "../../adaptive_golden_test"
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.0.0+1"
   any_syntax_highlighter:
     dependency: transitive
     description:
@@ -423,14 +423,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.2.0"
+    version: "1.3.0"
   storybook_toolkit_tester:
     dependency: "direct dev"
     description:
       path: "../../storybook_toolkit_tester"
       relative: true
     source: path
-    version: "1.2.0"
+    version: "1.2.0+1"
   stream_channel:
     dependency: transitive
     description:
@@ -477,7 +477,7 @@ packages:
       path: "../../vader_popup"
       relative: true
     source: path
-    version: "0.1.2"
+    version: "0.1.2+1"
   vector_math:
     dependency: transitive
     description:
