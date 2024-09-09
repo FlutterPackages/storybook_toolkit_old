@@ -143,7 +143,7 @@ class Storybook extends StatefulWidget {
     this.wrapperBuilder = materialWrapper,
     this.routeWrapperBuilder,
     this.canvasColor,
-    bool showPanel = true,
+    this.showPanel = true,
     this.enableLayout = true,
     this.brandingWidget,
     this.logoWidget,
@@ -159,8 +159,7 @@ class Storybook extends StatefulWidget {
           ...plugins ?? _defaultPlugins,
           KnobsPlugin(showPanel: showPanel),
         ]),
-        stories = UnmodifiableListView(stories),
-        showPanel = showPanel;
+        stories = UnmodifiableListView(stories);
 
   /// All available stories.
   ///
@@ -228,7 +227,7 @@ class _StorybookState extends State<Storybook> {
 
   void _setExpansionTileState() {
     final String routePathMatch = router!.routeInformationParser.configuration
-        .findMatch(router!.routerDelegate.currentConfiguration.uri.path)
+        .findMatch(router!.routerDelegate.currentConfiguration.uri)
         .fullPath;
 
     _storyNotifier.hasRouteMatch = routePathMatch.isNotEmpty;

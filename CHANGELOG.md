@@ -1,3 +1,9 @@
+## latest
+- **CHORE**: upgrade dependencies
+
+## 1.3.0+1
+- **CHORE**: add linter
+
 ## 1.3.0
 - **FEAT**: add Inspector plugin
 - **CHORE**: remove unused dependencies

@@ -68,18 +68,18 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
+      sha256: ec30d999af904f33454ba22ed9a86162b35e52b44ac4807d1d93c288041d7d27
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.5"
   device_frame_plus:
     dependency: transitive
     description:
       name: device_frame_plus
-      sha256: e6c627bc3568335c16ca7714b14e72c16832edaf7d04825867d50c76411e0d8b
+      sha256: "6b68d43a30a08465f86f33592ac60efcd1499979ef1310fbe3445d94f367297b"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.2+1"
   fading_edge_scrollview:
     dependency: transitive
     description:
@@ -100,10 +100,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "493f37e7df1804778ff3a53bd691d8692ddf69702cf4c1c1096a2e41b4779e21"
+      sha256: "16ed7b077ef01ad6170a3d0c57caa4a112a38d7a2ed5602e0aca9ca6f3d98da6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   file:
     dependency: transitive
     description:
@@ -136,18 +136,18 @@ packages:
     dependency: transitive
     description:
       name: freezed_annotation
-      sha256: f9f6597ac43cc262fa7d7f2e65259a6060c23a560525d1f2631be374540f2a9b
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.4.4"
   go_router:
     dependency: transitive
     description:
       name: go_router
-      sha256: d380de0355788c5c784fe9f81b43fc833b903991c25ecc4e2a416a67faefa722
+      sha256: "2ddb88e9ad56ae15ee144ed10e33886777eb5ca2509a914850a5faa7b52ff459"
       url: "https://pub.dev"
     source: hosted
-    version: "14.2.2"
+    version: "14.2.7"
   google_fonts:
     dependency: transitive
     description:
@@ -296,10 +296,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "490539678396d4c3c0b06efdaab75ae60675c3e0c66f72bc04c2e2c1e0e2abeb"
+      sha256: "6f01f8e37ec30b07bc424b4deabac37cacb1bc7e2e515ad74486039918a37eb7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.9"
+    version: "2.2.10"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -423,7 +423,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.3.0"
+    version: "1.3.0+1"
   storybook_toolkit_tester:
     dependency: "direct dev"
     description:
